@@ -10,7 +10,6 @@
 		EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE73244646E500FC618F /* AppDelegate.swift */; };
 		EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE75244646E500FC618F /* SceneDelegate.swift */; };
 		EEC0FE78244646E500FC618F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE77244646E500FC618F /* ViewController.swift */; };
-		EEC0FE7B244646E500FC618F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE79244646E500FC618F /* Main.storyboard */; };
 		EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7C244646EA00FC618F /* Assets.xcassets */; };
 		EEC0FE80244646EA00FC618F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7E244646EA00FC618F /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -20,7 +19,6 @@
 		EEC0FE73244646E500FC618F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE75244646E500FC618F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE77244646E500FC618F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		EEC0FE7A244646E500FC618F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EEC0FE7C244646EA00FC618F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EEC0FE7F244646EA00FC618F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EEC0FE81244646EA00FC618F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -59,7 +57,6 @@
 				EEC0FE73244646E500FC618F /* AppDelegate.swift */,
 				EEC0FE75244646E500FC618F /* SceneDelegate.swift */,
 				EEC0FE77244646E500FC618F /* ViewController.swift */,
-				EEC0FE79244646E500FC618F /* Main.storyboard */,
 				EEC0FE7C244646EA00FC618F /* Assets.xcassets */,
 				EEC0FE7E244646EA00FC618F /* LaunchScreen.storyboard */,
 				EEC0FE81244646EA00FC618F /* Info.plist */,
@@ -127,7 +124,6 @@
 			files = (
 				EEC0FE80244646EA00FC618F /* LaunchScreen.storyboard in Resources */,
 				EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */,
-				EEC0FE7B244646E500FC618F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,14 +143,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		EEC0FE79244646E500FC618F /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EEC0FE7A244646E500FC618F /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		EEC0FE7E244646EA00FC618F /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -287,6 +275,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2PZN25HHY7;
 				INFOPLIST_FILE = WeeklyHabitTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -294,7 +283,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rjparsons.WeeklyHabitTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -305,6 +294,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2PZN25HHY7;
 				INFOPLIST_FILE = WeeklyHabitTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -312,7 +302,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rjparsons.WeeklyHabitTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
