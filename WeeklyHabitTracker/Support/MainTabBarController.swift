@@ -17,7 +17,7 @@ class MainTabBarController: UITabBarController {
     }
 
     fileprivate func setUpViewControllers() {
-        let homeNavController = buildTabBarControllers(withTitle: "Home", andImage: UIImage(named: "checkmark.square.fill")!, andRootVC: HomeCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
+        let homeNavController = buildTabBarControllers(withTitle: "Habits", andImage: UIImage(named: "checkmark.square.fill")!, andRootVC: HomeCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
         let historyNavController = buildTabBarControllers(withTitle: "History", andImage: UIImage(named: "clock.fill")!, andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
         viewControllers = [homeNavController, historyNavController]
     }
@@ -27,7 +27,7 @@ class MainTabBarController: UITabBarController {
         let navController = UINavigationController(rootViewController: vc)
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image
-        navController.navigationBar.tintColor = .systemTeal
+        navController.navigationBar.tintColor = .systemGreen
         return navController
     }
     
