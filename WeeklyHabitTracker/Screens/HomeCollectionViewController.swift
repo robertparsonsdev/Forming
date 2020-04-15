@@ -28,7 +28,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func newTapped() {
-        print("tapped")
+        let newHabitVC = NewHabitViewController()
+        let navController = UINavigationController(rootViewController: newHabitVC)
+        navController.navigationBar.tintColor = .systemGreen
+        present(navController, animated: true)
     }
 
     // MARK: UICollectionViewDataSource
