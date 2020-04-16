@@ -31,6 +31,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     
     let tableView = UITableView()
     let toggle = UISwitch()
+    let stepper = UIStepper()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +44,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         configureStackView(topColorsStackView, withArray: topColors)
         configureStackView(bottomColorsStackView, withArray: bottomColors)
         configureStackView(daysStackView, withArray: days)
+        configureStepper()
         configureTableView()
         configureConstraints()
         
@@ -126,13 +128,14 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         scrollView.addSubview(bottomColorsStackView)
         bottomColorsStackView.anchor(top: topColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad + 5, paddingLeft: outterPad + 25, paddingBottom: 0, paddingRight: outterPad + 25, width: viewWidth - 50, height: viewHeight)
 
-        scrollView.addSubview(priorityLabel)
-        priorityLabel.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: labelHeight)
-        scrollView.addSubview(priorityTextField)
-        priorityTextField.anchor(top: priorityLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: viewWidth, height: viewHeight)
-
         scrollView.addSubview(tableView)
-        tableView.anchor(top: priorityTextField.bottomAnchor, left: left, bottom: nil, right: nil, paddingTop: outterPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: 0, width: viewWidth + 15, height: 100)
+        tableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: nil, right: nil, paddingTop: outterPad, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 140)
+    }
+    
+    func configureStepper() {
+        stepper.minimumValue = 0
+        stepper.maximumValue = 3
+        stepper.addTarget(self, action: #selector(stepperTapped), for: .valueChanged)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -140,17 +143,27 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        cell = UITableViewCell(style: .value1, reuseIdentifier: "Cell")
+        cell.imageView?.tintColor = .label
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Sub-habits"
             cell.accessoryType = .disclosureIndicator
+            cell.imageView?.image = UIImage(named: "list.bullet.indent")
+        case 1:
+            cell.textLabel?.text = "Priority"
+            cell.detailTextLabel?.text = "0"
+            cell.imageView?.image = UIImage(named: "exclamationmark.circle")
+            cell.accessoryView = stepper
+            cell.selectionStyle = .none
         default:
             cell.textLabel?.text = "Reminder"
+            cell.imageView?.image = UIImage(named: "clock")
             cell.accessoryView = toggle
             cell.selectionStyle = .none
         }
@@ -170,5 +183,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             sender.isSelected = true
             dayFlags[tag] = true
         }
+    }
+    
+    @objc func stepperTapped(sender: UIStepper) {
+        tableView.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text = String(Int(sender.value))
     }
 }

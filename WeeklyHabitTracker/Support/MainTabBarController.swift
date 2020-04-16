@@ -18,7 +18,7 @@ class MainTabBarController: UITabBarController {
 
     fileprivate func setUpViewControllers() {
         let homeNavController = buildTabBarControllers(withTitle: "Habits", andImage: UIImage(named: "checkmark.square.fill")!, andRootVC: HomeCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
-        let historyNavController = buildTabBarControllers(withTitle: "History", andImage: UIImage(named: "clock.fill")!, andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
+        let historyNavController = buildTabBarControllers(withTitle: "History", andImage: UIImage(named: "arrow.counterclockwise.circle.fill")!, andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
         viewControllers = [homeNavController, historyNavController]
     }
         
