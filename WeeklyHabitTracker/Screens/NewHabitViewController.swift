@@ -32,6 +32,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let tableView = UITableView()
     let toggle = UISwitch()
     let stepper = UIStepper()
+    let haptics = UISelectionFeedbackGenerator()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -175,6 +176,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     }
     
     @objc func dayButtonTapped(sender: UIButton) {
+        haptics.selectionChanged()
         let tag = sender.tag
         if sender.isSelected == true {
             sender.isSelected = false
@@ -186,6 +188,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     }
     
     @objc func stepperTapped(sender: UIStepper) {
+        haptics.selectionChanged()
         tableView.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text = String(Int(sender.value))
     }
 }
