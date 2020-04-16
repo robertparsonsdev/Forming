@@ -24,6 +24,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let bottomColorsStackView = UIStackView()
     
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
+    var dayFlags = [false, false, false, false, false, false, false]
     let daysStackView = UIStackView()
     
     let priorityTextField = FormingTextField(placeholder: "Enter 1, 2, or 3", returnKeyType: .done)
@@ -60,11 +61,16 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         stackView.distribution = .fillEqually
         
         if items as? [String] == days {
-            for item in items {
-                let button = UIButton()
+            stackView.spacing = (view.frame.width - 30 - 280) / 6
+            let heavyAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .heavy)]
+            let thinAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .thin)]
+            for (index, item) in items.enumerated() {
                 guard let day = item as? String else { return }
-                button.setTitle(day, for: .normal)
-                button.setTitleColor(.label, for: .normal)
+                let button = FormingDayButton(title: day, tag: index, width: 40)
+                button.setAttributedTitle(NSAttributedString(string: day, attributes: thinAttribute), for: .normal)
+                button.setAttributedTitle(NSAttributedString(string: day, attributes: heavyAttribute), for: .selected)
+                button.setBackgroundColor(color: .systemFill, forState: .selected)
+                button.addTarget(self, action: #selector(dayButtonTapped), for: .touchUpInside)
                 stackView.addArrangedSubview(button)
             }
         } else {
@@ -153,5 +159,16 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     
     @objc func colorButtonTapped() {
         print("tapped")
+    }
+    
+    @objc func dayButtonTapped(sender: UIButton) {
+        let tag = sender.tag
+        if sender.isSelected == true {
+            sender.isSelected = false
+            dayFlags[tag] = false
+        } else {
+            sender.isSelected = true
+            dayFlags[tag] = true
+        }
     }
 }
