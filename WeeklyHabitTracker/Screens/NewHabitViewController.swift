@@ -22,6 +22,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let bottomColors = [UIColor.systemPink, UIColor.systemIndigo, UIColor.systemOrange, UIColor.systemYellow, UIColor.systemPurple]
     let topColorsStackView = UIStackView()
     let bottomColorsStackView = UIStackView()
+    var colorFlags = [false, false, false, false, false, false, false, false, false, false]
     
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     var dayFlags = [false, false, false, false, false, false, false]
@@ -77,15 +78,17 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
                 stackView.addArrangedSubview(button)
             }
         } else {
+            var tagCounter = 0
             stackView.spacing = (view.frame.width - 80 - 200) / 4
             let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .heavy))
-            for item in items {
+            for (index, item) in items.enumerated() {
                 guard let color = item as? UIColor else { return }
-                let button = FormingColorButton(color: color, width: 40)
-                button.setImage(UIImage(named: "checkmark", in: nil, with: config), for: .normal)
-                button.imageView?.tintColor = .white
+                if stackView == bottomColorsStackView && index == 0 { tagCounter = 5 }
+                let button = FormingColorButton(color: color, tag: tagCounter, width: 40)
+                button.setImage(UIImage(named: "checkmark", in: nil, with: config), for: .selected)
                 button.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
                 stackView.addArrangedSubview(button)
+                tagCounter += 1
             }
         }
     }
@@ -171,8 +174,26 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         return cell
     }
     
-    @objc func colorButtonTapped() {
-        print("tapped")
+    @objc func colorButtonTapped(sender: UIButton) {
+        let tag = sender.tag
+        if sender.isSelected == true { sender.isSelected = false}
+        else {
+            if colorFlags.contains(true) {
+                if let index = colorFlags.firstIndex(of: true) {
+                    if index < 5 {
+                        let button = topColorsStackView.arrangedSubviews[index] as? UIButton
+                        button?.isSelected = false
+                    } else {
+                        let button = bottomColorsStackView.arrangedSubviews[index - 5] as? UIButton
+                        button?.isSelected = false
+                    }
+                    colorFlags[index] = false
+                }
+            }
+            colorFlags[tag] = true
+            haptics.selectionChanged()
+            sender.isSelected = true
+        }
     }
     
     @objc func dayButtonTapped(sender: UIButton) {
