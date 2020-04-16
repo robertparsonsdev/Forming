@@ -42,16 +42,14 @@ class HabitCell: UICollectionViewCell {
             let button = UIButton()
             let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
             button.setImage(UIImage(named: "square", in: nil, with: config)!, for: .normal)
-            if traitCollection.userInterfaceStyle == .light { button.imageView?.tintColor = .black }
-            else { button.imageView?.tintColor = .white }
+            button.imageView?.tintColor = .label
             boxStackView.addArrangedSubview(button)
         }
         
         let button = boxStackView.arrangedSubviews[CalendarManager.shared.currentWeekDay()] as? UIButton
         let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
         button?.setImage(UIImage(named: "square", in: nil, with: config), for: .normal)
-        if traitCollection.userInterfaceStyle == .light { button?.imageView?.tintColor = .black }
-        else { button?.imageView?.tintColor = .white }
+        button?.imageView?.tintColor = .label
     }
     
     func configureConstraints() {
@@ -82,19 +80,6 @@ class HabitCell: UICollectionViewCell {
             // set the new current location
             let button = self.boxStackView.arrangedSubviews[newDate] as? UIButton
             button?.setPreferredSymbolConfiguration(blackConfig, forImageIn: .normal)
-        }
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        var tint = UIColor()
-        if traitCollection.userInterfaceStyle == .light { tint = .black }
-        else { tint = .white }
-        
-        for view in boxStackView.arrangedSubviews {
-            let button = view as? UIButton
-            button?.imageView?.tintColor = tint
         }
     }
 }

@@ -68,10 +68,15 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
                 stackView.addArrangedSubview(button)
             }
         } else {
+            stackView.spacing = (view.frame.width - 80 - 200) / 4
+            let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .heavy))
             for item in items {
                 guard let color = item as? UIColor else { return }
-                stackView.spacing = (view.frame.width - 80 - 200) / 4
-                stackView.addArrangedSubview(FormingColorButton(color: color, width: 40))
+                let button = FormingColorButton(color: color, width: 40)
+                button.setImage(UIImage(named: "checkmark", in: nil, with: config), for: .normal)
+                button.imageView?.tintColor = .white
+                button.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
+                stackView.addArrangedSubview(button)
             }
         }
     }
@@ -144,5 +149,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             cell.selectionStyle = .none
         }
         return cell
+    }
+    
+    @objc func colorButtonTapped() {
+        print("tapped")
     }
 }
