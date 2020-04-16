@@ -10,6 +10,7 @@
 		EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* NewHabitViewController.swift */; };
 		EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */; };
 		EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECF2447B349008202D0 /* FormingTextField.swift */; };
+		EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */; };
 		EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE73244646E500FC618F /* AppDelegate.swift */; };
 		EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE75244646E500FC618F /* SceneDelegate.swift */; };
 		EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7C244646EA00FC618F /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
 		EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTitleLabel.swift; sourceTree = "<group>"; };
 		EEA64ECF2447B349008202D0 /* FormingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTextField.swift; sourceTree = "<group>"; };
+		EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColorButton.swift; sourceTree = "<group>"; };
 		EEC0FE70244646E500FC618F /* WeeklyHabitTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeeklyHabitTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEC0FE73244646E500FC618F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE75244646E500FC618F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			children = (
 				EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */,
 				EEA64ECF2447B349008202D0 /* FormingTextField.swift */,
+				EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */,
 				EEC0FE882446498A00FC618F /* HomeCollectionViewController.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
+				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalendarManager.swift in Sources */,

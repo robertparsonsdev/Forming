@@ -69,12 +69,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             }
         } else {
             for item in items {
-                let button = UIButton()
                 guard let color = item as? UIColor else { return }
-                button.setTitle("Color", for: .normal)
-                button.tintColor = color
-                button.backgroundColor = color
-                stackView.addArrangedSubview(button)
+                stackView.spacing = (view.frame.width - 80 - 200) / 4
+                stackView.addArrangedSubview(FormingColorButton(color: color, width: 40))
             }
         }
     }
@@ -98,6 +95,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
         
         scrollView.addSubview(titleLabel)
+        titleLabel.backgroundColor = .systemPurple
         titleLabel.anchor(top: scrollView.topAnchor, left: scrollView.leftAnchor, bottom: scrollView.bottomAnchor, right: scrollView.rightAnchor, paddingTop: 15, paddingLeft: 15, paddingBottom: view.frame.height * 4/5, paddingRight: 15, width: 0, height: 0)
         scrollView.addSubview(titleTextField)
         titleTextField.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 5, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
@@ -105,22 +103,22 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         scrollView.addSubview(colorLabel)
         colorLabel.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 60, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 25)
         scrollView.addSubview(topColorsStackView)
-        topColorsStackView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 90, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
+        topColorsStackView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 90, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: view.frame.width - 80, height: 40)
         scrollView.addSubview(bottomColorsStackView)
-        bottomColorsStackView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 135, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
+        bottomColorsStackView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 140, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: view.frame.width - 80, height: 40)
         
         scrollView.addSubview(daysLabel)
-        daysLabel.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 190, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 25)
+        daysLabel.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 195, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 25)
         scrollView.addSubview(daysStackView)
-        daysStackView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 220, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
+        daysStackView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 225, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
         
         scrollView.addSubview(priorityLabel)
-        priorityLabel.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 275, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 25)
+        priorityLabel.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 280, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 25)
         scrollView.addSubview(priorityTextField)
-        priorityTextField.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 305, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
+        priorityTextField.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 310, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 30, height: 40)
         
         scrollView.addSubview(tableView)
-        tableView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 360, paddingLeft: 15, paddingBottom: 15, paddingRight: 0, width: view.frame.width - 15, height: 100)
+        tableView.anchor(top: titleLabel.bottomAnchor, left: scrollView.leftAnchor, bottom: nil, right: scrollView.rightAnchor, paddingTop: 365, paddingLeft: 15, paddingBottom: 15, paddingRight: 0, width: view.frame.width - 15, height: 100)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
