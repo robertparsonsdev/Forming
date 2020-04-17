@@ -68,7 +68,7 @@ class HabitCell: UICollectionViewCell {
         }
         
         let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
-        let index = CalendarManager.shared.currentWeekDay()
+        let index = CalendarManager.shared.getCurrentWeekDay()
         if let button = boxStackView.arrangedSubviews[index] as? UIButton {
             button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
             button.imageView?.tintColor = .label
@@ -88,7 +88,7 @@ class HabitCell: UICollectionViewCell {
     
     @objc func updateBoxes() {
         DispatchQueue.main.async {
-            let newDate = CalendarManager.shared.currentWeekDay()
+            let newDate = CalendarManager.shared.getCurrentWeekDay()
             let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
             let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
             

@@ -11,25 +11,23 @@ import UIKit
 class HomeHeaderCell: UICollectionViewCell {
     let dayNames = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     let dayNamesStackView = UIStackView()
-    var dayNums = ["1", "2", "3", "4", "5", "6", "7"]
+    var dayNums: [String]?
     let dayNumsStackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
-//        configureDayNums()
+        configureDayNums()
         configureStackView(dayNamesStackView, withArray: dayNames)
-        configureStackView(dayNumsStackView, withArray: dayNums)
+        guard let dayNumbers = self.dayNums else { return }
+        configureStackView(dayNumsStackView, withArray: dayNumbers)
         configureConstraints()
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateCalendar), name: .NSCalendarDayChanged, object: nil)
     }
     
     func configureDayNums() {
-        let cal = Calendar(identifier: .iso8601)
-        if let range = cal.range(of: .day, in: .weekOfMonth, for: Date()) {
-            for day in range { dayNums.append(String(day)) }
-        }
+        dayNums = CalendarManager.shared.getCurrentWeek()
     }
     
     func configureStackView(_ stackView : UIStackView, withArray array: [String]) {
@@ -45,7 +43,7 @@ class HomeHeaderCell: UICollectionViewCell {
             stackView.addArrangedSubview(label)
         }
         
-        let label = stackView.arrangedSubviews[CalendarManager.shared.currentWeekDay()] as? UILabel
+        let label = stackView.arrangedSubviews[CalendarManager.shared.getCurrentWeekDay()] as? UILabel
         label?.font = UIFont.systemFont(ofSize: 20, weight: .black)
     }
     
@@ -60,7 +58,7 @@ class HomeHeaderCell: UICollectionViewCell {
     @objc func updateCalendar() {
         DispatchQueue.main.async {
             // create fonts and reset all fonts in stackviews to thin
-            let newDate = CalendarManager.shared.currentWeekDay()
+            let newDate = CalendarManager.shared.getCurrentWeekDay()
             let thinFont = UIFont.systemFont(ofSize: 20, weight: .thin)
             let blackFont = UIFont.systemFont(ofSize: 20, weight: .black)
             
