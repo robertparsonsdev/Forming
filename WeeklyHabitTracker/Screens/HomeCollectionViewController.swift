@@ -12,7 +12,7 @@ private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-    var habits: [String] = []
+    var habits: [(String, [Bool], Int)] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,10 +29,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             UserDefaults().set(true, forKey: "setup")
             UserDefaults().set(0, forKey: "count")
         }
-        guard let count = UserDefaults().value(forKey: "count") as? Int else { return }
-        for index in 0..<count {
-            UserDefaults().removeObject(forKey: "habitTitle_\(index)")
-        }
+        UserDefaults().removeObject(forKey: "setup")
+        
         updateHabits()
     }
     
@@ -41,9 +39,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         habits.removeAll()
         guard let count = UserDefaults().value(forKey: "count") as? Int else { return }
         for index in 0..<count {
-            if let habitTitle = UserDefaults().value(forKey: "habitTitle_\(index)") as? String {
-                habits.append(habitTitle)
-            }
+            guard let habitTitle = UserDefaults().value(forKey: "habitTitle_\(index)") as? String else { return }
+            guard let habitDays = UserDefaults().value(forKey: "habitDays_\(index)") as? [Bool] else { return }
+            guard let habitColor = UserDefaults().value(forKey: "habitColor_\(index)") as? Int else { return }
+            habits.append((habitTitle, habitDays, habitColor))
         }
         collectionView.reloadData()
     }
@@ -76,7 +75,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
-        cell.habitTitle = habits[indexPath.row]
+        cell.habitTitle = habits[indexPath.row].0
+        cell.habitDays = habits[indexPath.row].1
         return cell
     }
     

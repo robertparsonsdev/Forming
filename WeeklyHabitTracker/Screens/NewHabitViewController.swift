@@ -63,6 +63,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         // save habit information to device
         if let count = UserDefaults().value(forKey: "count") as? Int {
             UserDefaults().set(titleTextField.text, forKey: "habitTitle_\(count)")
+            UserDefaults().set(dayFlags, forKey: "habitDays_\(count)")
+            UserDefaults().set(colorFlags.firstIndex(of: true), forKey: "habitColor_\(count)")
             UserDefaults().set(count + 1, forKey: "count")
         }
         update?()

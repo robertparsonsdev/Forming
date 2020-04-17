@@ -14,6 +14,18 @@ class HabitCell: UICollectionViewCell {
             if let title = habitTitle { titleLabel.text = "  \(title)" }
         }
     }
+    var habitDays: [Bool]? {
+        didSet {
+            for view in boxStackView.arrangedSubviews { view.removeFromSuperview() }
+            if let days = habitDays { configureBoxes(days: days) }
+        }
+    }
+    var habitColor: Int? {
+        didSet {
+            
+        }
+    }
+    
     let titleLabel = UILabel()
     let boxStackView = UIStackView()
     
@@ -41,19 +53,27 @@ class HabitCell: UICollectionViewCell {
         boxStackView.axis = .horizontal
         boxStackView.alignment = .fill
         boxStackView.distribution = .fillEqually
-        
-        for _ in 0...6 {
-            let button = UIButton()
-            let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
-            button.setImage(UIImage(named: "square", in: nil, with: config)!, for: .normal)
-            button.imageView?.tintColor = .label
-            boxStackView.addArrangedSubview(button)
+    }
+    
+    func configureBoxes(days: [Bool]) {
+        let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
+        for (index, day) in days.enumerated() {
+            if day {
+                let button = UIButton()
+                button.setImage(UIImage(named: "square", in: nil, with: thinConfig), for: .normal)
+                button.imageView?.tintColor = .label
+                boxStackView.insertArrangedSubview(button, at: index)
+            } else {
+                boxStackView.insertArrangedSubview(UIView(), at: index)
+            }
         }
         
-        let button = boxStackView.arrangedSubviews[CalendarManager.shared.currentWeekDay()] as? UIButton
-        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
-        button?.setImage(UIImage(named: "square", in: nil, with: config), for: .normal)
-        button?.imageView?.tintColor = .label
+        let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
+        let index = CalendarManager.shared.currentWeekDay()
+        if let button = boxStackView.arrangedSubviews[index] as? UIButton {
+            button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
+            button.imageView?.tintColor = .label
+        }
     }
     
     func configureConstraints() {
