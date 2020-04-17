@@ -77,6 +77,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
         cell.habitTitle = habits[indexPath.row].0
         cell.habitDays = habits[indexPath.row].1
+        cell.habitColor = habits[indexPath.row].2
         return cell
     }
     

@@ -22,7 +22,7 @@ class HabitCell: UICollectionViewCell {
     }
     var habitColor: Int? {
         didSet {
-            
+            if let value = habitColor { titleLabel.backgroundColor = FormingColors.getColor(fromValue: value) }
         }
     }
     
@@ -46,7 +46,6 @@ class HabitCell: UICollectionViewCell {
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.textColor = .white
-        titleLabel.backgroundColor = .systemPurple
     }
     
     func configureStackView() {

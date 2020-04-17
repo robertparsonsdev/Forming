@@ -13,6 +13,7 @@
 		EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */; };
 		EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED42448E050008202D0 /* FormingDayButton.swift */; };
 		EEA64ED824492BC9008202D0 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED724492BC9008202D0 /* Habit.swift */; };
+		EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64EDA244A17D4008202D0 /* FormingColors.swift */; };
 		EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE73244646E500FC618F /* AppDelegate.swift */; };
 		EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE75244646E500FC618F /* SceneDelegate.swift */; };
 		EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7C244646EA00FC618F /* Assets.xcassets */; };
@@ -33,6 +34,7 @@
 		EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColorButton.swift; sourceTree = "<group>"; };
 		EEA64ED42448E050008202D0 /* FormingDayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingDayButton.swift; sourceTree = "<group>"; };
 		EEA64ED724492BC9008202D0 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
+		EEA64EDA244A17D4008202D0 /* FormingColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColors.swift; sourceTree = "<group>"; };
 		EEC0FE70244646E500FC618F /* WeeklyHabitTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeeklyHabitTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEC0FE73244646E500FC618F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE75244646E500FC618F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		EEA64ED9244A17BC008202D0 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				EEA64EDA244A17D4008202D0 /* FormingColors.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		EEC0FE67244646E500FC618F = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +107,7 @@
 		EEC0FE72244646E500FC618F /* WeeklyHabitTracker */ = {
 			isa = PBXGroup;
 			children = (
+				EEA64ED9244A17BC008202D0 /* Utilities */,
 				EEA64ED624492BB1008202D0 /* Models */,
 				EEC0FE97244699B000FC618F /* Managers */,
 				EEC0FE942446576700FC618F /* Extensions */,
@@ -228,6 +239,7 @@
 			files = (
 				EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */,
 				EEC0FE882446498A00FC618F /* HomeCollectionViewController.swift in Sources */,
+				EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
