@@ -9,6 +9,11 @@
 import UIKit
 
 class HabitCell: UICollectionViewCell {
+    var habitTitle: String? {
+        didSet {
+            if let title = habitTitle { titleLabel.text = "  \(title)" }
+        }
+    }
     let titleLabel = UILabel()
     let boxStackView = UIStackView()
     
@@ -26,7 +31,6 @@ class HabitCell: UICollectionViewCell {
     }
     
     func configureTitleLabel() {
-        titleLabel.text = "  Habit Title"
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.textColor = .white

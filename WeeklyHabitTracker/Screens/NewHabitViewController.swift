@@ -9,6 +9,8 @@
 import UIKit
 
 class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+    var update: (() -> Void)?
+    
     let scrollView = UIScrollView()
 
     let titleLabel = FormingTitleLabel(title: "Title:")
@@ -16,7 +18,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let daysLabel = FormingTitleLabel(title: "Days:")
     let priorityLabel = FormingTitleLabel(title: "Priority:")
     
-    let titleTextField = FormingTextField(placeholder: "Example: Run 1 Mile" ,returnKeyType: .done)
+    let titleTextField = FormingTextField(placeholder: "Example: Run 1 Mile" , returnKeyType: .done)
     
     let topColors = [UIColor.systemGreen, UIColor.systemTeal, UIColor.systemRed, UIColor.systemBlue, UIColor.systemGray]
     let bottomColors = [UIColor.systemPink, UIColor.systemIndigo, UIColor.systemOrange, UIColor.systemYellow, UIColor.systemPurple]
@@ -27,9 +29,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     var dayFlags = [false, false, false, false, false, false, false]
     let daysStackView = UIStackView()
-    
-    let priorityTextField = FormingTextField(placeholder: "Enter 1, 2, or 3", returnKeyType: .done)
-    
+        
     let tableView = UITableView()
     let toggle = UISwitch()
     let stepper = UIStepper()
@@ -40,7 +40,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         view.backgroundColor = .systemBackground
         title = "New Habit"
         titleTextField.delegate = self
-        priorityTextField.delegate = self
         
         configureScrollView()
         configureStackView(topColorsStackView, withArray: topColors)
@@ -52,6 +51,26 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
+    }
+    
+    @objc func saveButtonTapped() {
+        if !dayFlags.contains(true) || !colorFlags.contains(true) {
+            let alert = UIAlertController(title: "Incomplete Habit", message: "Please ensure that you have a color and at least one day selected.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        // save habit information to device
+        if let count = UserDefaults().value(forKey: "count") as? Int {
+            UserDefaults().set(titleTextField.text, forKey: "habitTitle_\(count)")
+            UserDefaults().set(count + 1, forKey: "count")
+        }
+        update?()
+        dismiss(animated: true)
+    }
+    
+    @objc func cancelButtonTapped() {
+        dismiss(animated: true)
     }
     
     func configureScrollView() {
@@ -97,14 +116,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-    }
-    
-    @objc func saveButtonTapped() {
-        print("saved")
-    }
-    
-    @objc func cancelButtonTapped() {
-        dismiss(animated: true)
     }
     
     func configureConstraints() {
@@ -176,7 +187,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     
     @objc func colorButtonTapped(sender: UIButton) {
         let tag = sender.tag
-        if sender.isSelected == true { sender.isSelected = false}
+        if sender.isSelected == true { sender.isSelected = false }
         else {
             if colorFlags.contains(true) {
                 if let index = colorFlags.firstIndex(of: true) {

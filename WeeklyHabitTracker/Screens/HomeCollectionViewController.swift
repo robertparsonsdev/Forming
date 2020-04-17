@@ -12,6 +12,7 @@ private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    var habits: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,12 +24,35 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         // Register cell classes
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView!.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        
+        if !UserDefaults().bool(forKey: "setup") {
+            UserDefaults().set(true, forKey: "setup")
+            UserDefaults().set(0, forKey: "count")
+        }
+        guard let count = UserDefaults().value(forKey: "count") as? Int else { return }
+        for index in 0..<count {
+            UserDefaults().removeObject(forKey: "habitTitle_\(index)")
+        }
+        updateHabits()
+    }
+    
+    func updateHabits() {
+        // add to list of habits and reload the collection view
+        habits.removeAll()
+        guard let count = UserDefaults().value(forKey: "count") as? Int else { return }
+        for index in 0..<count {
+            if let habitTitle = UserDefaults().value(forKey: "habitTitle_\(index)") as? String {
+                habits.append(habitTitle)
+            }
+        }
+        collectionView.reloadData()
     }
     
     @objc func newTapped() {
         let newHabitVC = NewHabitViewController()
+        newHabitVC.update = {
+            DispatchQueue.main.async { self.updateHabits() }
+        }
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
@@ -42,21 +66,17 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 1
+        return habits.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
-    
-        // Configure the cell
-    
+        cell.habitTitle = habits[indexPath.row]
         return cell
     }
     
@@ -75,5 +95,4 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
-
 }
