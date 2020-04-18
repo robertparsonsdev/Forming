@@ -28,6 +28,7 @@ class HabitCell: UICollectionViewCell {
     
     let titleLabel = UILabel()
     let boxStackView = UIStackView()
+    let editButton = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,6 +38,7 @@ class HabitCell: UICollectionViewCell {
         
         configureTitleLabel()
         configureStackView()
+        configureEditButton()
         configureConstraints()
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateBoxes), name: .NSCalendarDayChanged, object: nil)
@@ -68,16 +70,31 @@ class HabitCell: UICollectionViewCell {
         }
         
         let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
-        let index = CalendarManager.shared.getCurrentWeekDay()
+        let index = CalendarManager.shared.getCurrentDay()
         if let button = boxStackView.arrangedSubviews[index] as? UIButton {
             button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
             button.imageView?.tintColor = .label
         }
     }
     
+    func configureEditButton() {
+        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .light), scale: .medium)
+        let symbolAttachment = NSTextAttachment()
+        symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: config)
+        symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
+        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 15, weight: .light), .foregroundColor: UIColor.white]
+        let title = NSMutableAttributedString(string: "Edit ", attributes: attributes)
+        title.append(NSAttributedString(attachment: symbolAttachment))
+        
+        editButton.setAttributedTitle(title, for: .normal)
+        editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+    }
+    
     func configureConstraints() {
         addSubview(titleLabel)
-        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: frame.height * 3/4, paddingRight: 0, width: 0, height: 0)
+        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
+        addSubview(editButton)
+        editButton.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
         addSubview(boxStackView)
         boxStackView.anchor(top: titleLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
@@ -88,7 +105,7 @@ class HabitCell: UICollectionViewCell {
     
     @objc func updateBoxes() {
         DispatchQueue.main.async {
-            let newDate = CalendarManager.shared.getCurrentWeekDay()
+            let newDate = CalendarManager.shared.getCurrentDay()
             let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
             let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
             
@@ -104,5 +121,9 @@ class HabitCell: UICollectionViewCell {
             let button = self.boxStackView.arrangedSubviews[newDate] as? UIButton
             button?.setPreferredSymbolConfiguration(blackConfig, forImageIn: .normal)
         }
+    }
+    
+    @objc func editButtonTapped() {
+        print("edit tapped")
     }
 }

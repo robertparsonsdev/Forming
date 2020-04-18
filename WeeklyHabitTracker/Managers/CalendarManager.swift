@@ -13,7 +13,7 @@ class CalendarManager {
     
     private init() {}
     
-    func getCurrentWeekDay() -> Int {
+    func getCurrentDay() -> Int {
         let date = Date()
         let calendar = Calendar.current
         return calendar.component(.weekday, from: date) - 1
@@ -25,7 +25,7 @@ class CalendarManager {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d"
         var days = Array(repeating: "", count: 7)
-        let currentDay = getCurrentWeekDay()
+        let currentDay = getCurrentDay()
         
         days[currentDay] = dateFormatter.string(from: date)
 

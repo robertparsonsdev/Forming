@@ -43,7 +43,7 @@ class HomeHeaderCell: UICollectionViewCell {
             stackView.addArrangedSubview(label)
         }
         
-        let label = stackView.arrangedSubviews[CalendarManager.shared.getCurrentWeekDay()] as? UILabel
+        let label = stackView.arrangedSubviews[CalendarManager.shared.getCurrentDay()] as? UILabel
         label?.font = UIFont.systemFont(ofSize: 20, weight: .black)
     }
     
@@ -58,7 +58,7 @@ class HomeHeaderCell: UICollectionViewCell {
     @objc func updateCalendar() {
         DispatchQueue.main.async {
             // create fonts and reset all fonts in stackviews to thin
-            let newDate = CalendarManager.shared.getCurrentWeekDay()
+            let newDate = CalendarManager.shared.getCurrentDay()
             let thinFont = UIFont.systemFont(ofSize: 20, weight: .thin)
             let blackFont = UIFont.systemFont(ofSize: 20, weight: .black)
             
