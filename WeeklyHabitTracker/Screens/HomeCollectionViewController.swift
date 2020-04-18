@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import CoreData
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HabitCellDelegate {
-    var habits: [(String, [Bool], Int)] = []
+    var habits = [Habit]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,35 +21,24 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.sectionHeadersPinToVisibleBounds = true
-        }
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
 
         // Register cell classes
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView!.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
-        if !UserDefaults().bool(forKey: "setup") {
-            UserDefaults().set(true, forKey: "setup")
-            UserDefaults().set(0, forKey: "count")
-        }
-        UserDefaults().removeObject(forKey: "setup")
-        
         updateHabits()
     }
     
     func updateHabits() {
-        // add to list of habits and reload the collection view
-        habits.removeAll()
-        guard let count = UserDefaults().value(forKey: "count") as? Int else { return }
-        for index in 0..<count {
-            guard let habitTitle = UserDefaults().value(forKey: "habitTitle_\(index)") as? String else { return }
-            guard let habitDays = UserDefaults().value(forKey: "habitDays_\(index)") as? [Bool] else { return }
-            guard let habitColor = UserDefaults().value(forKey: "habitColor_\(index)") as? Int else { return }
-//            guard let completedDays = UserDefaults().value(forKey: "completedDays_\(index)") as? [Status] else { return }
-            habits.append((habitTitle, habitDays, habitColor))
+        let fetchRequest: NSFetchRequest<Habit> = Habit.fetchRequest()
+        do {
+            let habits = try PersistenceService.context.fetch(fetchRequest)
+            self.habits = habits
+            self.collectionView.reloadData()
+        } catch let error {
+            print(error)
         }
-        collectionView.reloadData()
     }
     
     @objc func newTapped() {
@@ -100,7 +90,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
     
-    func presentNewHabitViewController(with habit: (String, [Bool], Int)?) {
+    func presentNewHabitViewController(with habit: Habit) {
         let newHabitVC = NewHabitViewController()
         newHabitVC.habit = habit
         let navController = UINavigationController(rootViewController: newHabitVC)

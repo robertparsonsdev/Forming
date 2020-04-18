@@ -11,12 +11,9 @@ import UIKit
 class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     var update: (() -> Void)?
     var editMode = false
-    var habit: (String, [Bool], Int)? {
+    var habit: Habit? {
         didSet {
-            editMode = true
-            if let title = habit?.0 { titleTextField.text = title }
-            if let days = habit?.1 { dayFlags = days }
-            if let color = habit?.2 { selectedColor = color; colorFlags[color] = true }
+            
         }
     }
     
@@ -80,12 +77,15 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             return
         }
         // save habit information to device
-        if let count = UserDefaults().value(forKey: "count") as? Int {
-            UserDefaults().set(titleTextField.text, forKey: "habitTitle_\(count)")
-            UserDefaults().set(dayFlags, forKey: "habitDays_\(count)")
-            UserDefaults().set(colorFlags.firstIndex(of: true), forKey: "habitColor_\(count)")
-            UserDefaults().set(count + 1, forKey: "count")
-        }
+//        if let count = UserDefaults().value(forKey: "count") as? Int {
+//            UserDefaults().set(titleTextField.text, forKey: "habitTitle_\(count)")
+//            UserDefaults().set(dayFlags, forKey: "habitDays_\(count)")
+//            UserDefaults().set(colorFlags.firstIndex(of: true), forKey: "habitColor_\(count)")
+//            UserDefaults().set(count + 1, forKey: "count")
+//        }
+        let initialHabit = Habit(context: PersistenceService.context)
+        initialHabit.title = titleTextField.text
+        PersistenceService.saveContext()
         update?()
         dismiss(animated: true)
     }

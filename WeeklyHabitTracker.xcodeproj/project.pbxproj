@@ -12,9 +12,12 @@
 		EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECF2447B349008202D0 /* FormingTextField.swift */; };
 		EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */; };
 		EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED42448E050008202D0 /* FormingDayButton.swift */; };
-		EEA64ED824492BC9008202D0 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED724492BC9008202D0 /* Habit.swift */; };
 		EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64EDA244A17D4008202D0 /* FormingColors.swift */; };
 		EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EDB244BA3BF002225F8 /* Status.swift */; };
+		EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */; };
+		EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */; };
+		EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */; };
+		EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */; };
 		EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE73244646E500FC618F /* AppDelegate.swift */; };
 		EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE75244646E500FC618F /* SceneDelegate.swift */; };
 		EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7C244646EA00FC618F /* Assets.xcassets */; };
@@ -34,9 +37,12 @@
 		EEA64ECF2447B349008202D0 /* FormingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTextField.swift; sourceTree = "<group>"; };
 		EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColorButton.swift; sourceTree = "<group>"; };
 		EEA64ED42448E050008202D0 /* FormingDayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingDayButton.swift; sourceTree = "<group>"; };
-		EEA64ED724492BC9008202D0 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		EEA64EDA244A17D4008202D0 /* FormingColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColors.swift; sourceTree = "<group>"; };
 		EEAD7EDB244BA3BF002225F8 /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
+		EEAD7EDE244BB4BB002225F8 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
+		EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataClass.swift"; sourceTree = "<group>"; };
+		EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EEC0FE70244646E500FC618F /* WeeklyHabitTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeeklyHabitTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEC0FE73244646E500FC618F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE75244646E500FC618F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,12 +80,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		EEA64ED624492BB1008202D0 /* Models */ = {
+		EEA64ED624492BB1008202D0 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				EEA64ED724492BC9008202D0 /* Habit.swift */,
+				EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */,
+				EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */,
+				EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */,
 			);
-			path = Models;
+			path = Database;
 			sourceTree = "<group>";
 		};
 		EEA64ED9244A17BC008202D0 /* Utilities */ = {
@@ -111,7 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				EEA64ED9244A17BC008202D0 /* Utilities */,
-				EEA64ED624492BB1008202D0 /* Models */,
+				EEA64ED624492BB1008202D0 /* Database */,
 				EEC0FE97244699B000FC618F /* Managers */,
 				EEC0FE942446576700FC618F /* Extensions */,
 				EEC0FE8D24464EFC00FC618F /* Cells */,
@@ -121,6 +129,7 @@
 				EEC0FE7E244646EA00FC618F /* LaunchScreen.storyboard */,
 				EEC0FE81244646EA00FC618F /* Info.plist */,
 				EEA64ED12447B34F008202D0 /* Views */,
+				EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */,
 			);
 			path = WeeklyHabitTracker;
 			sourceTree = "<group>";
@@ -244,12 +253,15 @@
 				EEC0FE882446498A00FC618F /* HomeCollectionViewController.swift in Sources */,
 				EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */,
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
+				EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
+				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
-				EEA64ED824492BC9008202D0 /* Habit.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalendarManager.swift in Sources */,
+				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
+				EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */,
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
 				EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */,
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
@@ -448,6 +460,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				EEAD7EDE244BB4BB002225F8 /* Model.xcdatamodel */,
+			);
+			currentVersion = EEAD7EDE244BB4BB002225F8 /* Model.xcdatamodel */;
+			path = WeeklyHabitTracker.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = EEC0FE68244646E500FC618F /* Project object */;
 }
