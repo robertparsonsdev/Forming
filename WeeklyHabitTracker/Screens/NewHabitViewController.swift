@@ -10,8 +10,10 @@ import UIKit
 
 class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     var update: (() -> Void)?
+    var editMode = false
     var habit: (String, [Bool], Int)? {
         didSet {
+            editMode = true
             if let title = habit?.0 { titleTextField.text = title }
             if let days = habit?.1 { dayFlags = days }
             if let color = habit?.2 { selectedColor = color; colorFlags[color] = true }
@@ -46,7 +48,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        title = "New Habit"
+        title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
         
         configureScrollView()
@@ -57,8 +59,16 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         configureTableView()
         configureConstraints()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
+        if !editMode {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
+        } else {
+            let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+            let deleteButton = UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteButtonTapped))
+            deleteButton.tintColor = .systemRed
+            navigationItem.rightBarButtonItems = [saveButton, deleteButton]
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
+        }
     }
     
     @objc func saveButtonTapped() {
@@ -80,7 +90,11 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     }
     
     @objc func deleteButtonTapped() {
-        
+        let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?", message: nil, preferredStyle: .actionSheet)
+        deleteVC.view.tintColor = .systemGreen
+        deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default))
+        deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(deleteVC, animated: true)
     }
     
     @objc func cancelButtonTapped() {
