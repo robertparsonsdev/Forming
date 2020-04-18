@@ -13,6 +13,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     var habit: (String, [Bool], Int)? {
         didSet {
             if let title = habit?.0 { titleTextField.text = title }
+            if let days = habit?.1 { dayFlags = days }
+            if let color = habit?.2 { selectedColor = color; colorFlags[color] = true }
         }
     }
     
@@ -25,11 +27,12 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     
     let titleTextField = FormingTextField(placeholder: "Example: Run 1 Mile" , returnKeyType: .done)
     
-    let topColors = [UIColor.systemGreen, UIColor.systemTeal, UIColor.systemRed, UIColor.systemBlue, UIColor.systemGray]
-    let bottomColors = [UIColor.systemPink, UIColor.systemIndigo, UIColor.systemOrange, UIColor.systemYellow, UIColor.systemPurple]
+    let topColors = [FormingColors.getColor(fromValue: 0), FormingColors.getColor(fromValue: 1), FormingColors.getColor(fromValue: 2), FormingColors.getColor(fromValue: 3), FormingColors.getColor(fromValue: 4)]
+    let bottomColors = [FormingColors.getColor(fromValue: 5), FormingColors.getColor(fromValue: 6), FormingColors.getColor(fromValue: 7), FormingColors.getColor(fromValue: 8), FormingColors.getColor(fromValue: 9)]
     let topColorsStackView = UIStackView()
     let bottomColorsStackView = UIStackView()
     var colorFlags = [false, false, false, false, false, false, false, false, false, false]
+    var selectedColor: Int? = nil
     
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     var dayFlags = [false, false, false, false, false, false, false]
@@ -105,6 +108,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
                 button.setAttributedTitle(NSAttributedString(string: day, attributes: heavyAttribute), for: .selected)
                 button.setBackgroundColor(color: .systemFill, forState: .selected)
                 button.addTarget(self, action: #selector(dayButtonTapped), for: .touchUpInside)
+                if dayFlags[index] { button.isSelected = true }
                 stackView.addArrangedSubview(button)
             }
         } else {
@@ -117,6 +121,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
                 let button = FormingColorButton(color: color, tag: tagCounter, width: 40)
                 button.setImage(UIImage(named: "checkmark", in: nil, with: config), for: .selected)
                 button.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
+                if let color = selectedColor { if tagCounter == color { button.isSelected = true } }
                 stackView.addArrangedSubview(button)
                 tagCounter += 1
             }
