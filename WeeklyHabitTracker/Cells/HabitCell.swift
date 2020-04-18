@@ -9,20 +9,13 @@
 import UIKit
 
 class HabitCell: UICollectionViewCell {
-    var habitTitle: String? {
+    var delegate: HabitCellDelegate?
+    var habit: (String, [Bool], Int)? {
         didSet {
-            if let title = habitTitle { titleLabel.text = "  \(title)" }
-        }
-    }
-    var habitDays: [Bool]? {
-        didSet {
+            if let title = habit?.0 { titleLabel.text = "  \(title)" }
             for view in boxStackView.arrangedSubviews { view.removeFromSuperview() }
-            if let days = habitDays { configureBoxes(days: days) }
-        }
-    }
-    var habitColor: Int? {
-        didSet {
-            if let value = habitColor { titleLabel.backgroundColor = FormingColors.getColor(fromValue: value) }
+            if let days = habit?.1 { configureBoxes(days: days) }
+            if let value = habit?.2 { titleLabel.backgroundColor = FormingColors.getColor(fromValue: value) }
         }
     }
     
@@ -124,6 +117,10 @@ class HabitCell: UICollectionViewCell {
     }
     
     @objc func editButtonTapped() {
-        print("edit tapped")
+        delegate?.presentNewHabitViewController(with: self.habit)
     }
+}
+
+protocol HabitCellDelegate {
+    func presentNewHabitViewController(with habit: (String, [Bool], Int)?)
 }

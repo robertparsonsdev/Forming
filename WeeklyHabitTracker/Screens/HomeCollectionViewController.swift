@@ -11,7 +11,7 @@ import UIKit
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
 
-class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HabitCellDelegate {
     var habits: [(String, [Bool], Int)] = []
 
     override func viewDidLoad() {
@@ -78,9 +78,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
-        cell.habitTitle = habits[indexPath.row].0
-        cell.habitDays = habits[indexPath.row].1
-        cell.habitColor = habits[indexPath.row].2
+        cell.habit = habits[indexPath.row]
+        cell.delegate = self
         return cell
     }
     
@@ -98,5 +97,13 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
+    }
+    
+    func presentNewHabitViewController(with habit: (String, [Bool], Int)?) {
+        let newHabitVC = NewHabitViewController()
+        newHabitVC.habit = habit
+        let navController = UINavigationController(rootViewController: newHabitVC)
+        navController.navigationBar.tintColor = .systemGreen
+        present(navController, animated: true)
     }
 }

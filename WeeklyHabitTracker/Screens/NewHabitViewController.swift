@@ -10,6 +10,11 @@ import UIKit
 
 class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     var update: (() -> Void)?
+    var habit: (String, [Bool], Int)? {
+        didSet {
+            if let title = habit?.0 { titleTextField.text = title }
+        }
+    }
     
     let scrollView = UIScrollView()
 
@@ -69,6 +74,10 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         }
         update?()
         dismiss(animated: true)
+    }
+    
+    @objc func deleteButtonTapped() {
+        
     }
     
     @objc func cancelButtonTapped() {
