@@ -22,6 +22,7 @@ class HabitCell: UICollectionViewCell {
     let titleLabel = UILabel()
     let boxStackView = UIStackView()
     let editButton = UIButton()
+    let haptics = UISelectionFeedbackGenerator()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,7 +56,9 @@ class HabitCell: UICollectionViewCell {
             if day {
                 let button = UIButton()
                 button.setImage(UIImage(named: "square", in: nil, with: thinConfig), for: .normal)
+                button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
                 button.imageView?.tintColor = .label
+                button.addTarget(self, action: #selector(boxTapped), for: .touchUpInside)
                 boxStackView.insertArrangedSubview(button, at: index)
             } else {
                 boxStackView.insertArrangedSubview(UIView(), at: index)
@@ -66,6 +69,7 @@ class HabitCell: UICollectionViewCell {
         let index = CalendarManager.shared.getCurrentDay()
         if let button = boxStackView.arrangedSubviews[index] as? UIButton {
             button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
+            button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
             button.imageView?.tintColor = .label
         }
     }
@@ -118,6 +122,17 @@ class HabitCell: UICollectionViewCell {
     
     @objc func editButtonTapped() {
         delegate?.presentNewHabitViewController(with: self.habit)
+    }
+    
+    @objc func boxTapped(sender: UIButton) {
+        haptics.selectionChanged()
+        if sender.isSelected == true {
+            sender.isSelected = false
+            sender.imageView?.tintColor = .label
+        } else {
+            sender.isSelected = true
+            sender.imageView?.tintColor = .systemGreen
+        }
     }
 }
 

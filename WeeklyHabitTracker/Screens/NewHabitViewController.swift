@@ -39,6 +39,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     var dayFlags = [false, false, false, false, false, false, false]
     let daysStackView = UIStackView()
+//    var completedDays: [Status] = [.incomplete, .incomplete, .incomplete, .incomplete, .incomplete, .incomplete, .incomplete]
         
     let tableView = UITableView()
     let toggle = UISwitch()

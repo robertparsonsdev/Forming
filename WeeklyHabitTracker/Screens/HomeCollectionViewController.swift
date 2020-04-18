@@ -45,6 +45,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             guard let habitTitle = UserDefaults().value(forKey: "habitTitle_\(index)") as? String else { return }
             guard let habitDays = UserDefaults().value(forKey: "habitDays_\(index)") as? [Bool] else { return }
             guard let habitColor = UserDefaults().value(forKey: "habitColor_\(index)") as? Int else { return }
+//            guard let completedDays = UserDefaults().value(forKey: "completedDays_\(index)") as? [Status] else { return }
             habits.append((habitTitle, habitDays, habitColor))
         }
         collectionView.reloadData()
