@@ -14,7 +14,10 @@ class HabitCell: UICollectionViewCell {
         didSet {
             if let title = habit?.title { titleLabel.text = "  \(title)" }
             if let color = habit?.color { titleLabel.backgroundColor = FormingColors.getColor(fromValue: Int(color)) }
-            if let days = habit?.days { configureBoxes(days: days) }
+            if let days = habit?.days {
+                for view in boxStackView.arrangedSubviews { view.removeFromSuperview() }
+                configureBoxes(days: days)
+            }
         }
     }
     
