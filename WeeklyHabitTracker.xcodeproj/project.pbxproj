@@ -125,10 +125,10 @@
 				EEC0FE8D24464EFC00FC618F /* Cells */,
 				EEC0FE8F24464F1F00FC618F /* Support */,
 				EEC0FE8E24464F0E00FC618F /* Screens */,
+				EEA64ED12447B34F008202D0 /* Views */,
 				EEC0FE7C244646EA00FC618F /* Assets.xcassets */,
 				EEC0FE7E244646EA00FC618F /* LaunchScreen.storyboard */,
 				EEC0FE81244646EA00FC618F /* Info.plist */,
-				EEA64ED12447B34F008202D0 /* Views */,
 				EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */,
 			);
 			path = WeeklyHabitTracker;

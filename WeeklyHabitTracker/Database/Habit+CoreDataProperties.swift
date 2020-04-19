@@ -18,5 +18,6 @@ extension Habit {
     }
 
     @NSManaged public var title: String?
-
+    @NSManaged public var color: Int64
+    @NSManaged public var days: [Bool]
 }

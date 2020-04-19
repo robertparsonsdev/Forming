@@ -13,6 +13,8 @@ class HabitCell: UICollectionViewCell {
     var habit: Habit? {
         didSet {
             if let title = habit?.title { titleLabel.text = "  \(title)" }
+            if let color = habit?.color { titleLabel.backgroundColor = FormingColors.getColor(fromValue: Int(color)) }
+            if let days = habit?.days { configureBoxes(days: days) }
         }
     }
     
