@@ -107,10 +107,20 @@ class HabitCell: UICollectionViewCell {
         DispatchQueue.main.async {
             let newDate = CalendarManager.shared.getCurrentDay()
             
-            let button = newDate == 0 ? self.boxStackView.arrangedSubviews[6] as? UIButton : self.boxStackView.arrangedSubviews[newDate - 1] as? UIButton
-            button?.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
-            button?.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
-
+            if newDate == 0 {
+                for view in self.boxStackView.arrangedSubviews {
+                    if let button = view as? UIButton {
+                        button.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
+                        button.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                    }
+                }
+            } else {
+                if let oldButton = self.boxStackView.arrangedSubviews[newDate - 1] as? UIButton {
+                    oldButton.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
+                    oldButton.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                }
+            }
+            
             let currentButton = self.boxStackView.arrangedSubviews[newDate] as? UIButton
             currentButton?.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
             currentButton?.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: self.blackConfig), for: .selected)

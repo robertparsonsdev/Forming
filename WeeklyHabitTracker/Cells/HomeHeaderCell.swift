@@ -59,31 +59,32 @@ class HomeHeaderCell: UICollectionViewCell {
         DispatchQueue.main.async {
             // create fonts and reset all fonts in stackviews to thin
             let newDate = CalendarManager.shared.getCurrentDay()
+            let newWeek = CalendarManager.shared.getCurrentWeek()
             let thinFont = UIFont.systemFont(ofSize: 20, weight: .thin)
             let blackFont = UIFont.systemFont(ofSize: 20, weight: .black)
             
             if newDate == 0 {
-                let label1 = self.dayNamesStackView.arrangedSubviews[6] as? UILabel
-                label1?.font = thinFont
-                let label2 = self.dayNumsStackView.arrangedSubviews[6] as? UILabel
-                label2?.font = thinFont
+                for (index, view) in self.dayNumsStackView.arrangedSubviews.enumerated() {
+                    if let label = view as? UILabel {
+                        label.text = newWeek[index]
+                    }
+                }
+                let dayNameLabel = self.dayNamesStackView.arrangedSubviews[6] as? UILabel
+                dayNameLabel?.font = thinFont
+                let dayNumLabel = self.dayNumsStackView.arrangedSubviews[6] as? UILabel
+                dayNumLabel?.font = thinFont
             } else {
-                let label1 = self.dayNamesStackView.arrangedSubviews[newDate - 1] as? UILabel
-                label1?.font = thinFont
-                let label2 = self.dayNumsStackView.arrangedSubviews[newDate - 1] as? UILabel
-                label2?.font = thinFont
-            }
-            
-            // if newDate == 0, move to the next week
-            if newDate == 0 {
-                
+                let dayNameLabel = self.dayNamesStackView.arrangedSubviews[newDate - 1] as? UILabel
+                dayNameLabel?.font = thinFont
+                let dayNumLabel = self.dayNumsStackView.arrangedSubviews[newDate - 1] as? UILabel
+                dayNumLabel?.font = thinFont
             }
             
             // set the new current location
-            let label1 = self.dayNamesStackView.arrangedSubviews[newDate] as? UILabel
-            label1?.font = blackFont
-            let label2 = self.dayNumsStackView.arrangedSubviews[newDate] as? UILabel
-            label2?.font = blackFont
+            let dayNameLabel = self.dayNamesStackView.arrangedSubviews[newDate] as? UILabel
+            dayNameLabel?.font = blackFont
+            let dayNumLabel = self.dayNumsStackView.arrangedSubviews[newDate] as? UILabel
+            dayNumLabel?.font = blackFont
         }
     }
     
