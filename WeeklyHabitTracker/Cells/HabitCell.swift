@@ -26,6 +26,9 @@ class HabitCell: UICollectionViewCell {
     let editButton = UIButton()
     let haptics = UISelectionFeedbackGenerator()
     
+    let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
+    let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 14
@@ -53,7 +56,6 @@ class HabitCell: UICollectionViewCell {
     }
     
     func configureBoxes(days: [Bool]) {
-        let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
         for (index, day) in days.enumerated() {
             if day {
                 let button = UIButton()
@@ -67,7 +69,6 @@ class HabitCell: UICollectionViewCell {
             }
         }
         
-        let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
         let index = CalendarManager.shared.getCurrentDay()
         if let button = boxStackView.arrangedSubviews[index] as? UIButton {
             button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
@@ -105,20 +106,14 @@ class HabitCell: UICollectionViewCell {
     @objc func updateBoxes() {
         DispatchQueue.main.async {
             let newDate = CalendarManager.shared.getCurrentDay()
-            let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
-            let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
             
-            if newDate == 0 {
-                let button = self.boxStackView.arrangedSubviews[6] as? UIButton
-                button?.setPreferredSymbolConfiguration(thinConfig, forImageIn: .normal)
-            } else {
-                let button = self.boxStackView.arrangedSubviews[newDate - 1] as? UIButton
-                button?.setPreferredSymbolConfiguration(thinConfig, forImageIn: .normal)
-            }
-            
-            // set the new current location
-            let button = self.boxStackView.arrangedSubviews[newDate] as? UIButton
-            button?.setPreferredSymbolConfiguration(blackConfig, forImageIn: .normal)
+            let button = newDate == 0 ? self.boxStackView.arrangedSubviews[6] as? UIButton : self.boxStackView.arrangedSubviews[newDate - 1] as? UIButton
+            button?.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
+            button?.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+
+            let currentButton = self.boxStackView.arrangedSubviews[newDate] as? UIButton
+            currentButton?.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
+            currentButton?.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: self.blackConfig), for: .selected)
         }
     }
     
