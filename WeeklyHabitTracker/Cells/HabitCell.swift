@@ -31,6 +31,7 @@ class HabitCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        if let statuses = habit?.statuses { print(statuses) }
         layer.cornerRadius = 14
         backgroundColor = .tertiarySystemFill
         clipsToBounds = true
@@ -62,6 +63,7 @@ class HabitCell: UICollectionViewCell {
                 button.setImage(UIImage(named: "square", in: nil, with: thinConfig), for: .normal)
                 button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
                 button.imageView?.tintColor = .label
+                button.tag = index
                 button.addTarget(self, action: #selector(boxTapped), for: .touchUpInside)
                 boxStackView.insertArrangedSubview(button, at: index)
             } else {
@@ -134,13 +136,27 @@ class HabitCell: UICollectionViewCell {
     }
     
     @objc func boxTapped(sender: UIButton) {
+        let tag = sender.tag
         haptics.selectionChanged()
+        
         if sender.isSelected == true {
             sender.isSelected = false
             sender.imageView?.tintColor = .label
+            if var statuses = habit?.statuses {
+                statuses[tag] = .incomplete
+                habit?.statuses = statuses
+                habit?.statuses.forEach { print($0.rawValue) }
+            }
+            print()
         } else {
             sender.isSelected = true
             sender.imageView?.tintColor = .systemGreen
+            if var statuses = habit?.statuses {
+                statuses[tag] = .completed
+                habit?.statuses = statuses
+                habit?.statuses.forEach { print($0.rawValue) }
+            }
+            print()
         }
     }
 }

@@ -42,7 +42,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     var dayFlags = [false, false, false, false, false, false, false]
     let daysStackView = UIStackView()
-//    var completedDays: [Status] = [.incomplete, .incomplete, .incomplete, .incomplete, .incomplete, .incomplete, .incomplete]
+    var completedDays = [Status]()
         
     let tableView = UITableView()
     let toggle = UISwitch()
@@ -88,6 +88,11 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             initialHabit.title = titleTextField.text
             initialHabit.days = dayFlags
             if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
+            dayFlags.enumerated().forEach {
+                if $1 { completedDays.append(.incomplete) }
+                else { completedDays.append(.empty) }
+            }
+            initialHabit.statuses = completedDays
             PersistenceService.saveContext()
             update?()
         } else {

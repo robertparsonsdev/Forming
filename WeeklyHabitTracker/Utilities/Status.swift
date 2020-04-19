@@ -8,8 +8,6 @@
 
 import Foundation
 
-enum Status {
-    case completed
-    case failed
-    case incomplete
+@objc public enum Status: Int64 {
+    case failed, completed, incomplete, empty
 }

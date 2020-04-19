@@ -20,4 +20,22 @@ extension Habit {
     @NSManaged public var title: String?
     @NSManaged public var color: Int64
     @NSManaged public var days: [Bool]
+    @NSManaged private var statusValues: [Int64]
+    
+    public var statuses: [Status] {
+        get {
+            var array = [Status]()
+            statusValues.forEach {
+                if let status = Status(rawValue: $0) { array.append(status) }
+            }
+            return array
+        }
+        set {
+            var array = [Int64]()
+            newValue.forEach {
+                array.append($0.rawValue)
+            }
+            self.statusValues = array 
+        }
+    }
 }
