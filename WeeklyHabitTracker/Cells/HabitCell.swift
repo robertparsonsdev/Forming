@@ -9,6 +9,7 @@
 import UIKit
 
 class HabitCell: UICollectionViewCell {
+    var persistenceManager: PersistenceService?
     var delegate: HabitCellDelegate?
     var habit: Habit? {
         didSet {
@@ -163,12 +164,12 @@ class HabitCell: UICollectionViewCell {
     }
     
     func changeStatus(forIndex index: Int, andStatus status: Status) {
-        if var statuses = habit?.statuses {
-            statuses[index] = status
-            habit?.statuses = statuses
-            // save context
-            habit?.statuses.forEach { print($0.rawValue) }
-        }
+//        if var statuses = habit?.statuses {
+//            statuses[index] = status
+//            habit?.statuses = statuses
+//            PersistenceService.shared.save()
+//            habit?.statuses.forEach { print($0.rawValue) }
+//        }
     }
 }
 

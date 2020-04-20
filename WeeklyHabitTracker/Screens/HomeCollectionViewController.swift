@@ -14,7 +14,17 @@ private let headerReuseIdentifier = "Header Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HabitCellDelegate {
     var habits = [Habit]()
-
+    let persistenceManager: PersistenceService
+    
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
+        self.persistenceManager = persistenceManager
+        super.init(collectionViewLayout: layout)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
@@ -31,18 +41,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func updateHabits() {
-        let fetchRequest: NSFetchRequest<Habit> = Habit.fetchRequest()
-        do {
-            let habits = try PersistenceService.context.fetch(fetchRequest)
-            self.habits = habits
-            self.collectionView.reloadData()
-        } catch let error {
-            print(error)
-        }
+        self.habits = persistenceManager.fetch(Habit.self)
+        self.collectionView.reloadData()
     }
     
     @objc func newTapped() {
-        let newHabitVC = NewHabitViewController()
+        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
         newHabitVC.update = {
             DispatchQueue.main.async { self.updateHabits() }
         }
@@ -71,6 +75,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
         cell.habit = habits[indexPath.row]
         cell.delegate = self
+        cell.persistenceManager = self.persistenceManager
         return cell
     }
     
@@ -91,7 +96,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func presentNewHabitViewController(with habit: Habit) {
-        let newHabitVC = NewHabitViewController()
+        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
         newHabitVC.habit = habit
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen

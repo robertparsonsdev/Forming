@@ -10,6 +10,7 @@ import UIKit
 
 class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     var update: (() -> Void)?
+    let persistenceManager: PersistenceService
     var editMode = false
     var habit: Habit? {
         didSet {
@@ -48,7 +49,16 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let toggle = UISwitch()
     let stepper = UIStepper()
     let haptics = UISelectionFeedbackGenerator()
-
+    
+    init(persistenceManager: PersistenceService) {
+        self.persistenceManager = persistenceManager
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -84,7 +94,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         }
         
         if !editMode {
-            let initialHabit = Habit(context: PersistenceService.context)
+            let initialHabit = Habit(context: persistenceManager.context)
             initialHabit.title = titleTextField.text
             initialHabit.days = dayFlags
             if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
@@ -93,7 +103,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
                 else { completedDays.append(.empty) }
             }
             initialHabit.statuses = completedDays
-            PersistenceService.saveContext()
+            persistenceManager.save()
             update?()
         } else {
             
