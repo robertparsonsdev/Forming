@@ -58,12 +58,26 @@ class HabitCell: UICollectionViewCell {
     }
     
     func configureBoxes(days: [Bool]) {
+        guard let statuses = habit?.statuses else { return }
         for (index, day) in days.enumerated() {
             if day {
                 let button = UIButton()
                 button.setImage(UIImage(named: "square", in: nil, with: thinConfig), for: .normal)
-                button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
-                button.imageView?.tintColor = .label
+                switch statuses[index] {
+                case .incomplete:
+                    button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
+                    button.imageView?.tintColor = .label
+                case.completed:
+                    button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
+                    button.imageView?.tintColor = .systemGreen
+                    button.isSelected = true
+                case .failed:
+                    button.setImage(UIImage(named: "xmark.square", in: nil, with: thinConfig), for: .selected)
+                    button.imageView?.tintColor = .systemRed
+                    button.isSelected = true
+                default: ()
+                }
+
                 button.tag = index
                 button.addTarget(self, action: #selector(boxTapped), for: .touchUpInside)
                 boxStackView.insertArrangedSubview(button, at: index)
@@ -76,7 +90,11 @@ class HabitCell: UICollectionViewCell {
         if let button = boxStackView.arrangedSubviews[index] as? UIButton {
             button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
             button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
-            button.imageView?.tintColor = .label
+            switch statuses[index] {
+            case .completed: button.imageView?.tintColor = .systemGreen
+            case .incomplete: button.imageView?.tintColor = .label
+            default: ()
+            }
         }
     }
     
@@ -115,6 +133,8 @@ class HabitCell: UICollectionViewCell {
                     if let button = view as? UIButton {
                         button.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
                         button.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                        button.imageView?.tintColor = .label
+                        button.isSelected = false
                         self.changeStatus(forIndex: button.tag, andStatus: .incomplete)
                     }
                 }
@@ -148,28 +168,34 @@ class HabitCell: UICollectionViewCell {
     
     @objc func boxTapped(sender: UIButton) {
         let tag = sender.tag
+        guard let statuses = habit?.statuses else { return }
         haptics.selectionChanged()
         
         if sender.isSelected == true {
             sender.isSelected = false
             sender.imageView?.tintColor = .label
-            changeStatus(forIndex: tag, andStatus: .incomplete)
-            print()
+            switch statuses[tag] {
+            case .completed: changeStatus(forIndex: tag, andStatus: .incomplete)
+            case .failed: changeStatus(forIndex: tag, andStatus: .incomplete)
+            default: ()
+            }
         } else {
             sender.isSelected = true
-            sender.imageView?.tintColor = .systemGreen
-            changeStatus(forIndex: tag, andStatus: .completed)
-            print()
+            switch statuses[tag] {
+            case .incomplete: sender.imageView?.tintColor = .systemGreen; changeStatus(forIndex: tag, andStatus: .completed)
+            default: ()
+            }
         }
     }
     
     func changeStatus(forIndex index: Int, andStatus status: Status) {
-//        if var statuses = habit?.statuses {
-//            statuses[index] = status
-//            habit?.statuses = statuses
-//            PersistenceService.shared.save()
-//            habit?.statuses.forEach { print($0.rawValue) }
-//        }
+        if var statuses = habit?.statuses {
+            statuses[index] = status
+            habit?.statuses = statuses
+        }
+        persistenceManager?.save()
+        habit?.statuses.forEach { print($0.rawValue) }
+        print()
     }
 }
 
