@@ -43,7 +43,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     var dayFlags = [false, false, false, false, false, false, false]
     let daysStackView = UIStackView()
-    var completedDays = [Status]()
+    var dayStatuses = [Status]()
         
     let tableView = UITableView()
     let toggle = UISwitch()
@@ -98,17 +98,35 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             initialHabit.title = titleTextField.text
             initialHabit.days = dayFlags
             if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
-            dayFlags.enumerated().forEach {
-                if $1 { completedDays.append(.incomplete) }
-                else { completedDays.append(.empty) }
+            dayFlags.forEach {
+                if $0 { dayStatuses.append(.incomplete) }
+                else { dayStatuses.append(.empty) }
             }
-            initialHabit.statuses = completedDays
-            persistenceManager.save()
-            update?()
+            initialHabit.statuses = dayStatuses
         } else {
-            
+            if let editedHabit = habit {
+                editedHabit.title = titleTextField.text
+                editedHabit.days = dayFlags
+                if let color = colorFlags.firstIndex(of: true) { editedHabit.color = Int64(color) }
+//                if editedHabit.statuses != completedDays {
+//                    let alertController = UIAlertController(title: "Warning!", message: "Changing the days will reset your progress for this week.", preferredStyle: .alert)
+//                    alertController.addAction(UIAlertAction(title: "Okay", style: .default))
+//                    alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+//                        return
+//                    })
+//                    present(alertController, animated: true)
+//                    return
+//                }
+                dayFlags.forEach {
+                    if $0 { dayStatuses.append(.incomplete) }
+                    else { dayStatuses.append(.empty) }
+                }
+                editedHabit.statuses = dayStatuses
+            }
         }
         
+        persistenceManager.save()
+        update?()
         dismiss(animated: true)
     }
     
@@ -116,17 +134,16 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         DispatchQueue.main.async {
             let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?", message: nil, preferredStyle: .actionSheet)
             deleteVC.view.tintColor = .systemGreen
-            deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default, handler: self.deleteHabit))
+            deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                if let habitToDelete = self.habit {
+                    self.persistenceManager.delete(habitToDelete)
+                    DispatchQueue.main.async { self.update?() }
+                    self.dismiss(animated: true)
+                }
+            })
             deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             self.present(deleteVC, animated: true)
-        }
-    }
-    
-    @objc func deleteHabit(action: UIAlertAction) {
-        if let habitToDelete = self.habit {
-            persistenceManager.delete(habitToDelete)
-            DispatchQueue.main.async { self.update?() }
-            dismiss(animated: true)
         }
     }
     
@@ -183,7 +200,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     
     func configureConstraints() {
         view.addSubview(scrollView)
-        scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
         
         let top = scrollView.topAnchor, left = scrollView.leftAnchor, right = scrollView.rightAnchor
         let labelHeight: CGFloat = 25, viewHeight: CGFloat = 40, outterPad: CGFloat = 15, innerPad: CGFloat = 5

@@ -11,6 +11,7 @@ import CoreData
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
+private let emptyReuseIdentifier = "Empty Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HabitCellDelegate {
     var habits = [Habit]()
@@ -35,7 +36,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
         // Register cell classes
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
-        self.collectionView!.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(EmptyScreenCell.self, forCellWithReuseIdentifier: emptyReuseIdentifier)
         
         updateHabits()
     }
@@ -66,10 +68,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return habits.count
+        return habits.isEmpty ? 1 : habits.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if habits.isEmpty { return collectionView.dequeueReusableCell(withReuseIdentifier: emptyReuseIdentifier, for: indexPath) as! EmptyScreenCell }
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
         cell.habit = habits[indexPath.row]
         cell.delegate = self
