@@ -104,24 +104,22 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             }
             initialHabit.statuses = dayStatuses
         } else {
-            if let editedHabit = habit {
-                editedHabit.title = titleTextField.text
-                editedHabit.days = dayFlags
-                if let color = colorFlags.firstIndex(of: true) { editedHabit.color = Int64(color) }
-//                if editedHabit.statuses != completedDays {
-//                    let alertController = UIAlertController(title: "Warning!", message: "Changing the days will reset your progress for this week.", preferredStyle: .alert)
-//                    alertController.addAction(UIAlertAction(title: "Okay", style: .default))
-//                    alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
-//                        return
-//                    })
-//                    present(alertController, animated: true)
-//                    return
-//                }
-                dayFlags.forEach {
-                    if $0 { dayStatuses.append(.incomplete) }
-                    else { dayStatuses.append(.empty) }
+            habit?.title = titleTextField.text
+            if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
+            if habit?.days != dayFlags {
+                for (index, day) in dayFlags.enumerated() {
+                    if day {
+                        switch habit?.statuses[index] {
+                        case .completed: dayStatuses.append(.completed)
+                        case .failed: dayStatuses.append(.failed)
+                        case .incomplete: dayStatuses.append(.incomplete)
+                        case .empty: dayStatuses.append(.incomplete)
+                        default: ()
+                        }
+                    } else { dayStatuses.append(.empty) }
                 }
-                editedHabit.statuses = dayStatuses
+                habit?.days = dayFlags
+                habit?.statuses = dayStatuses
             }
         }
         
