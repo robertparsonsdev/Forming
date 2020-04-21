@@ -113,11 +113,21 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     }
     
     @objc func deleteButtonTapped() {
-        let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?", message: nil, preferredStyle: .actionSheet)
-        deleteVC.view.tintColor = .systemGreen
-        deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default))
-        deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(deleteVC, animated: true)
+        DispatchQueue.main.async {
+            let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?", message: nil, preferredStyle: .actionSheet)
+            deleteVC.view.tintColor = .systemGreen
+            deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default, handler: self.deleteHabit))
+            deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            self.present(deleteVC, animated: true)
+        }
+    }
+    
+    @objc func deleteHabit(action: UIAlertAction) {
+        if let habitToDelete = self.habit {
+            persistenceManager.delete(habitToDelete)
+            DispatchQueue.main.async { self.update?() }
+            dismiss(animated: true)
+        }
     }
     
     @objc func cancelButtonTapped() {

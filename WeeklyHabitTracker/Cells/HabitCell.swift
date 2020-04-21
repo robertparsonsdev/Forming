@@ -99,11 +99,11 @@ class HabitCell: UICollectionViewCell {
     }
     
     func configureEditButton() {
-        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .light), scale: .medium)
+        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .medium)
         let symbolAttachment = NSTextAttachment()
         symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: config)
         symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
-        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 15, weight: .light), .foregroundColor: UIColor.white]
+        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 15, weight: .regular), .foregroundColor: UIColor.white]
         let title = NSMutableAttributedString(string: "Edit ", attributes: attributes)
         title.append(NSAttributedString(attachment: symbolAttachment))
         
