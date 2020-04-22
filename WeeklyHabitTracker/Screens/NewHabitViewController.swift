@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+class NewHabitViewController: UIViewController, UITextFieldDelegate {
     var update: (() -> Void)?
     let persistenceManager: PersistenceService
     var editMode = false
@@ -45,9 +45,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
     let daysStackView = UIStackView()
     var dayStatuses = [Status]()
         
-    let tableView = UITableView()
-    let toggle = UISwitch()
-    let stepper = UIStepper()
+    let formingTableView = FormingTableView(frame: .zero, style: .plain)
     let haptics = UISelectionFeedbackGenerator()
     
     init(persistenceManager: PersistenceService) {
@@ -69,8 +67,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         configureStackView(topColorsStackView, withArray: topColors)
         configureStackView(bottomColorsStackView, withArray: bottomColors)
         configureStackView(daysStackView, withArray: days)
-        configureStepper()
-        configureTableView()
         configureConstraints()
         
         if !editMode {
@@ -190,12 +186,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         }
     }
     
-    func configureTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-    }
-    
     func configureConstraints() {
         view.addSubview(scrollView)
         scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
@@ -220,47 +210,13 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
         topColorsStackView.anchor(top: colorLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad, paddingLeft: outterPad + 25, paddingBottom: 0, paddingRight: outterPad + 25, width: viewWidth - 50, height: viewHeight)
         scrollView.addSubview(bottomColorsStackView)
         bottomColorsStackView.anchor(top: topColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad + 5, paddingLeft: outterPad + 25, paddingBottom: 0, paddingRight: outterPad + 25, width: viewWidth - 50, height: viewHeight)
-
-        scrollView.addSubview(tableView)
-        tableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: nil, right: nil, paddingTop: outterPad, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 140)
-    }
-    
-    func configureStepper() {
-        stepper.minimumValue = 0
-        stepper.maximumValue = 3
-        stepper.addTarget(self, action: #selector(stepperTapped), for: .valueChanged)
+        
+        scrollView.addSubview(formingTableView)
+        formingTableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: scrollView.bottomAnchor, right: right, paddingTop: outterPad * 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 132)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell = UITableViewCell(style: .value1, reuseIdentifier: "Cell")
-        cell.imageView?.tintColor = .label
-        switch indexPath.row {
-        case 0:
-            cell.textLabel?.text = "Sub-habits"
-            cell.accessoryType = .disclosureIndicator
-            cell.imageView?.image = UIImage(named: "list.bullet.indent")
-        case 1:
-            cell.textLabel?.text = "Priority"
-            cell.detailTextLabel?.text = "0"
-            cell.imageView?.image = UIImage(named: "exclamationmark.circle")
-            cell.accessoryView = stepper
-            cell.selectionStyle = .none
-        default:
-            cell.textLabel?.text = "Reminder"
-            cell.imageView?.image = UIImage(named: "clock")
-            cell.accessoryView = toggle
-            cell.selectionStyle = .none
-        }
-        return cell
     }
     
     @objc func colorButtonTapped(sender: UIButton) {
@@ -295,10 +251,5 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, UITableView
             sender.isSelected = true
             dayFlags[tag] = true
         }
-    }
-    
-    @objc func stepperTapped(sender: UIStepper) {
-        haptics.selectionChanged()
-        tableView.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text = String(Int(sender.value))
     }
 }

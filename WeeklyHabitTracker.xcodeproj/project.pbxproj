@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02E51E244FBD410039B015 /* FormingTableView.swift */; };
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
 		EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */; };
 		EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* NewHabitViewController.swift */; };
@@ -34,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE02E51E244FBD410039B015 /* FormingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTableView.swift; sourceTree = "<group>"; };
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyScreenCell.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				EEA64ECF2447B349008202D0 /* FormingTextField.swift */,
 				EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */,
 				EEA64ED42448E050008202D0 /* FormingDayButton.swift */,
+				EE02E51E244FBD410039B015 /* FormingTableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
+				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
