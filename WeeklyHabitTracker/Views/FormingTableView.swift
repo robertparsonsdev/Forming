@@ -35,6 +35,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let largeConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17), scale: .large)
         var cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell = UITableViewCell(style: .value1, reuseIdentifier: "Cell")
         cell.imageView?.tintColor = .label
@@ -42,18 +43,18 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         case 0:
             cell.textLabel?.text = "Priority"
             cell.detailTextLabel?.text = "0"
-            cell.imageView?.image = UIImage(named: "exclamationmark.circle")
+            cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
         case 1:
             cell.textLabel?.text = "Reminder"
             cell.detailTextLabel?.text = "9:00 AM"
-            cell.imageView?.image = UIImage(named: "clock")
+            cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
         default:
             cell.textLabel?.text = "Repeat"
             cell.detailTextLabel?.text = "Every Week"
-            cell.imageView?.image = UIImage(named: "arrow.clockwise.circle")
+            cell.imageView?.image = UIImage(named: "arrow.clockwise.circle", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
         }
         return cell
