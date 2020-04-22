@@ -114,12 +114,22 @@ class HabitCell: UICollectionViewCell {
                     if let button = view as? UIButton {
                         button.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
                         button.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                        self.changeStatus(forIndex: button.tag, andStatus: .incomplete)
                     }
                 }
             } else {
                 if let oldButton = self.boxStackView.arrangedSubviews[newDate - 1] as? UIButton {
-                    oldButton.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
-                    oldButton.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                    if let statuses = self.habit?.statuses {
+                        if statuses[newDate - 1] == .incomplete || statuses[newDate - 1] == .failed {
+                            self.changeStatus(forIndex: newDate - 1, andStatus: .failed)
+                            oldButton.setImage(UIImage(named: "xmark.square", in: nil, with: self.thinConfig), for: .normal)
+                            oldButton.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                            oldButton.imageView?.tintColor = .systemRed
+                        } else {
+                            oldButton.setImage(UIImage(named: "xmark.square", in: nil, with: self.thinConfig), for: .normal)
+                            oldButton.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
+                        }
+                    }
                 }
             }
             
@@ -142,21 +152,22 @@ class HabitCell: UICollectionViewCell {
         if sender.isSelected == true {
             sender.isSelected = false
             sender.imageView?.tintColor = .label
-            if var statuses = habit?.statuses {
-                statuses[tag] = .incomplete
-                habit?.statuses = statuses
-                habit?.statuses.forEach { print($0.rawValue) }
-            }
+            changeStatus(forIndex: tag, andStatus: .incomplete)
             print()
         } else {
             sender.isSelected = true
             sender.imageView?.tintColor = .systemGreen
-            if var statuses = habit?.statuses {
-                statuses[tag] = .completed
-                habit?.statuses = statuses
-                habit?.statuses.forEach { print($0.rawValue) }
-            }
+            changeStatus(forIndex: tag, andStatus: .completed)
             print()
+        }
+    }
+    
+    func changeStatus(forIndex index: Int, andStatus status: Status) {
+        if var statuses = habit?.statuses {
+            statuses[index] = status
+            habit?.statuses = statuses
+            // save context
+            habit?.statuses.forEach { print($0.rawValue) }
         }
     }
 }
