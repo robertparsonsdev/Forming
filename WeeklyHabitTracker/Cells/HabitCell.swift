@@ -15,10 +15,7 @@ class HabitCell: UICollectionViewCell {
         didSet {
             if let title = habit?.title { titleLabel.text = "  \(title)" }
             if let color = habit?.color { titleLabel.backgroundColor = FormingColors.getColor(fromValue: Int(color)) }
-            if let days = habit?.days {
-                for view in boxStackView.arrangedSubviews { view.removeFromSuperview() }
-                configureBoxes(days: days)
-            }
+            if let days = habit?.days { configureBoxes(days: days) }
         }
     }
     
@@ -58,6 +55,7 @@ class HabitCell: UICollectionViewCell {
     }
     
     func configureBoxes(days: [Bool]) {
+        for view in self.boxStackView.arrangedSubviews { view.removeFromSuperview() }
         guard let statuses = habit?.statuses else { return }
         for (index, day) in days.enumerated() {
             if day {
@@ -127,36 +125,20 @@ class HabitCell: UICollectionViewCell {
     @objc func updateBoxes() {
         DispatchQueue.main.async {
             let newDate = CalendarManager.shared.getCurrentDay()
+            let oldIndex: Int
+            guard let days = self.habit?.days else { return }
+            guard let statuses = self.habit?.statuses else { return }
             
-            if newDate == 0 {
-                for view in self.boxStackView.arrangedSubviews {
-                    if let button = view as? UIButton {
-                        button.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
-                        button.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
-                        button.imageView?.tintColor = .label
-                        button.isSelected = false
-                        self.changeStatus(forIndex: button.tag, andStatus: .incomplete)
-                    }
-                }
-            } else {
-                if let oldButton = self.boxStackView.arrangedSubviews[newDate - 1] as? UIButton {
-                    if let statuses = self.habit?.statuses {
-                        if statuses[newDate - 1] == .incomplete || statuses[newDate - 1] == .failed {
-                            self.changeStatus(forIndex: newDate - 1, andStatus: .failed)
-                            oldButton.setImage(UIImage(named: "xmark.square", in: nil, with: self.thinConfig), for: .normal)
-                            oldButton.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
-                            oldButton.imageView?.tintColor = .systemRed
-                        } else {
-                            oldButton.setImage(UIImage(named: "xmark.square", in: nil, with: self.thinConfig), for: .normal)
-                            oldButton.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .selected)
-                        }
-                    }
-                }
+            switch newDate {
+            case 0: oldIndex = 6
+            default: oldIndex = newDate - 1
             }
             
-            let currentButton = self.boxStackView.arrangedSubviews[newDate] as? UIButton
-            currentButton?.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
-            currentButton?.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: self.blackConfig), for: .selected)
+            if self.boxStackView.arrangedSubviews[oldIndex] is UIButton {
+                if statuses[oldIndex] == .incomplete { self.changeStatus(forIndex: oldIndex, andStatus: .failed) }
+            }
+            
+            self.configureBoxes(days: days)
         }
     }
     
