@@ -11,6 +11,7 @@ import UIKit
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
     let stepper = UIStepper()
     let haptics = UISelectionFeedbackGenerator()
+    var secondDelegate: FormingTableViewDelegate?
     
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
@@ -61,13 +62,14 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var view: UIViewController
         switch indexPath.row {
-        case 1: ()
-            
-        case 2: ()
-            
-        default: ()
+        case 1: view = ReminderViewController()
+        case 2: view = RepeatViewController()
+        default: view = UIViewController()
         }
+        secondDelegate?.pushViewController(view: view)
+        deselectRow(at: indexPath, animated: true)
     }
             
     func configureStepper() {
@@ -84,4 +86,8 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     @objc func reminderChanged(sender: UIDatePicker) {
         print("reminder changed")
     }
+}
+
+protocol FormingTableViewDelegate {
+    func pushViewController(view: UIViewController)
 }

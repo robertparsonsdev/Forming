@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewHabitViewController: UIViewController, UITextFieldDelegate {
+class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTableViewDelegate {
     var update: (() -> Void)?
     let persistenceManager: PersistenceService
     var editMode = false
@@ -62,6 +62,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = .systemBackground
         title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
+        formingTableView.secondDelegate = self
         
         configureScrollView()
         configureStackView(topColorsStackView, withArray: topColors)
@@ -251,5 +252,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             sender.isSelected = true
             dayFlags[tag] = true
         }
+    }
+    
+    func pushViewController(view: UIViewController) {
+        navigationController?.pushViewController(view, animated: true)
     }
 }
