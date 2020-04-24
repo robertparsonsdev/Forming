@@ -9,11 +9,16 @@
 import UIKit
 
 class ReminderViewController: UIViewController {
+    let persistenceManager: PersistenceService
     let reminderLabel = FormingPickerLabel(title: "9:00 AM")
     let toggle = UISwitch()
     let defaultLabel = UILabel()
     let picker = UIDatePicker()
-    let persistenceManager: PersistenceService
+    var habit: Habit? {
+        didSet {
+            
+        }
+    }
     
     init(persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
@@ -42,6 +47,12 @@ class ReminderViewController: UIViewController {
         }
     }
     
+    
+    func configureToggle() {
+        toggle.isOn = true
+        toggle.addTarget(self, action: #selector(toggleTapped), for: .valueChanged)
+    }
+    
     func configureDefaultLabel() {
         defaultLabel.text = "The default reminder is a grouped notification at 9:00 AM for all habits ocurring that day. \n\nSetting a custom reminder will send a notification only for this habit at the set time."
         defaultLabel.numberOfLines = 0
@@ -58,11 +69,6 @@ class ReminderViewController: UIViewController {
             picker.date = date
         }
         picker.addTarget(self, action: #selector(pickerChanged), for: .valueChanged)
-    }
-    
-    func configureToggle() {
-        toggle.isOn = true
-        toggle.addTarget(self, action: #selector(toggleTapped), for: .valueChanged)
     }
 
     func configureConstraints() {

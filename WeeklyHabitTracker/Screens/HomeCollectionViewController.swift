@@ -16,6 +16,7 @@ private let emptyReuseIdentifier = "Empty Cell"
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HabitCellDelegate {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
+    let search = UISearchController()
     
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
@@ -39,7 +40,15 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(EmptyScreenCell.self, forCellWithReuseIdentifier: emptyReuseIdentifier)
         
+        configureSearchController()
         updateHabits()
+    }
+    
+    func configureSearchController() {
+        search.searchBar.placeholder = "Search for Habit"
+        search.searchBar.showsBookmarkButton = true
+        search.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
+        navigationItem.searchController = search
     }
     
     func updateHabits() {
