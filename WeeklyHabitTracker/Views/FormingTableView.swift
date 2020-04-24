@@ -13,6 +13,18 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     let haptics = UISelectionFeedbackGenerator()
     var secondDelegate: FormingTableViewDelegate?
     let persistenceManager: PersistenceService
+    var habit: Habit? {
+        didSet {
+            print("didset")
+            if let priority = habit?.priority {
+                print(priority)
+                let cell = cellForRow(at: IndexPath(row: 0, section: 1))
+                cell?.detailTextLabel?.text = priorities[Int(priority)]
+            }
+        }
+    }
+    
+    let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
     
     init(persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
@@ -46,7 +58,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Priority"
-            cell.detailTextLabel?.text = "0"
+            cell.detailTextLabel?.text = priorities[0]
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
@@ -65,13 +77,18 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var view: UIViewController
+        var reminderView: ReminderViewController, repeatView: RepeatViewController
         switch indexPath.row {
-        case 1: view = ReminderViewController(persistenceManager: self.persistenceManager)
-        case 2: view = RepeatViewController(persistenceManager: self.persistenceManager)
-        default: view = UIViewController()
+        case 1:
+            reminderView = ReminderViewController()
+            reminderView.delegate = self
+            secondDelegate?.pushViewController(view: reminderView)
+        case 2:
+            repeatView = RepeatViewController()
+            repeatView.delegate = self
+            secondDelegate?.pushViewController(view: repeatView)
+        default: ()
         }
-        secondDelegate?.pushViewController(view: view)
         deselectRow(at: indexPath, animated: true)
     }
             
@@ -83,7 +100,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
-        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = String(Int(sender.value))
+        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = priorities[Int(sender.value)]
     }
     
     @objc func reminderChanged(sender: UIDatePicker) {
@@ -93,4 +110,18 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
 
 protocol FormingTableViewDelegate {
     func pushViewController(view: UIViewController)
+}
+
+extension FormingTableView: SaveReminderDelegate, SaveRepeatDelegate {
+    func saveReminder(reminder: String?) {
+        let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
+        if let reminderStr = reminder { cell?.detailTextLabel?.text = reminderStr }
+        else { cell?.detailTextLabel?.text = "None" }
+        // also save to core data
+    }
+    
+    func saveRepeat(repeatability: Int64) {
+        let cell = self.cellForRow(at: IndexPath(row: 2, section: 0))
+        cell?.detailTextLabel?.text = String(repeatability)
+    }
 }

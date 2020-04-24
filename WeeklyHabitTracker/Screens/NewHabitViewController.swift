@@ -9,7 +9,7 @@
 import UIKit
 
 class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTableViewDelegate {
-    var update: (() -> Void)?
+    var delegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
     var editMode = false
     var habit: Habit? {
@@ -21,6 +21,10 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
                 selectedColor = Int(color)
                 colorFlags[Int(color)] = true
             }
+            formingTableView.habit = self.habit
+            print("priority:", habit?.priority)
+            print("reminder:", habit?.reminder)
+            print("repeat:", habit?.repeatability)
         }
     }
     
@@ -122,7 +126,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
         }
         
         persistenceManager.save()
-        update?()
+        delegate?.saveHabit()
         dismiss(animated: true)
     }
     
@@ -134,7 +138,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
                     self.persistenceManager.delete(habitToDelete)
-                    DispatchQueue.main.async { self.update?() }
+                    self.delegate?.saveHabit()
                     self.dismiss(animated: true)
                 }
             })
@@ -258,4 +262,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
     func pushViewController(view: UIViewController) {
         navigationController?.pushViewController(view, animated: true)
     }
+}
+
+protocol SaveHabitDelegate  {
+    func saveHabit()
 }

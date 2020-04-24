@@ -58,7 +58,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     @objc func newTapped() {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
-        newHabitVC.update = { DispatchQueue.main.async { self.updateHabits() } }
+        newHabitVC.delegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
@@ -109,9 +109,15 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func presentNewHabitViewController(with habit: Habit) {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
         newHabitVC.habit = habit
-        newHabitVC.update = { DispatchQueue.main.async { self.updateHabits() } }
+        newHabitVC.delegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
+    }
+}
+
+extension HomeCollectionViewController: SaveHabitDelegate {
+    func saveHabit() {
+        self.updateHabits()
     }
 }

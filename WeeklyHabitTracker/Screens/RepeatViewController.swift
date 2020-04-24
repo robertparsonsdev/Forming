@@ -9,26 +9,13 @@
 import UIKit
 
 class RepeatViewController: UIViewController {
-    let persistenceManager: PersistenceService
+    var delegate: SaveRepeatDelegate?
     let repeatLabel = FormingPickerLabel(title: "Every Week")
     let defaultLabel = UILabel()
     let picker = UIPickerView()
     let pickerData = ["Zero", "One", "Two", "Three", "Four", "Five",
                       "Six", "Seven", "Eight", "Nine", "Ten"]
-    var habit: Habit? {
-        didSet {
-            
-        }
-    }
-    
-    init(persistenceManager: PersistenceService) {
-        self.persistenceManager = persistenceManager
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    var repeatability: Int64?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +30,9 @@ class RepeatViewController: UIViewController {
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
         if parent == nil {
-            // save repeat to database and update table view detail label
+            if let repeatability = self.repeatability {
+                delegate?.saveRepeat(repeatability: repeatability)
+            }
         }
     }
     
@@ -94,6 +83,10 @@ extension RepeatViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         default: repeatLabel.text = "Every \(pickerData[row]) Weeks"
         }
         
-        if !pickerView.isUserInteractionEnabled { repeatLabel.text = "No Reminder" }
+        repeatability = Int64(row)
     }
+}
+
+protocol SaveRepeatDelegate {
+    func saveRepeat(repeatability: Int64)
 }

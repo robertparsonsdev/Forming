@@ -9,25 +9,12 @@
 import UIKit
 
 class ReminderViewController: UIViewController {
-    let persistenceManager: PersistenceService
+    var delegate: SaveReminderDelegate?
     let reminderLabel = FormingPickerLabel(title: "9:00 AM")
     let toggle = UISwitch()
     let defaultLabel = UILabel()
     let picker = UIDatePicker()
-    var habit: Habit? {
-        didSet {
-            
-        }
-    }
-    
-    init(persistenceManager: PersistenceService) {
-        self.persistenceManager = persistenceManager
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    var reminder: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,10 +30,11 @@ class ReminderViewController: UIViewController {
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
         if parent == nil {
-            // save reminder to database and update table view detail label
+            if toggle.isOn { reminder = getReminderAsString() }
+            else { reminder = nil }
+            delegate?.saveReminder(reminder: reminder)
         }
     }
-    
     
     func configureToggle() {
         toggle.isOn = true
@@ -86,24 +74,24 @@ class ReminderViewController: UIViewController {
     @objc func toggleTapped(sender: UISwitch) {
         picker.isEnabled = !picker.isEnabled
         if !sender.isOn { reminderLabel.text = "No Reminder" }
-        else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "h:mm a"
-            formatter.amSymbol = "AM"
-            formatter.pmSymbol = "PM"
-            let time = picker.date
-            reminderLabel.text = formatter.string(from: time)
-        }
+        else { reminderLabel.text = getReminderAsString() }
     }
     
-    @objc func pickerChanged(sender: UIDatePicker) {
+    @objc func pickerChanged() {
+        if picker.isEnabled { reminderLabel.text = getReminderAsString() }
+        else { reminderLabel.text = "No Reminder" }
+    }
+    
+    func getReminderAsString() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"
         formatter.amSymbol = "AM"
         formatter.pmSymbol = "PM"
-        let time = sender.date
-        reminderLabel.text = formatter.string(from: time)
-        
-        if !sender.isEnabled { reminderLabel.text = "No Reminder" }
+        let time = picker.date
+        return formatter.string(from: time)
     }
+}
+
+protocol SaveReminderDelegate {
+    func saveReminder(reminder: String?)
 }

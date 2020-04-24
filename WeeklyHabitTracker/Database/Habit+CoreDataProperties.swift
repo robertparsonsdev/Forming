@@ -21,6 +21,9 @@ extension Habit {
     @NSManaged public var color: Int64
     @NSManaged public var days: [Bool]
     @NSManaged private var statusValues: [Int64]
+    @NSManaged public var priority: Int64
+    @NSManaged public var reminder: String?
+    @NSManaged public var repeatability: Int64
     
     public var statuses: [Status] {
         get {
