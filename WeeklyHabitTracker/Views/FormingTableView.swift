@@ -12,9 +12,12 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     let stepper = UIStepper()
     let haptics = UISelectionFeedbackGenerator()
     var secondDelegate: FormingTableViewDelegate?
+    let persistenceManager: PersistenceService
     
-    override init(frame: CGRect, style: UITableView.Style) {
-        super.init(frame: frame, style: style)
+    init(persistenceManager: PersistenceService) {
+        self.persistenceManager = persistenceManager
+        super.init(frame: .zero, style: .plain)
+        
         delegate = self
         dataSource = self
         backgroundColor = .systemTeal
@@ -64,8 +67,8 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var view: UIViewController
         switch indexPath.row {
-        case 1: view = ReminderViewController()
-        case 2: view = RepeatViewController()
+        case 1: view = ReminderViewController(persistenceManager: self.persistenceManager)
+        case 2: view = RepeatViewController(persistenceManager: self.persistenceManager)
         default: view = UIViewController()
         }
         secondDelegate?.pushViewController(view: view)

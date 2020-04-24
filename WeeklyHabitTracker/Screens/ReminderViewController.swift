@@ -13,7 +13,17 @@ class ReminderViewController: UIViewController {
     let toggle = UISwitch()
     let defaultLabel = UILabel()
     let picker = UIDatePicker()
-
+    let persistenceManager: PersistenceService
+    
+    init(persistenceManager: PersistenceService) {
+        self.persistenceManager = persistenceManager
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -25,8 +35,15 @@ class ReminderViewController: UIViewController {
         configureConstraints()
     }
     
+    override func willMove(toParent parent: UIViewController?) {
+        super.willMove(toParent: parent)
+        if parent == nil {
+            // save reminder to database and update table view detail label
+        }
+    }
+    
     func configureDefaultLabel() {
-        defaultLabel.text = "The default reminder is a grouped notification at 9:00 AM for all habits ocurring that day. \n\nSetting a custom remninder will send a notification only for this habit at the set time."
+        defaultLabel.text = "The default reminder is a grouped notification at 9:00 AM for all habits ocurring that day. \n\nSetting a custom reminder will send a notification only for this habit at the set time."
         defaultLabel.numberOfLines = 0
         defaultLabel.sizeToFit()
         defaultLabel.textAlignment = .center
@@ -60,8 +77,17 @@ class ReminderViewController: UIViewController {
         defaultLabel.anchor(top: picker.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
     }
     
-    @objc func toggleTapped() {
-        
+    @objc func toggleTapped(sender: UISwitch) {
+        picker.isEnabled = !picker.isEnabled
+        if !sender.isOn { reminderLabel.text = "No Reminder" }
+        else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "h:mm a"
+            formatter.amSymbol = "AM"
+            formatter.pmSymbol = "PM"
+            let time = picker.date
+            reminderLabel.text = formatter.string(from: time)
+        }
     }
     
     @objc func pickerChanged(sender: UIDatePicker) {
@@ -71,5 +97,7 @@ class ReminderViewController: UIViewController {
         formatter.pmSymbol = "PM"
         let time = sender.date
         reminderLabel.text = formatter.string(from: time)
+        
+        if !sender.isEnabled { reminderLabel.text = "No Reminder" }
     }
 }

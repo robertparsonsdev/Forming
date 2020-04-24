@@ -45,11 +45,12 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
     let daysStackView = UIStackView()
     var dayStatuses = [Status]()
         
-    let formingTableView = FormingTableView(frame: .zero, style: .plain)
+    let formingTableView: FormingTableView
     let haptics = UISelectionFeedbackGenerator()
     
     init(persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
+        self.formingTableView = FormingTableView(persistenceManager: self.persistenceManager)
         super.init(nibName: nil, bundle: nil)
     }
     
