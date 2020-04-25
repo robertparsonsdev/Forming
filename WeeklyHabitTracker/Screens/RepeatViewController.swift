@@ -11,12 +11,20 @@ import UIKit
 class RepeatViewController: UIViewController {
     var delegate: SaveRepeatDelegate?
     var repeatability: Int64?
-    let pickerData = ["Zero", "One", "Two", "Three", "Four", "Five",
-                      "Six", "Seven", "Eight", "Nine", "Ten"]
+    let pickerData: [Int: String]
     
     let repeatLabel = FormingPickerLabel()
     let defaultLabel = UILabel()
     let picker = UIPickerView()
+    
+    init(data: [Int: String]) {
+        self.pickerData = data
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

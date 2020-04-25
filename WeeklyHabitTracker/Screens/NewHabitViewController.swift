@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTableViewDelegate {
+class NewHabitViewController: UIViewController, UITextFieldDelegate {
     var delegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
     var editMode = false
@@ -21,7 +21,10 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
                 selectedColor = Int(color)
                 colorFlags[Int(color)] = true
             }
-            formingTableView.habit = self.habit
+            if let priority = habit?.priority { self.priority = priority }
+            if let reminder = habit?.reminder { self.reminder = reminder }
+            if let repeatability = habit?.repeatability { self.repeatability = repeatability }
+//            formingTableView.habit = self.habit
 //            print("priority:", habit?.priority)
 //            print("reminder:", habit?.reminder)
 //            print("repeat:", habit?.repeatability)
@@ -33,7 +36,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
     let titleLabel = FormingTitleLabel(title: "Title:")
     let colorLabel = FormingTitleLabel(title: "Color:")
     let daysLabel = FormingTitleLabel(title: "Days:")
-    let priorityLabel = FormingTitleLabel(title: "Priority:")
     
     let titleTextField = FormingTextField(placeholder: "Example: Run 1 Mile" , returnKeyType: .done)
     
@@ -50,11 +52,15 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
     var dayStatuses = [Status]()
         
     let formingTableView: FormingTableView
+    var priority: Int64 = 0
+    var reminder: String? = "9:00 AM"
+    var repeatability: Int64 = 1
     let haptics = UISelectionFeedbackGenerator()
     
     init(persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
         self.formingTableView = FormingTableView(persistenceManager: self.persistenceManager)
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -68,6 +74,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
         title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
         formingTableView.formingDelegate = self
+        formingTableView.priority = self.priority
+        formingTableView.reminder = self.reminder
+        formingTableView.repeatability = self.repeatability
         
         configureScrollView()
         configureStackView(topColorsStackView, withArray: topColors)
@@ -105,6 +114,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
                 else { dayStatuses.append(.empty) }
             }
             initialHabit.statuses = dayStatuses
+            print("new:", self.reminder)
+            initialHabit.reminder = self.reminder
         } else {
             habit?.title = titleTextField.text
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
@@ -258,12 +269,19 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
             dayFlags[tag] = true
         }
     }
-    
-    func pushViewController(view: UIViewController) {
-        navigationController?.pushViewController(view, animated: true)
-    }
 }
 
 protocol SaveHabitDelegate  {
     func saveHabit()
+}
+
+extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate {
+    func pushViewController(view: UIViewController) {
+        navigationController?.pushViewController(view, animated: true)
+    }
+    
+    func saveReminder(reminder: String?) {
+        self.reminder = reminder
+        print("save delegate")
+    }
 }

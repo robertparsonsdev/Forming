@@ -9,29 +9,21 @@
 import UIKit
 
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
-    let stepper = UIStepper()
-    let haptics = UISelectionFeedbackGenerator()
-    var formingDelegate: FormingTableViewDelegate?
-    let persistenceManager: PersistenceService
-    var habit: Habit? {
-        didSet {
-            print("didset")
-            if let priority = habit?.priority {
-                print(priority)
-                let cell = cellForRow(at: IndexPath(row: 0, section: 1))
-                cell?.detailTextLabel?.text = priorities[Int(priority)]
-            }
-        }
-    }
-    
     var priority: Int64?
-    var reminder: String? = "9:00 AM" // in future, set to habit.reminder
+    var reminder: String?
     var repeatability: Int64?
+    let persistenceManager: PersistenceService
+    var formingDelegate: FormingTableViewDelegate?
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
+    let repeatData = [0: "Just This Week", 1: "Every Week", 2: "Every Two Weeks", 3: "Every 3 Weeks", 4: "Every 4 Weeks"]
+    
+    let stepper = UIStepper()
+    let haptics = UISelectionFeedbackGenerator()
     
     init(persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
+        
         super.init(frame: .zero, style: .plain)
         
         delegate = self
@@ -45,7 +37,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+        
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -68,7 +60,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             cell.selectionStyle = .none
         case 1:
             cell.textLabel?.text = "Reminder"
-            cell.detailTextLabel?.text = "9:00 AM"
+            cell.detailTextLabel?.text = self.reminder
             cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
         default:
@@ -86,11 +78,12 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         case 1:
             if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
             else { reminderView = ReminderViewController(reminder: nil) }
-            reminderView.delegate = self
+            reminderView.updateDelegate = self
+            reminderView.saveDelegate = NewHabitViewController.self as? SaveReminderDelegate
             formingDelegate?.pushViewController(view: reminderView)
         case 2:
-            repeatView = RepeatViewController()
-            repeatView.delegate = self
+            repeatView = RepeatViewController(data: repeatData)
+//            repeatView.delegate = self NEED TO SET DELEGATE
             formingDelegate?.pushViewController(view: repeatView)
         default: ()
         }
@@ -117,8 +110,8 @@ protocol FormingTableViewDelegate {
     func pushViewController(view: UIViewController)
 }
 
-extension FormingTableView: SaveReminderDelegate, SaveRepeatDelegate {
-    func saveReminder(reminder: String?) {
+extension FormingTableView: UpdateReminderDelegate, SaveRepeatDelegate {
+    func updateReminder(reminder: String?) {
         let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
         if let reminderStr = reminder {
             self.reminder = reminderStr

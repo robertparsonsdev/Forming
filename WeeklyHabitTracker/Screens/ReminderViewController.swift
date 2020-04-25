@@ -9,7 +9,8 @@
 import UIKit
 
 class ReminderViewController: UIViewController {
-    var delegate: SaveReminderDelegate?
+    var updateDelegate: UpdateReminderDelegate?
+    var saveDelegate: SaveReminderDelegate?
     var reminder: String?
 
     let reminderLabel = FormingPickerLabel()
@@ -45,7 +46,9 @@ class ReminderViewController: UIViewController {
         if parent == nil {
             if toggle.isOn { self.reminder = getReminderAsString() }
             else { self.reminder = nil }
-            delegate?.saveReminder(reminder: self.reminder)
+            print(self.reminder)
+            updateDelegate?.updateReminder(reminder: self.reminder)
+            saveDelegate?.saveReminder(reminder: self.reminder)
         }
     }
     
@@ -124,6 +127,10 @@ class ReminderViewController: UIViewController {
             return calendar.date(bySettingHour: hour, minute: minutes, second: 0, of: date)
         } else { return nil }
     }
+}
+
+protocol UpdateReminderDelegate {
+    func updateReminder(reminder: String?)
 }
 
 protocol SaveReminderDelegate {
