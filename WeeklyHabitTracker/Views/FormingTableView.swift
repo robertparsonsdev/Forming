@@ -12,10 +12,10 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     var priority: Int64
     var reminder: String?
     var repeatability: Int64
-    var formingDelegate: FormingTableViewDelegate?
+    var tableDelegate: FormingTableViewDelegate?
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
-    let repeatData = [0: "Just This Week", 1: "Every Week", 2: "Every Two Weeks", 3: "Every 3 Weeks", 4: "Every 4 Weeks"]
+    let repeatData = [0: "Just This Week", 1: "Every Week", 2: "Every Two Weeks", 3: "Every Three Weeks", 4: "Every Four Weeks"]
     
     let stepper = UIStepper()
     let haptics = UISelectionFeedbackGenerator()
@@ -54,7 +54,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Priority"
-            cell.detailTextLabel?.text = priorities[0]
+            cell.detailTextLabel?.text = priorities[Int(self.priority)]
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
@@ -65,7 +65,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             cell.accessoryType = .disclosureIndicator
         default:
             cell.textLabel?.text = "Repeat"
-            cell.detailTextLabel?.text = "Every Week"
+            cell.detailTextLabel?.text = repeatData[Int(self.repeatability)]
             cell.imageView?.image = UIImage(named: "arrow.clockwise.circle", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
         }
@@ -80,11 +80,12 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
             if let parentView = tableView.findViewController() as? NewHabitViewController { reminderView.saveDelegate = parentView.self }
-            formingDelegate?.pushViewController(view: reminderView)
+            tableDelegate?.pushViewController(view: reminderView)
         case 2:
-            repeatView = RepeatViewController(data: repeatData)
-//            let parentView = repeatView.parent as? NewHabitViewController
-            formingDelegate?.pushViewController(view: repeatView)
+            repeatView = RepeatViewController(repeatability: self.repeatability, data: repeatData)
+            repeatView.updateDelegate = self
+            if let parentView = tableView.findViewController() as? NewHabitViewController { repeatView.saveDelegate = parentView.self }
+            tableDelegate?.pushViewController(view: repeatView)
         default: ()
         }
         deselectRow(at: indexPath, animated: true)
@@ -93,20 +94,23 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     func configureStepper() {
         stepper.minimumValue = 0
         stepper.maximumValue = 3
+        stepper.value = Double(self.priority)
         stepper.addTarget(self, action: #selector(stepperTapped), for: .valueChanged)
     }
     
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
         cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = priorities[Int(sender.value)]
+        tableDelegate?.savePriority(priority: Int64(sender.value))
     }
 }
 
 protocol FormingTableViewDelegate {
     func pushViewController(view: UIViewController)
+    func savePriority(priority: Int64)
 }
 
-extension FormingTableView: UpdateReminderDelegate, SaveRepeatDelegate {
+extension FormingTableView: UpdateReminderDelegate, UpdateRepeatDelegate {
     func updateReminder(reminder: String?) {
         let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
         if let reminderStr = reminder {
@@ -119,8 +123,9 @@ extension FormingTableView: UpdateReminderDelegate, SaveRepeatDelegate {
         }
     }
     
-    func saveRepeat(repeatability: Int64) {
+    func updateRepeat(repeatability: Int64) {
         let cell = self.cellForRow(at: IndexPath(row: 2, section: 0))
-        cell?.detailTextLabel?.text = String(repeatability)
+        cell?.detailTextLabel?.text = repeatData[Int(repeatability)]
+        self.repeatability = repeatability
     }
 }

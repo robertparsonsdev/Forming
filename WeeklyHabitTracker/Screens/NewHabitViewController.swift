@@ -69,7 +69,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
         formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, repeatability: self.repeatability)
-        formingTableView?.formingDelegate = self
+        formingTableView?.tableDelegate = self
         
         configureScrollView()
         configureStackView(topColorsStackView, withArray: topColors)
@@ -107,7 +107,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 else { dayStatuses.append(.empty) }
             }
             initialHabit.statuses = dayStatuses
+            initialHabit.priority = self.priority
             initialHabit.reminder = self.reminder
+            initialHabit.repeatability = self.repeatability
         } else {
             habit?.title = titleTextField.text
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
@@ -126,7 +128,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
             }
+            habit?.priority = self.priority
             habit?.reminder = self.reminder
+            habit?.repeatability = self.repeatability
         }
         
         persistenceManager.save()
@@ -270,12 +274,20 @@ protocol SaveHabitDelegate  {
     func saveHabit()
 }
 
-extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate {
+extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate, SaveRepeatDelegate {
     func pushViewController(view: UIViewController) {
         navigationController?.pushViewController(view, animated: true)
     }
     
+    func savePriority(priority: Int64) {
+        self.priority = priority
+    }
+    
     func saveReminder(reminder: String?) {
         self.reminder = reminder
+    }
+    
+    func saveRepeat(repeatability: Int64) {
+        self.repeatability = repeatability
     }
 }

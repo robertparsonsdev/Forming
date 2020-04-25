@@ -9,15 +9,18 @@
 import UIKit
 
 class RepeatViewController: UIViewController {
-    var delegate: SaveRepeatDelegate?
-    var repeatability: Int64?
+    var updateDelegate: UpdateRepeatDelegate?
+    var saveDelegate: SaveRepeatDelegate?
+    var repeatability: Int64
     let pickerData: [Int: String]
     
     let repeatLabel = FormingPickerLabel()
     let defaultLabel = UILabel()
     let picker = UIPickerView()
     
-    init(data: [Int: String]) {
+    init(repeatability: Int64, data: [Int: String]) {
+        print(repeatability)
+        self.repeatability = repeatability
         self.pickerData = data
         super.init(nibName: nil, bundle: nil)
     }
@@ -31,6 +34,7 @@ class RepeatViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Repeat"
         
+        repeatLabel.text = pickerData[Int(self.repeatability)]
         configureDefaultLabel()
         configurePicker()
         configureConstraints()
@@ -39,9 +43,8 @@ class RepeatViewController: UIViewController {
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
         if parent == nil {
-            if let repeatability = self.repeatability {
-                delegate?.saveRepeat(repeatability: repeatability)
-            }
+            updateDelegate?.updateRepeat(repeatability: self.repeatability)
+            saveDelegate?.saveRepeat(repeatability: self.repeatability)
         }
     }
     
@@ -57,7 +60,7 @@ class RepeatViewController: UIViewController {
     func configurePicker() {
         picker.dataSource = self
         picker.delegate = self
-        picker.selectRow(1, inComponent: 0, animated: false)
+        picker.selectRow(Int(self.repeatability), inComponent: 0, animated: false)
     }
     
     func configureConstraints() {
@@ -86,14 +89,13 @@ extension RepeatViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        switch row {
-        case 0: repeatLabel.text = "Just This Week"
-        case 1: repeatLabel.text = "Every Week"
-        default: repeatLabel.text = "Every \(pickerData[row]) Weeks"
-        }
-        
+        repeatLabel.text = pickerData[row]
         repeatability = Int64(row)
     }
+}
+
+protocol UpdateRepeatDelegate {
+    func updateRepeat(repeatability: Int64)
 }
 
 protocol SaveRepeatDelegate {
