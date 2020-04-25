@@ -22,9 +22,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
                 colorFlags[Int(color)] = true
             }
             formingTableView.habit = self.habit
-            print("priority:", habit?.priority)
-            print("reminder:", habit?.reminder)
-            print("repeat:", habit?.repeatability)
+//            print("priority:", habit?.priority)
+//            print("reminder:", habit?.reminder)
+//            print("repeat:", habit?.repeatability)
         }
     }
     
@@ -67,7 +67,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate, FormingTabl
         view.backgroundColor = .systemBackground
         title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
-        formingTableView.secondDelegate = self
+        formingTableView.formingDelegate = self
         
         configureScrollView()
         configureStackView(topColorsStackView, withArray: topColors)

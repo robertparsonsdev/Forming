@@ -11,7 +11,7 @@ import UIKit
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
     let stepper = UIStepper()
     let haptics = UISelectionFeedbackGenerator()
-    var secondDelegate: FormingTableViewDelegate?
+    var formingDelegate: FormingTableViewDelegate?
     let persistenceManager: PersistenceService
     var habit: Habit? {
         didSet {
@@ -23,6 +23,10 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             }
         }
     }
+    
+    var priority: Int64?
+    var reminder: String? = "9:00 AM" // in future, set to habit.reminder
+    var repeatability: Int64?
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
     
@@ -80,13 +84,14 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         var reminderView: ReminderViewController, repeatView: RepeatViewController
         switch indexPath.row {
         case 1:
-            reminderView = ReminderViewController()
+            if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
+            else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.delegate = self
-            secondDelegate?.pushViewController(view: reminderView)
+            formingDelegate?.pushViewController(view: reminderView)
         case 2:
             repeatView = RepeatViewController()
             repeatView.delegate = self
-            secondDelegate?.pushViewController(view: repeatView)
+            formingDelegate?.pushViewController(view: repeatView)
         default: ()
         }
         deselectRow(at: indexPath, animated: true)
@@ -115,9 +120,14 @@ protocol FormingTableViewDelegate {
 extension FormingTableView: SaveReminderDelegate, SaveRepeatDelegate {
     func saveReminder(reminder: String?) {
         let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
-        if let reminderStr = reminder { cell?.detailTextLabel?.text = reminderStr }
-        else { cell?.detailTextLabel?.text = "None" }
-        // also save to core data
+        if let reminderStr = reminder {
+            self.reminder = reminderStr
+            cell?.detailTextLabel?.text = self.reminder
+        }
+        else {
+            self.reminder = nil
+            cell?.detailTextLabel?.text = "None"
+        }
     }
     
     func saveRepeat(repeatability: Int64) {

@@ -10,12 +10,13 @@ import UIKit
 
 class RepeatViewController: UIViewController {
     var delegate: SaveRepeatDelegate?
-    let repeatLabel = FormingPickerLabel(title: "Every Week")
-    let defaultLabel = UILabel()
-    let picker = UIPickerView()
+    var repeatability: Int64?
     let pickerData = ["Zero", "One", "Two", "Three", "Four", "Five",
                       "Six", "Seven", "Eight", "Nine", "Ten"]
-    var repeatability: Int64?
+    
+    let repeatLabel = FormingPickerLabel()
+    let defaultLabel = UILabel()
+    let picker = UIPickerView()
     
     override func viewDidLoad() {
         super.viewDidLoad()

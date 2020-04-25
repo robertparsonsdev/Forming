@@ -9,10 +9,9 @@
 import UIKit
 
 class FormingPickerLabel: UILabel {
-
-    init(title: String) {
-        super.init(frame: .zero)
-        self.text = title
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         configure()
     }
     
