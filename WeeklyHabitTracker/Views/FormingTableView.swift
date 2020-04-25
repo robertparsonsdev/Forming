@@ -9,10 +9,9 @@
 import UIKit
 
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
-    var priority: Int64?
+    var priority: Int64
     var reminder: String?
-    var repeatability: Int64?
-    let persistenceManager: PersistenceService
+    var repeatability: Int64
     var formingDelegate: FormingTableViewDelegate?
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
@@ -21,9 +20,10 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     let stepper = UIStepper()
     let haptics = UISelectionFeedbackGenerator()
     
-    init(persistenceManager: PersistenceService) {
-        self.persistenceManager = persistenceManager
-        
+    init(priority: Int64, reminder: String?, repeatability: Int64) {
+        self.priority = priority
+        self.reminder = reminder
+        self.repeatability = repeatability
         super.init(frame: .zero, style: .plain)
         
         delegate = self
@@ -60,7 +60,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             cell.selectionStyle = .none
         case 1:
             cell.textLabel?.text = "Reminder"
-            cell.detailTextLabel?.text = self.reminder
+            if let reminder = self.reminder { cell.detailTextLabel?.text = reminder } else { cell.detailTextLabel?.text = "None" }
             cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
         default:
@@ -79,11 +79,11 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
-            reminderView.saveDelegate = NewHabitViewController.self as? SaveReminderDelegate
+            if let parentView = tableView.findViewController() as? NewHabitViewController { reminderView.saveDelegate = parentView.self }
             formingDelegate?.pushViewController(view: reminderView)
         case 2:
             repeatView = RepeatViewController(data: repeatData)
-//            repeatView.delegate = self NEED TO SET DELEGATE
+//            let parentView = repeatView.parent as? NewHabitViewController
             formingDelegate?.pushViewController(view: repeatView)
         default: ()
         }
@@ -99,10 +99,6 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
         cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = priorities[Int(sender.value)]
-    }
-    
-    @objc func reminderChanged(sender: UIDatePicker) {
-        print("reminder changed")
     }
 }
 

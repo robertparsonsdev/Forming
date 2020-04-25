@@ -25,4 +25,14 @@ extension UIView {
         
         if height != 0 { heightAnchor.constraint(equalToConstant: height).isActive = true }
     }
+    
+    func findViewController() -> UIViewController? {
+        if let nextResponder = self.next as? UIViewController {
+            return nextResponder
+        } else if let nextResponder = self.next as? UIView {
+            return nextResponder.findViewController()
+        } else {
+            return nil
+        }
+    }
 }

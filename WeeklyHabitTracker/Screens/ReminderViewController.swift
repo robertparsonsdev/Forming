@@ -46,7 +46,6 @@ class ReminderViewController: UIViewController {
         if parent == nil {
             if toggle.isOn { self.reminder = getReminderAsString() }
             else { self.reminder = nil }
-            print(self.reminder)
             updateDelegate?.updateReminder(reminder: self.reminder)
             saveDelegate?.saveReminder(reminder: self.reminder)
         }

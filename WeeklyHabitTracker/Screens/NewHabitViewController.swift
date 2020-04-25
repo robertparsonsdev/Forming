@@ -22,12 +22,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 colorFlags[Int(color)] = true
             }
             if let priority = habit?.priority { self.priority = priority }
-            if let reminder = habit?.reminder { self.reminder = reminder }
+            if let reminder = habit?.reminder { self.reminder = reminder } else { self.reminder = nil }
             if let repeatability = habit?.repeatability { self.repeatability = repeatability }
-//            formingTableView.habit = self.habit
-//            print("priority:", habit?.priority)
-//            print("reminder:", habit?.reminder)
-//            print("repeat:", habit?.repeatability)
         }
     }
     
@@ -51,16 +47,15 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
     let daysStackView = UIStackView()
     var dayStatuses = [Status]()
         
-    let formingTableView: FormingTableView
+    var formingTableView: FormingTableView?
     var priority: Int64 = 0
     var reminder: String? = "9:00 AM"
     var repeatability: Int64 = 1
+    
     let haptics = UISelectionFeedbackGenerator()
     
     init(persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
-        self.formingTableView = FormingTableView(persistenceManager: self.persistenceManager)
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -73,10 +68,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = .systemBackground
         title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
-        formingTableView.formingDelegate = self
-        formingTableView.priority = self.priority
-        formingTableView.reminder = self.reminder
-        formingTableView.repeatability = self.repeatability
+        formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, repeatability: self.repeatability)
+        formingTableView?.formingDelegate = self
         
         configureScrollView()
         configureStackView(topColorsStackView, withArray: topColors)
@@ -114,7 +107,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 else { dayStatuses.append(.empty) }
             }
             initialHabit.statuses = dayStatuses
-            print("new:", self.reminder)
             initialHabit.reminder = self.reminder
         } else {
             habit?.title = titleTextField.text
@@ -134,6 +126,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
             }
+            habit?.reminder = self.reminder
         }
         
         persistenceManager.save()
@@ -228,8 +221,10 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         scrollView.addSubview(bottomColorsStackView)
         bottomColorsStackView.anchor(top: topColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad + 5, paddingLeft: outterPad + 25, paddingBottom: 0, paddingRight: outterPad + 25, width: viewWidth - 50, height: viewHeight)
         
-        scrollView.addSubview(formingTableView)
-        formingTableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: scrollView.bottomAnchor, right: right, paddingTop: outterPad * 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 132)
+        if let tableView = formingTableView {
+            scrollView.addSubview(tableView)
+            tableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: scrollView.bottomAnchor, right: right, paddingTop: outterPad * 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 132)
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -282,6 +277,5 @@ extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate
     
     func saveReminder(reminder: String?) {
         self.reminder = reminder
-        print("save delegate")
     }
 }
