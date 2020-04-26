@@ -134,8 +134,13 @@ class HabitCell: UICollectionViewCell {
             default: oldIndex = newDate - 1
             }
             
-            if self.boxStackView.arrangedSubviews[oldIndex] is UIButton {
+            if oldIndex != 6 && self.boxStackView.arrangedSubviews[oldIndex] is UIButton {
                 if statuses[oldIndex] == .incomplete { self.changeStatus(forIndex: oldIndex, andStatus: .failed) }
+            } else if oldIndex == 6 {
+                // print("update status to failed or completed and save to history")
+                if statuses[oldIndex] == .incomplete || statuses[oldIndex] == .completed {
+                    self.changeStatus(forIndex: oldIndex, andStatus: .incomplete)
+                }
             }
             
             self.configureBoxes(days: days)
