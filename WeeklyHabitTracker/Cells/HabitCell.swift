@@ -43,7 +43,6 @@ class HabitCell: UICollectionViewCell {
         configureTitleLabel()
         configureStackView()
         configureEditButton()
-        configureEngine()
         configureConstraints()
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateBoxes), name: .NSCalendarDayChanged, object: nil)
@@ -158,29 +157,6 @@ class HabitCell: UICollectionViewCell {
         editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
     }
     
-    func configureEngine() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        do {
-            engine = try CHHapticEngine()
-            try engine?.start()
-        } catch {
-            print("Engine creation error:", error.localizedDescription)
-        }
-        
-        engine?.stoppedHandler = { reason in
-            print("Engine stopped:", reason)
-        }
-        
-        engine?.resetHandler = { [weak self] in
-            guard let self = self else { return }
-            do {
-                try self.engine?.start()
-            } catch {
-                print("Engine failed error:", error)
-            }
-        }
-    }
-    
     func configureConstraints() {
         addSubview(titleLabel)
         titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
@@ -250,9 +226,9 @@ class HabitCell: UICollectionViewCell {
     }
     
     @objc func otherBoxTapped(sender: UIButton) {
-        print("other box tapped")
-        sender.shake()
-        vibrate()
+        DispatchQueue.main.async {
+            sender.shake()
+        }
     }
     
     @objc func boxLongPressed(gesture: UILongPressGestureRecognizer) {
@@ -292,25 +268,6 @@ class HabitCell: UICollectionViewCell {
         persistenceManager?.save()
         habit?.statuses.forEach { print($0.rawValue) }
         print()
-    }
-    
-    func vibrate() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        var events = [CHHapticEvent]()
-        for index in stride(from: 0, to: 0.4, by: 0.1) {
-            let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: Float(1 - index))
-            let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: Float(1 - index))
-            let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: index)
-            events.append(event)
-        }
-        
-        do {
-            let pattern = try CHHapticPattern(events: events, parameters: [])
-            let player = try engine?.makePlayer(with: pattern)
-            try player?.start(atTime: 0)
-        } catch {
-            print("Play pattern error:", error.localizedDescription)
-        }
     }
 }
 
