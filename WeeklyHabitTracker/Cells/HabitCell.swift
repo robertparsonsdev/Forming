@@ -137,9 +137,11 @@ class HabitCell: UICollectionViewCell {
             if oldIndex != 6 && self.boxStackView.arrangedSubviews[oldIndex] is UIButton {
                 if statuses[oldIndex] == .incomplete { self.changeStatus(forIndex: oldIndex, andStatus: .failed) }
             } else if oldIndex == 6 {
-                // print("update status to failed or completed and save to history")
-                if statuses[oldIndex] == .incomplete || statuses[oldIndex] == .completed {
-                    self.changeStatus(forIndex: oldIndex, andStatus: .incomplete)
+                // print("update status to failed or completed for oldIndex and save to history")
+                for (index, view) in self.boxStackView.arrangedSubviews.enumerated() {
+                    if view is UIButton {
+                        self.changeStatus(forIndex: index, andStatus: .incomplete)
+                    }
                 }
             }
             
