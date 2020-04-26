@@ -13,7 +13,7 @@ private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
 private let emptyReuseIdentifier = "Empty Cell"
 
-class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, HabitCellDelegate {
+class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
     let search = UISearchController()
@@ -105,18 +105,24 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
-    
+}
+
+extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
     func presentNewHabitViewController(with habit: Habit) {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
         newHabitVC.habit = habit
         newHabitVC.delegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
-        present(navController, animated: true)
+        DispatchQueue.main.async { self.present(navController, animated: true) }
     }
-}
-
-extension HomeCollectionViewController: SaveHabitDelegate {
+    
+    func presentAlertController(with alert: UIAlertController) {
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+    
     func saveHabit() {
         self.updateHabits()
     }

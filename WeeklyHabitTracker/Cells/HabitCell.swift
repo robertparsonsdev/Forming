@@ -22,6 +22,8 @@ class HabitCell: UICollectionViewCell {
     let titleLabel = UILabel()
     let boxStackView = UIStackView()
     let editButton = UIButton()
+    
+    var longGesture: UILongPressGestureRecognizer?
     let haptics = UISelectionFeedbackGenerator()
     
     let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
@@ -33,7 +35,7 @@ class HabitCell: UICollectionViewCell {
         layer.cornerRadius = 14
         backgroundColor = .tertiarySystemFill
         clipsToBounds = true
-        
+                
         configureTitleLabel()
         configureStackView()
         configureEditButton()
@@ -78,6 +80,9 @@ class HabitCell: UICollectionViewCell {
 
                 button.tag = index
                 button.addTarget(self, action: #selector(boxTapped), for: .touchUpInside)
+                longGesture = UILongPressGestureRecognizer(target: self, action: #selector(buttonLongPressed))
+                longGesture?.minimumPressDuration = 0.5
+                button.addGestureRecognizer(longGesture!)
                 boxStackView.insertArrangedSubview(button, at: index)
             } else {
                 boxStackView.insertArrangedSubview(UIView(), at: index)
@@ -137,7 +142,7 @@ class HabitCell: UICollectionViewCell {
             if oldIndex != 6 && self.boxStackView.arrangedSubviews[oldIndex] is UIButton {
                 if statuses[oldIndex] == .incomplete { self.changeStatus(forIndex: oldIndex, andStatus: .failed) }
             } else if oldIndex == 6 {
-                // print("update status to failed or completed for oldIndex and save to history")
+                // print("update status to failed or completed for oldIndex and save week to history")
                 for (index, view) in self.boxStackView.arrangedSubviews.enumerated() {
                     if view is UIButton {
                         self.changeStatus(forIndex: index, andStatus: .incomplete)
@@ -177,6 +182,15 @@ class HabitCell: UICollectionViewCell {
         }
     }
     
+    @objc func buttonLongPressed(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            haptics.selectionChanged()
+            let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .actionSheet)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            delegate?.presentAlertController(with: alertController)
+        }
+    }
+    
     func changeStatus(forIndex index: Int, andStatus status: Status) {
         if var statuses = habit?.statuses {
             statuses[index] = status
@@ -190,4 +204,5 @@ class HabitCell: UICollectionViewCell {
 
 protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
+    func presentAlertController(with alert: UIAlertController)
 }
