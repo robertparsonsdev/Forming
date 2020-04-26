@@ -9,17 +9,27 @@
 import UIKit
 
 class HomeHeaderCell: UICollectionViewCell {
-    let dayNames = ["M", "T", "W", "Th", "F", "Sa", "Su"]
+    let dayNames = ["Su", "M", "T", "W", "Th", "F", "Sa"]
     let dayNamesStackView = UIStackView()
-    let dayNums = ["1", "2", "3", "4", "5", "6", "7"]
+    var dayNums = ["1", "2", "3", "4", "5", "6", "7"]
     let dayNumsStackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
+//        configureDayNums()
         configureStackView(dayNamesStackView, withArray: dayNames)
         configureStackView(dayNumsStackView, withArray: dayNums)
         configureConstraints()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCalendar), name: .NSCalendarDayChanged, object: nil)
+    }
+    
+    func configureDayNums() {
+        let cal = Calendar(identifier: .iso8601)
+        if let range = cal.range(of: .day, in: .weekOfMonth, for: Date()) {
+            for day in range { dayNums.append(String(day)) }
+        }
     }
     
     func configureStackView(_ stackView : UIStackView, withArray array: [String]) {
@@ -35,7 +45,7 @@ class HomeHeaderCell: UICollectionViewCell {
             stackView.addArrangedSubview(label)
         }
         
-        let label = stackView.arrangedSubviews[2] as? UILabel
+        let label = stackView.arrangedSubviews[CalendarManager.shared.currentWeekDay()] as? UILabel
         label?.font = UIFont.systemFont(ofSize: 20, weight: .black)
     }
     
@@ -45,6 +55,38 @@ class HomeHeaderCell: UICollectionViewCell {
         
         addSubview(dayNumsStackView)
         dayNumsStackView.anchor(top: dayNamesStackView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 20, paddingRight: 15, width: 0, height: 0)
+    }
+    
+    @objc func updateCalendar() {
+        DispatchQueue.main.async {
+            // create fonts and reset all fonts in stackviews to thin
+            let newDate = CalendarManager.shared.currentWeekDay()
+            let thinFont = UIFont.systemFont(ofSize: 20, weight: .thin)
+            let blackFont = UIFont.systemFont(ofSize: 20, weight: .black)
+            
+            if newDate == 0 {
+                let label1 = self.dayNamesStackView.arrangedSubviews[6] as? UILabel
+                label1?.font = thinFont
+                let label2 = self.dayNumsStackView.arrangedSubviews[6] as? UILabel
+                label2?.font = thinFont
+            } else {
+                let label1 = self.dayNamesStackView.arrangedSubviews[newDate - 1] as? UILabel
+                label1?.font = thinFont
+                let label2 = self.dayNumsStackView.arrangedSubviews[newDate - 1] as? UILabel
+                label2?.font = thinFont
+            }
+            
+            // if newDate == 0, move to the next week
+            if newDate == 0 {
+                
+            }
+            
+            // set the new current location
+            let label1 = self.dayNamesStackView.arrangedSubviews[newDate] as? UILabel
+            label1?.font = blackFont
+            let label2 = self.dayNumsStackView.arrangedSubviews[newDate] as? UILabel
+            label2?.font = blackFont
+        }
     }
     
     required init?(coder: NSCoder) {
