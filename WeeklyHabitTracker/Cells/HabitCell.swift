@@ -75,10 +75,14 @@ class HabitCell: UICollectionViewCell {
             if day && index == currentDay {
                 button.addTarget(self, action: #selector(todayBoxTapped), for: .touchUpInside)
                 button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
-                button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
-                if let state = habit?.buttonState { print("button state", state); button.isSelected = state }
+                if let state = habit?.buttonState { button.isSelected = state }
                 switch statuses[currentDay] {
-                case .completed: button.imageView?.tintColor = .systemGreen
+                case .completed:
+                    button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                    button.imageView?.tintColor = .systemGreen
+                case .failed:
+                    button.setImage(UIImage(named: "xmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                    button.imageView?.tintColor = .systemRed
                 case .incomplete: button.imageView?.tintColor = .label
                 default: ()
                 }
@@ -181,9 +185,14 @@ class HabitCell: UICollectionViewCell {
         } else {
             sender.isSelected = true
             self.habit?.buttonState = sender.isSelected
-            switch statuses[tag] {
-            case .incomplete: sender.imageView?.tintColor = .systemGreen; changeStatus(forIndex: tag, andStatus: .completed)
-            default: ()
+            if sender.image(for: .selected) == UIImage(named: "xmark.square.fill", in: nil, with: blackConfig) {
+                sender.setImage(UIImage(named: "xmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                sender.imageView?.tintColor = .systemRed
+                changeStatus(forIndex: tag, andStatus: .failed)
+            } else {
+                sender.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                sender.imageView?.tintColor = .systemGreen
+                changeStatus(forIndex: tag, andStatus: .completed)
             }
         }
     }
@@ -222,13 +231,15 @@ class HabitCell: UICollectionViewCell {
                     self.habit?.buttonState = button.isSelected
                 }
             })
-            if button.tag != currentDay {
-                alertController.addAction(UIAlertAction(title: "Failed", style: .default) { [weak self] _ in
-                    guard let self = self else { return }
-                    self.changeStatus(forIndex: index, andStatus: .failed)
-                    DispatchQueue.main.async { self.configureBoxes(days: days) }
-                })
-            }
+            alertController.addAction(UIAlertAction(title: "Failed", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.changeStatus(forIndex: index, andStatus: .failed)
+                DispatchQueue.main.async { self.configureBoxes(days: days) }
+                if button.tag == currentDay {
+                    button.isSelected = true
+                    self.habit?.buttonState = button.isSelected
+                }
+            })
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             delegate?.presentAlertController(with: alertController)
         }
