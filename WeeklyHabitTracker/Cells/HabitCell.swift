@@ -11,6 +11,8 @@ import CoreHaptics
 
 class HabitCell: UICollectionViewCell {
     var persistenceManager: PersistenceService?
+    let defaults = UserDefaults.standard
+    let key = "isSelected"
     var delegate: HabitCellDelegate?
     var habit: Habit? {
         didSet {
@@ -39,7 +41,7 @@ class HabitCell: UICollectionViewCell {
         layer.cornerRadius = 14
         backgroundColor = .tertiarySystemFill
         clipsToBounds = true
-                
+
         configureTitleLabel()
         configureStackView()
         configureEditButton()
@@ -76,11 +78,13 @@ class HabitCell: UICollectionViewCell {
                 button.addTarget(self, action: #selector(todayBoxTapped), for: .touchUpInside)
                 button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
                 button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                button.isSelected = defaults.bool(forKey: key)
                 switch statuses[currentDay] {
                 case .completed: button.imageView?.tintColor = .systemGreen
                 case .incomplete: button.imageView?.tintColor = .label
                 default: ()
                 }
+                boxStackView.insertArrangedSubview(button, at: index)
             } else if day {
                 button.addTarget(self, action: #selector(otherBoxTapped), for: .touchUpInside)
                 switch statuses[index] {
@@ -95,53 +99,11 @@ class HabitCell: UICollectionViewCell {
                     button.imageView?.tintColor = .systemRed
                 default: ()
                 }
+                boxStackView.insertArrangedSubview(button, at: index)
             } else {
                 boxStackView.insertArrangedSubview(UIView(), at: index)
             }
-            
-            boxStackView.insertArrangedSubview(button, at: index)
         }
-        
-//        for (index, day) in days.enumerated() {
-//            if day {
-//                let button = UIButton()
-//                button.setImage(UIImage(named: "square", in: nil, with: thinConfig), for: .normal)
-//                switch statuses[index] {
-//                case .incomplete:
-//                    button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
-//                    button.imageView?.tintColor = .label
-//                case.completed:
-//                    button.setImage(UIImage(named: "checkmark.square", in: nil, with: thinConfig), for: .selected)
-//                    button.imageView?.tintColor = .systemGreen
-//                    button.isSelected = true
-//                case .failed:
-//                    button.setImage(UIImage(named: "xmark.square", in: nil, with: thinConfig), for: .selected)
-//                    button.imageView?.tintColor = .systemRed
-//                    button.isSelected = true
-//                default: ()
-//                }
-
-//                button.tag = index
-//                button.addTarget(self, action: #selector(boxTapped), for: .touchUpInside)
-//                longGesture = UILongPressGestureRecognizer(target: self, action: #selector(buttonLongPressed))
-//                longGesture?.minimumPressDuration = 0.5
-//                button.addGestureRecognizer(longGesture!)
-//                boxStackView.insertArrangedSubview(button, at: index)
-//            } else {
-//                boxStackView.insertArrangedSubview(UIView(), at: index)
-//            }
-//        }
-        
-//        let index = CalendarManager.shared.getCurrentDay()
-//        if let button = boxStackView.arrangedSubviews[index] as? UIButton {
-//            button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
-//            button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
-//            switch statuses[index] {
-//            case .completed: button.imageView?.tintColor = .systemGreen
-//            case .incomplete: button.imageView?.tintColor = .label
-//            default: ()
-//            }
-//        }
     }
     
     func configureEditButton() {
@@ -176,6 +138,7 @@ class HabitCell: UICollectionViewCell {
             let oldIndex: Int
             guard let days = self.habit?.days else { return }
             guard let statuses = self.habit?.statuses else { return }
+            self.defaults.set(false, forKey: self.key)
             
             switch newDate {
             case 0: oldIndex = 6
@@ -210,6 +173,7 @@ class HabitCell: UICollectionViewCell {
         
         if sender.isSelected == true {
             sender.isSelected = false
+            defaults.set(sender.isSelected, forKey: key)
             sender.imageView?.tintColor = .label
             switch statuses[tag] {
             case .completed: changeStatus(forIndex: tag, andStatus: .incomplete)
@@ -218,6 +182,7 @@ class HabitCell: UICollectionViewCell {
             }
         } else {
             sender.isSelected = true
+            defaults.set(sender.isSelected, forKey: key)
             switch statuses[tag] {
             case .incomplete: sender.imageView?.tintColor = .systemGreen; changeStatus(forIndex: tag, andStatus: .completed)
             default: ()
@@ -233,6 +198,7 @@ class HabitCell: UICollectionViewCell {
     
     @objc func boxLongPressed(gesture: UILongPressGestureRecognizer) {
         guard let button = gesture.view as? UIButton else { return }
+        let currentDay = CalendarManager.shared.getCurrentDay()
         let index = button.tag
         guard let days = self.habit?.days else { return }
         
@@ -244,17 +210,27 @@ class HabitCell: UICollectionViewCell {
                 guard let self = self else { return }
                 self.changeStatus(forIndex: index, andStatus: .incomplete)
                 DispatchQueue.main.async { self.configureBoxes(days: days) }
+                if button.tag == currentDay {
+                    button.isSelected = false
+                    self.defaults.set(button.isSelected, forKey: self.key)
+                }
             })
             alertController.addAction(UIAlertAction(title: "Complete", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 self.changeStatus(forIndex: index, andStatus: .completed)
                 DispatchQueue.main.async { self.configureBoxes(days: days) }
+                if button.tag == currentDay {
+                    button.isSelected = true
+                    self.defaults.set(button.isSelected, forKey: self.key)
+                }
             })
-            alertController.addAction(UIAlertAction(title: "Failed", style: .default) { [weak self] _ in
-                guard let self = self else { return }
-                self.changeStatus(forIndex: index, andStatus: .failed)
-                DispatchQueue.main.async { self.configureBoxes(days: days) }
-            })
+            if button.tag != currentDay {
+                alertController.addAction(UIAlertAction(title: "Failed", style: .default) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.changeStatus(forIndex: index, andStatus: .failed)
+                    DispatchQueue.main.async { self.configureBoxes(days: days) }
+                })
+            }
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             delegate?.presentAlertController(with: alertController)
         }
