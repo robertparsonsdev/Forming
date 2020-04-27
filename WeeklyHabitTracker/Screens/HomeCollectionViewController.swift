@@ -48,6 +48,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         search.searchBar.placeholder = "Search for Habit"
         search.searchBar.showsBookmarkButton = true
         search.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
+        search.searchBar.delegate = self
         navigationItem.searchController = search
     }
     
@@ -125,5 +126,18 @@ extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
     
     func saveHabit() {
         self.updateHabits()
+    }
+}
+
+extension HomeCollectionViewController: UISearchBarDelegate {
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        let alertController = UIAlertController(title: "Sort By:", message: "Default sort: alphabetical", preferredStyle: .actionSheet)
+        alertController.view.tintColor = .systemGreen
+        alertController.addAction(UIAlertAction(title: "Priority", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Due Today", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Alphabetical", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Reminder Time", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alertController, animated: true)
     }
 }
