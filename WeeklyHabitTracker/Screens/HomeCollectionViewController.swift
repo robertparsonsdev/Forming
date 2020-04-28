@@ -11,12 +11,13 @@ import CoreData
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
-private let emptyReuseIdentifier = "Empty Cell"
+//private let emptyReuseIdentifier = "Empty Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
     let search = UISearchController()
+    var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
@@ -37,10 +38,35 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        self.collectionView.register(EmptyScreenCell.self, forCellWithReuseIdentifier: emptyReuseIdentifier)
+//        self.collectionView.register(EmptyScreenCell.self, forCellWithReuseIdentifier: emptyReuseIdentifier)
         
         configureSearchController()
         updateHabits()
+        configureDataSource()
+    }
+    
+    func configureDataSource() {
+        self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
+            cell.habit = habit
+            cell.delegate = self
+            cell.persistenceManager = self.persistenceManager
+            return cell
+        })
+                
+        self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! HomeHeaderCell
+            return header
+        }
+    }
+    
+    func updateData() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Habit>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(habits)
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
     
     func configureSearchController() {
@@ -53,7 +79,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     func updateHabits() {
         self.habits = persistenceManager.fetch(Habit.self)
-        self.collectionView.reloadData()
+        if habits.isEmpty {
+            print("empty")
+            return
+        }
+        updateData()
     }
     
     @objc func newTapped() {
@@ -66,29 +96,29 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
     // MARK: UICollectionViewDataSource
     
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! HomeHeaderCell
-        return header
-    }
+//    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! HomeHeaderCell
+//        return header
+//    }
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
+//    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        return 1
+//    }
+//
+//
+//    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return habits.isEmpty ? 1 : habits.count
+//    }
 
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return habits.isEmpty ? 1 : habits.count
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if habits.isEmpty { return collectionView.dequeueReusableCell(withReuseIdentifier: emptyReuseIdentifier, for: indexPath) as! EmptyScreenCell }
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
-        cell.habit = habits[indexPath.row]
-        cell.delegate = self
-        cell.persistenceManager = self.persistenceManager
-        return cell
-    }
+//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        if habits.isEmpty { return collectionView.dequeueReusableCell(withReuseIdentifier: emptyReuseIdentifier, for: indexPath) as! EmptyScreenCell }
+//
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
+//        cell.habit = habits[indexPath.row]
+//        cell.delegate = self
+//        cell.persistenceManager = self.persistenceManager
+//        return cell
+//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 30, height: 100)

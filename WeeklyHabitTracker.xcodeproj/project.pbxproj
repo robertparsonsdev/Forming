@@ -36,6 +36,7 @@
 		EEC0FE9324464F7F00FC618F /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE9224464F7F00FC618F /* HabitCell.swift */; };
 		EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE952446578600FC618F /* UIViewExt.swift */; };
 		EEC0FE99244699BE00FC618F /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalendarManager.swift */; };
+		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		EEC0FE9224464F7F00FC618F /* HabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EEC0FE952446578600FC618F /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		EEC0FE98244699BE00FC618F /* CalendarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarManager.swift; sourceTree = "<group>"; };
+		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 			children = (
 				EEA64EDA244A17D4008202D0 /* FormingColors.swift */,
 				EEAD7EDB244BA3BF002225F8 /* Status.swift */,
+				EECBF3DE2457CBBE0050DFB8 /* Section.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
+				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
