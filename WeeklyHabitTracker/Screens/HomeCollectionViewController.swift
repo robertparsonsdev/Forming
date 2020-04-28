@@ -11,11 +11,14 @@ import CoreData
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
+private var currentSort: Sorting?
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
+    var defaults = UserDefaults.standard
+    let key = "sort"
     
     let searchController = UISearchController()
     var filteredHabits = [Habit]()
@@ -86,6 +89,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             print("empty")
             return
         }
+        // sortHabits(on: currentSort)
         updateData(on: self.habits)
     }
     
@@ -149,13 +153,41 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        let alertController = UIAlertController(title: "Sort By:", message: "Default sort: alphabetical", preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "Sort By:", message: "Current sort: ", preferredStyle: .actionSheet)
+//        alertController.message =
         alertController.view.tintColor = .systemGreen
-        alertController.addAction(UIAlertAction(title: "Priority", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Alphabetically", style: .default, handler: nil))
         alertController.addAction(UIAlertAction(title: "Due Today", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Alphabetical", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Priority", style: .default, handler: nil))
         alertController.addAction(UIAlertAction(title: "Reminder Time", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Default", style: .default, handler: nil))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alertController, animated: true)
     }
+    
+//    func sortHabits(sender: UIAlertAction) {
+//        switch sender.title {
+//        case "Alphabetically":
+//            self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
+//            self.updateData(on: self.habits)
+//            currentSort = .alphabetical
+//        case "Due Today":
+//
+//            currentSort = .dueToday
+//        case "Priority":
+//            self.habits.sort { (hab1, hab2) -> Bool in hab1.priority < hab2.priority }
+//            self.updateData(on: self.habits)
+//            currentSort = .priority
+//        case "Reminder Time":
+//
+//            currentSort = .reminderTime
+//        case "Default":
+//            print(currentSort)
+//            currentSort = nil
+//        default: ()
+//        }
+//        print("sorte:", currentSort)
+//        defaults.set(currentSort, forKey: key)
+//        self.updateData(on: self.habits)
+//    }
 }

@@ -14,6 +14,7 @@
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
 		EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
+		EE9A71512458AFEA0082D135 /* Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sorting.swift */; };
 		EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* NewHabitViewController.swift */; };
 		EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */; };
 		EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECF2447B349008202D0 /* FormingTextField.swift */; };
@@ -47,6 +48,7 @@
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyScreenCell.swift; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
+		EE9A71502458AFEA0082D135 /* Sorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sorting.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
 		EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTitleLabel.swift; sourceTree = "<group>"; };
 		EEA64ECF2447B349008202D0 /* FormingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTextField.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				EEA64EDA244A17D4008202D0 /* FormingColors.swift */,
 				EEAD7EDB244BA3BF002225F8 /* Status.swift */,
 				EECBF3DE2457CBBE0050DFB8 /* Section.swift */,
+				EE9A71502458AFEA0082D135 /* Sorting.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */,
+				EE9A71512458AFEA0082D135 /* Sorting.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
