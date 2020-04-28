@@ -145,8 +145,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
-                    self.persistenceManager.delete(habitToDelete)
-                    self.delegate?.saveHabit()
+                    self.delegate?.delete(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }
             })
@@ -272,6 +271,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
 
 protocol SaveHabitDelegate  {
     func saveHabit()
+    func delete(habit: Habit)
 }
 
 extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate, SaveRepeatDelegate {

@@ -89,8 +89,22 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             print("empty")
             return
         }
-        // sortHabits(on: currentSort)
+        
+        // self.habits = sortHabits(on: currentSort)
         updateData(on: self.habits)
+    }
+    
+    func deleteHabit(_ habit: Habit) {
+        var snapshot = self.dataSource.snapshot()
+        snapshot.deleteItems([habit])
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
+        
+        persistenceManager.delete(habit)
+        self.habits = persistenceManager.fetch(Habit.self)
+        
+        if habits.isEmpty { print("display empty state screen") }
     }
     
     @objc func newTapped() {
@@ -136,6 +150,11 @@ extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
     
     func saveHabit() {
         self.updateHabits()
+        collectionView.reloadData()
+    }
+    
+    func delete(habit: Habit) {
+        self.deleteHabit(habit)
     }
 }
 
