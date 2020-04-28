@@ -140,7 +140,7 @@ class HabitCell: UICollectionViewCell {
             let oldIndex: Int
             guard let days = self.habit?.days else { return }
             guard let statuses = self.habit?.statuses else { return }
-            self.habit?.buttonState = false
+//            self.habit?.buttonState = false
             
             switch newDate {
             case 0: oldIndex = 6
@@ -149,7 +149,10 @@ class HabitCell: UICollectionViewCell {
             
             if oldIndex != 6 && self.boxStackView.arrangedSubviews[oldIndex] is UIButton {
                 if statuses[oldIndex] == .incomplete { self.changeStatus(forIndex: oldIndex, andStatus: .failed) }
+                if statuses[newDate] == .completed || statuses[newDate] == .failed { self.habit?.buttonState = true }
+                else { self.habit?.buttonState = false }
             } else if oldIndex == 6 {
+                self.habit?.buttonState = false
                 // print("update status to failed or completed for oldIndex and save week to history")
                 for (index, view) in self.boxStackView.arrangedSubviews.enumerated() {
                     if view is UIButton {
