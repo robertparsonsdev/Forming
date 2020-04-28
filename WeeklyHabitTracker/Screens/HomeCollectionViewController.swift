@@ -11,13 +11,15 @@ import CoreData
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
-//private let emptyReuseIdentifier = "Empty Cell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
-    let search = UISearchController()
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
+    
+    let searchController = UISearchController()
+    var filteredHabits = [Habit]()
+    var isSearching = false
     
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
@@ -38,7 +40,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-//        self.collectionView.register(EmptyScreenCell.self, forCellWithReuseIdentifier: emptyReuseIdentifier)
         
         configureSearchController()
         updateHabits()
@@ -60,7 +61,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
-    func updateData() {
+    func updateData(on habits: [Habit]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Habit>()
         snapshot.appendSections([.main])
         snapshot.appendItems(habits)
@@ -70,11 +71,13 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func configureSearchController() {
-        search.searchBar.placeholder = "Search for Habit"
-        search.searchBar.showsBookmarkButton = true
-        search.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
-        search.searchBar.delegate = self
-        navigationItem.searchController = search
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search for Habit"
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
     }
     
     func updateHabits() {
@@ -83,7 +86,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             print("empty")
             return
         }
-        updateData()
+        updateData(on: self.habits)
     }
     
     @objc func newTapped() {
@@ -93,32 +96,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
     }
-
-    // MARK: UICollectionViewDataSource
-    
-//    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! HomeHeaderCell
-//        return header
-//    }
-
-//    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 1
-//    }
-//
-//
-//    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return habits.isEmpty ? 1 : habits.count
-//    }
-
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if habits.isEmpty { return collectionView.dequeueReusableCell(withReuseIdentifier: emptyReuseIdentifier, for: indexPath) as! EmptyScreenCell }
-//
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
-//        cell.habit = habits[indexPath.row]
-//        cell.delegate = self
-//        cell.persistenceManager = self.persistenceManager
-//        return cell
-//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 30, height: 100)
@@ -158,7 +135,19 @@ extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
     }
 }
 
-extension HomeCollectionViewController: UISearchBarDelegate {
+extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let filter = searchController.searchBar.text else { return }//, !filter.isEmpty else { return }
+        if filter.isEmpty { updateData(on: self.habits); return }
+        
+        filteredHabits = self.habits.filter { ($0.title?.lowercased().contains(filter.lowercased()))! }
+        updateData(on: filteredHabits)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        updateData(on: self.habits)
+    }
+    
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         let alertController = UIAlertController(title: "Sort By:", message: "Default sort: alphabetical", preferredStyle: .actionSheet)
         alertController.view.tintColor = .systemGreen
