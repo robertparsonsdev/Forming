@@ -140,7 +140,6 @@ class HabitCell: UICollectionViewCell {
             let oldIndex: Int
             guard let days = self.habit?.days else { return }
             guard let statuses = self.habit?.statuses else { return }
-//            self.habit?.buttonState = false
             
             switch newDate {
             case 0: oldIndex = 6

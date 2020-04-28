@@ -35,7 +35,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
 
-        // Register cell classes
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(EmptyScreenCell.self, forCellWithReuseIdentifier: emptyReuseIdentifier)
