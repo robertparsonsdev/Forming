@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02E51E244FBD410039B015 /* FormingTableView.swift */; };
+		EE070C772459F7AB00CAACB2 /* NewHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */; };
 		EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */; };
 		EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369E2450A14700AFFBEB /* RepeatViewController.swift */; };
 		EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		EE02E51E244FBD410039B015 /* FormingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTableView.swift; sourceTree = "<group>"; };
+		EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitCell.swift; sourceTree = "<group>"; };
 		EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
 		EE10369E2450A14700AFFBEB /* RepeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatViewController.swift; sourceTree = "<group>"; };
 		EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingPickerLabel.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 			children = (
 				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
 				EEC0FE9224464F7F00FC618F /* HabitCell.swift */,
+				EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,
+				EE070C772459F7AB00CAACB2 /* NewHabitCell.swift in Sources */,
 				EEC0FE9324464F7F00FC618F /* HabitCell.swift in Sources */,
 				EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */,
 				EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */,

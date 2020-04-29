@@ -44,7 +44,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
-        self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(NewHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         configureSearchController()
         configureSortAlertController()
@@ -91,10 +91,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! NewHabitCell
             cell.habit = habit
-            cell.delegate = self
-            cell.persistenceManager = self.persistenceManager
+//            cell.delegate = self
+//            cell.persistenceManager = self.persistenceManager
             return cell
         })
                 
@@ -212,30 +212,4 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         present(alertController, animated: true)
     }
-    
-//    func sortHabits(sender: UIAlertAction) {
-//        switch sender.title {
-//        case "Alphabetically":
-//            self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
-//            self.updateData(on: self.habits)
-//            currentSort = .alphabetical
-//        case "Due Today":
-//
-//            currentSort = .dueToday
-//        case "Priority":
-//            self.habits.sort { (hab1, hab2) -> Bool in hab1.priority < hab2.priority }
-//            self.updateData(on: self.habits)
-//            currentSort = .priority
-//        case "Reminder Time":
-//
-//            currentSort = .reminderTime
-//        case "Default":
-//            print(currentSort)
-//            currentSort = nil
-//        default: ()
-//        }
-//        print("sorte:", currentSort)
-//        defaults.set(currentSort, forKey: key)
-//        self.updateData(on: self.habits)
-//    }
 }

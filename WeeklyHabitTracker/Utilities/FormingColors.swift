@@ -9,7 +9,7 @@
 import UIKit
 
 struct FormingColors {
-    static func getColor(fromValue value: Int) -> UIColor {
+    static func getColor(fromValue value: Int64) -> UIColor {
         switch value {
             case 0: return UIColor.systemGreen
             case 1: return UIColor.systemTeal

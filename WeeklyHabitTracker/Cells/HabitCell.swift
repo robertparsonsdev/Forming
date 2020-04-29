@@ -15,7 +15,7 @@ class HabitCell: UICollectionViewCell {
     var habit: Habit? {
         didSet {
             if let title = habit?.title { titleLabel.text = "  \(title)" }
-            if let color = habit?.color { titleLabel.backgroundColor = FormingColors.getColor(fromValue: Int(color)) }
+            if let color = habit?.color { titleLabel.backgroundColor = FormingColors.getColor(fromValue: color) }
             if let days = habit?.days { configureBoxes(days: days) }
         }
     }
@@ -35,7 +35,6 @@ class HabitCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        if let statuses = habit?.statuses { print(statuses) }
         layer.cornerRadius = 14
         backgroundColor = .tertiarySystemFill
         clipsToBounds = true
@@ -258,7 +257,7 @@ class HabitCell: UICollectionViewCell {
     }
 }
 
-protocol HabitCellDelegate {
-    func presentNewHabitViewController(with habit: Habit)
-    func presentAlertController(with alert: UIAlertController)
-}
+//protocol HabitCellDelegate {
+//    func presentNewHabitViewController(with habit: Habit)
+//    func presentAlertController(with alert: UIAlertController)
+//}
