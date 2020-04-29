@@ -11,18 +11,18 @@ import CoreData
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
-private var currentSort: Sorting?
+private var currentSort: Sort?
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
-    var defaults = UserDefaults.standard
-    let key = "sort"
     
+    let alertController = UIAlertController(title: "Sort By:", message: "Current sort: ", preferredStyle: .actionSheet)
+    var defaultSort: Sort?
+    let sorts: [String: Sort] = ["Alphabetical": .alphabetical, "Date Created": .dateCreated,"Due Today": .dueToday, "Priority": .priority, "Reminder Time": .reminderTime]
     let searchController = UISearchController()
     var filteredHabits = [Habit]()
-    var isSearching = false
     
     // MARK: - Initializers
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
@@ -38,6 +38,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
+        collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
@@ -46,8 +47,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         configureSearchController()
+        configureSortAlertController()
+        
         configureDataSource()
-
         updateHabits()
     }
     
@@ -76,6 +78,15 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         searchController.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
+    }
+    
+    func configureSortAlertController() {
+        alertController.view.tintColor = .systemGreen
+        let sorted = sorts.sorted { $0.key < $1.key }
+        for element in sorted {
+            alertController.addAction(UIAlertAction(title: element.key, style: .default, handler: alertTapped))
+        }
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
     func configureDataSource() {
@@ -125,6 +136,27 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.habits = persistenceManager.fetch(Habit.self)
         
         if habits.isEmpty { self.showEmptyStateView() }
+    }
+    
+    func alertTapped(sender: UIAlertAction) {
+        if let sortTitle = sender.title {
+            if let sort = sorts[sortTitle] {
+                self.defaultSort = sort
+                self.sort()
+            }
+        }
+    }
+    
+    func sort() {
+        switch self.defaultSort {
+        case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
+        case .dateCreated: ()
+        case .dueToday: ()
+        case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority < hab2.priority }
+        case .reminderTime: ()
+        default: ()
+        }
+        updateData(on: self.habits)
     }
     
     // MARK: - Selectors
@@ -178,15 +210,6 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        let alertController = UIAlertController(title: "Sort By:", message: "Current sort: ", preferredStyle: .actionSheet)
-//        alertController.message =
-        alertController.view.tintColor = .systemGreen
-        alertController.addAction(UIAlertAction(title: "Alphabetically", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Due Today", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Priority", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Reminder Time", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Default", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alertController, animated: true)
     }
     

@@ -8,6 +8,6 @@
 
 import Foundation
 
-enum Sorting {
-    case alphabetical, dueToday, priority, reminderTime
+enum Sort {
+    case alphabetical, dateCreated, dueToday, priority, reminderTime
 }

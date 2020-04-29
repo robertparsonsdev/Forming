@@ -25,6 +25,8 @@ extension Habit {
     @NSManaged public var reminder: String?
     @NSManaged public var repeatability: Int64
     @NSManaged public var buttonState: Bool
+    @NSManaged public var dateCreated: Date
+    @NSManaged public var dueToday: Bool
     
     public var statuses: [Status] {
         get {
