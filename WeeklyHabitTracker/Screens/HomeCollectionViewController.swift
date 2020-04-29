@@ -36,7 +36,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
-        collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
@@ -45,8 +44,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         configureSearchController()
-        updateHabits()
         configureDataSource()
+
+        updateHabits()
     }
     
     func configureDataSource() {
@@ -86,9 +86,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func updateHabits() {
         self.habits = persistenceManager.fetch(Habit.self)
         if habits.isEmpty {
-            print("empty")
+            self.showEmptyStateView()
             return
-        }
+        } else { self.removeEmptyStateView() }
         
         // self.habits = sortHabits(on: currentSort)
         updateData(on: self.habits)
@@ -104,7 +104,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         persistenceManager.delete(habit)
         self.habits = persistenceManager.fetch(Habit.self)
         
-        if habits.isEmpty { print("display empty state screen") }
+        if habits.isEmpty { self.showEmptyStateView() }
     }
     
     @objc func newTapped() {

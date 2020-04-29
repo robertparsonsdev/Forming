@@ -11,8 +11,9 @@
 		EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */; };
 		EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369E2450A14700AFFBEB /* RepeatViewController.swift */; };
 		EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */; };
+		EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00D2458F60800FEA015 /* EmptyStateView.swift */; };
+		EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */; };
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
-		EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
 		EE9A71512458AFEA0082D135 /* Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sorting.swift */; };
 		EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* NewHabitViewController.swift */; };
@@ -45,8 +46,9 @@
 		EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
 		EE10369E2450A14700AFFBEB /* RepeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatViewController.swift; sourceTree = "<group>"; };
 		EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingPickerLabel.swift; sourceTree = "<group>"; };
+		EE2DF00D2458F60800FEA015 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewControllerExt.swift; sourceTree = "<group>"; };
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyScreenCell.swift; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sorting.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				EEA64ED42448E050008202D0 /* FormingDayButton.swift */,
 				EE02E51E244FBD410039B015 /* FormingTableView.swift */,
 				EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */,
+				EE2DF00D2458F60800FEA015 /* EmptyStateView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -161,7 +164,6 @@
 			children = (
 				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
 				EEC0FE9224464F7F00FC618F /* HabitCell.swift */,
-				EE39683A244EA30E00BE8BB0 /* EmptyScreenCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -194,6 +196,7 @@
 			children = (
 				EEC0FE952446578600FC618F /* UIViewExt.swift */,
 				EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */,
+				EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -283,15 +286,16 @@
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
 				EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
-				EE39683B244EA30E00BE8BB0 /* EmptyScreenCell.swift in Sources */,
 				EE9A71512458AFEA0082D135 /* Sorting.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
+				EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
+				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalendarManager.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
