@@ -24,6 +24,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     var filteredHabits = [Habit]()
     var isSearching = false
     
+    // MARK: - Initializers
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
         self.persistenceManager = persistenceManager
         super.init(collectionViewLayout: layout)
@@ -33,6 +34,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - CollectionView Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
@@ -47,6 +49,33 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         configureDataSource()
 
         updateHabits()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width - 30, height: 100)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: view.frame.width, height: 100)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
+    }
+    
+    // MARK: - Configuration Functions
+    func configureSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search for Habit"
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
     }
     
     func configureDataSource() {
@@ -64,6 +93,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
+    // MARK: - Functions
     func updateData(on habits: [Habit]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Habit>()
         snapshot.appendSections([.main])
@@ -71,16 +101,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
-    }
-    
-    func configureSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search for Habit"
-        searchController.searchBar.showsBookmarkButton = true
-        searchController.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
-        searchController.searchBar.delegate = self
-        navigationItem.searchController = searchController
     }
     
     func updateHabits() {
@@ -107,6 +127,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         if habits.isEmpty { self.showEmptyStateView() }
     }
     
+    // MARK: - Selectors
     @objc func newTapped() {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
         newHabitVC.delegate = self
@@ -114,24 +135,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 30, height: 100)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 100)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
-    }
 }
 
+// MARK: - Delegates
 extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
     func presentNewHabitViewController(with habit: Habit) {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
