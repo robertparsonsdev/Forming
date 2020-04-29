@@ -93,8 +93,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! NewHabitCell
             cell.habit = habit
-//            cell.delegate = self
-//            cell.persistenceManager = self.persistenceManager
+            cell.delegate = self
+            cell.persistenceManager = self.persistenceManager
             return cell
         })
                 
