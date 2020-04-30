@@ -21,9 +21,10 @@ class NewHabitCell: UICollectionViewCell {
     var days = [Bool]()
     var statuses = [Status]()
 
-    let titleLabel = UILabel()
+    let titleButton = UIButton()
     let checkboxStackView = UIStackView()
-    let editButton = UIButton()
+    let reminderLabel = UILabel()
+    let priorityLabel = UILabel()
     var alertController: UIAlertController?
     let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
@@ -31,17 +32,20 @@ class NewHabitCell: UICollectionViewCell {
     let impactGenerator = UIImpactFeedbackGenerator()
     
     let thinConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .thin), scale: .large)
-    let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .medium)
+    let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .default)
+    let boldConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .bold), scale: .small)
     let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
+    let priorityAttachment = NSTextAttachment()
     
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         configureCell()
-        configureTitleLabel()
+        configureTitleButton()
+        configureReminderLabel()
+        configurePriorityLabel()
         configureStackView()
-        configureEditButton()
         configureConstraints()
     }
     
@@ -57,10 +61,27 @@ class NewHabitCell: UICollectionViewCell {
         NotificationCenter.default.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
     }
     
-    func configureTitleLabel() {
-        titleLabel.textAlignment = .left
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
-        titleLabel.textColor = .white
+    func configureTitleButton() {
+        titleButton.contentHorizontalAlignment = .left
+        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        titleButton.titleLabel?.textColor = .white
+        titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+    }
+    
+    func configureReminderLabel() {
+        reminderLabel.font = UIFont.systemFont(ofSize: 15)
+        reminderLabel.textColor = .white
+        reminderLabel.textAlignment = .right
+        reminderLabel.isUserInteractionEnabled = false
+    }
+    
+    func configurePriorityLabel() {
+        priorityLabel.font = UIFont.systemFont(ofSize: 15)
+        priorityLabel.textAlignment = .center
+        priorityLabel.textColor = .white
+        priorityLabel.isUserInteractionEnabled = false
+        priorityAttachment.image = UIImage(named: "exclamationmark", in: nil, with: regularConfig)
+        priorityAttachment.image = priorityAttachment.image?.withTintColor(.white)
     }
     
     func configureStackView() {
@@ -69,29 +90,33 @@ class NewHabitCell: UICollectionViewCell {
         checkboxStackView.distribution = .fillEqually
     }
     
-    func configureEditButton() {
-        let symbolAttachment = NSTextAttachment(image: UIImage(named: "chevron.right", in: nil, with: regularConfig)!)
-        symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
-        let title = NSMutableAttributedString(string: "Edit ", attributes: [.font: UIFont.systemFont(ofSize: 15, weight: .regular), .foregroundColor: UIColor.white])
-        title.append(NSAttributedString(attachment: symbolAttachment))
-        
-        editButton.setAttributedTitle(title, for: .normal)
-        editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
-    }
-    
     func configureConstraints() {
-        addSubview(titleLabel)
-        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
-        addSubview(editButton)
-        editButton.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
+        addSubview(titleButton)
+        titleButton.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
+        addSubview(reminderLabel)
+        reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 65, height: 25)
+        addSubview(priorityLabel)
+        priorityLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: reminderLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
         addSubview(checkboxStackView)
-        checkboxStackView.anchor(top: titleLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        checkboxStackView.anchor(top: titleButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
     func configureData(habit: Habit) {
         self.currentDay = calendarManager.getCurrentDay()
-        if let title = habit.title { self.title = title; titleLabel.text = "   \(title)" }
-        titleLabel.backgroundColor = FormingColors.getColor(fromValue: habit.color)
+        if let title = habit.title {
+            self.title = title
+            let symbolAttachment = NSTextAttachment()
+            symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: boldConfig)
+            symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
+            let attributedTitle = NSMutableAttributedString(string: "  \(title)", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+            attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
+            titleButton.setAttributedTitle(attributedTitle, for: .normal)
+        }
+        titleButton.backgroundColor = FormingColors.getColor(fromValue: habit.color)
+        let priorityText = NSMutableAttributedString()
+        for _ in 0..<habit.priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
+        priorityLabel.attributedText = priorityText
+        if let reminder = habit.reminder { reminderLabel.text = "\(reminder) " } else { reminderLabel.text = "" }
         self.color = habit.color
         self.days = habit.days
         self.statuses = habit.statuses
@@ -207,7 +232,7 @@ class NewHabitCell: UICollectionViewCell {
     }
     
     // MARK: - Selectors
-    @objc func editButtonTapped() {
+    @objc func titleTapped() {
         if let habit = self.habit {
             delegate?.presentNewHabitViewController(with: habit)
         }
