@@ -99,7 +99,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         
         if !editMode {
             let initialHabit = Habit(context: persistenceManager.context)
-            initialHabit.title = titleTextField.text
+            initialHabit.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
             initialHabit.days = dayFlags
             if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
             dayFlags.forEach {
@@ -110,6 +110,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             initialHabit.priority = self.priority
             initialHabit.reminder = self.reminder
             initialHabit.repeatability = self.repeatability
+            if self.dayStatuses[CalendarManager.shared.getCurrentDay()] != .empty { initialHabit.dueToday = true }
+            else { initialHabit.dueToday = false }
         } else {
             habit?.title = titleTextField.text
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
@@ -131,6 +133,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             habit?.priority = self.priority
             habit?.reminder = self.reminder
             habit?.repeatability = self.repeatability
+            if habit?.statuses[CalendarManager.shared.getCurrentDay()] != .empty { habit?.dueToday = true }
+            else { habit?.dueToday = false }
         }
         
         persistenceManager.save()

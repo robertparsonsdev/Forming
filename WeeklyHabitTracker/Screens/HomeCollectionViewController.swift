@@ -151,7 +151,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         switch self.defaultSort {
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
         case .dateCreated: ()
-        case .dueToday: ()
+        case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.dueToday && !hab2.dueToday }
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }
         case .reminderTime: ()
         default: ()

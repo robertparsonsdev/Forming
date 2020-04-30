@@ -108,7 +108,7 @@ class NewHabitCell: UICollectionViewCell {
             let symbolAttachment = NSTextAttachment()
             symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: boldConfig)
             symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
-            let attributedTitle = NSMutableAttributedString(string: "  \(title)", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+            let attributedTitle = NSMutableAttributedString(string: "  \(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
             attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
             titleButton.setAttributedTitle(attributedTitle, for: .normal)
         }
