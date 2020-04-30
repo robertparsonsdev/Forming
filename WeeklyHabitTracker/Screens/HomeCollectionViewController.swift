@@ -20,7 +20,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     let alertController = UIAlertController(title: "Sort By:", message: "Current sort: ", preferredStyle: .actionSheet)
     var defaultSort: Sort?
-    let sorts: [String: Sort] = ["Alphabetical": .alphabetical, "Date Created": .dateCreated,"Due Today": .dueToday, "Priority": .priority, "Reminder Time": .reminderTime]
+    let sorts: [String: Sort] = ["Alphabetical": .alphabetical, "Date Created": .dateCreated, "Due Today": .dueToday, "Priority": .priority, "Reminder Time": .reminderTime]
     let searchController = UISearchController()
     var filteredHabits = [Habit]()
     
