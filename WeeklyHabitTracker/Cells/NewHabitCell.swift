@@ -279,11 +279,17 @@ class NewHabitCell: UICollectionViewCell {
             let oldDay = self.currentDay
             self.currentDay = CalUtility.getCurrentDay()
             
-            if oldDay != 6 && self.checkboxStackView.arrangedSubviews[oldDay] is UIButton {
-                if self.statuses[oldDay] == .incomplete { self.changeStatus(forIndex: oldDay, andStatus: .failed) }
-                self.replace(checkbox: self.checkboxStackView.arrangedSubviews[oldDay] as! UIButton, atIndex: oldDay)
-                if self.statuses[self.currentDay] == .completed || self.statuses[self.currentDay] == .failed { self.habit?.buttonState = true }
-                else { self.habit?.buttonState = false }
+            if oldDay != 6 {
+                if self.statuses[oldDay] != .empty {
+                    if self.statuses[oldDay] == .incomplete { self.changeStatus(forIndex: oldDay, andStatus: .failed) }
+                    self.replace(checkbox: self.checkboxStackView.arrangedSubviews[oldDay] as! UIButton, atIndex: oldDay)
+                }
+                
+                if self.statuses[self.currentDay] != .empty {
+                    if self.statuses[self.currentDay] == .completed || self.statuses[self.currentDay] == .failed { self.habit?.buttonState = true }
+                    else { self.habit?.buttonState = false }
+                    self.replace(checkbox: self.checkboxStackView.arrangedSubviews[self.currentDay] as! UIButton, atIndex: self.currentDay)
+                }
             } else if oldDay == 6 {
                 self.habit?.buttonState = false
                 // print("update status to failed or completed for oldIndex and save week to history")
