@@ -11,17 +11,18 @@ import UIKit
 class ReminderViewController: UIViewController {
     var updateDelegate: UpdateReminderDelegate?
     var saveDelegate: SaveReminderDelegate?
-    var reminder: String?
+    let calendarManger = CalendarManager.shared
+    var reminderDate: Date?
 
     let reminderLabel = FormingPickerLabel()
     let toggle = UISwitch()
     let defaultLabel = UILabel()
     let picker = UIDatePicker()
     
-    init(reminder: String?) {
+    init(reminder: Date?) {
         super.init(nibName: nil, bundle: nil)
-        if let newReminder = reminder { self.reminder = newReminder }
-        else { self.reminder = nil }
+        if let newReminder = reminder { self.reminderDate = newReminder }
+        else { self.reminderDate = nil }
     }
     
     required init?(coder: NSCoder) {
@@ -32,8 +33,8 @@ class ReminderViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Reminder"
-        
-        if self.reminder != nil { reminderLabel.text = self.reminder }
+
+        if self.reminderDate != nil { reminderLabel.text = calendarManger.getTimeAsString(time: self.reminderDate!) }
         else { reminderLabel.text = "No Reminder" }
         configureToggle()
         configureDefaultLabel()
@@ -44,15 +45,15 @@ class ReminderViewController: UIViewController {
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
         if parent == nil {
-            if toggle.isOn { self.reminder = getReminderAsString() }
-            else { self.reminder = nil }
-            updateDelegate?.updateReminder(reminder: self.reminder)
-            saveDelegate?.saveReminder(reminder: self.reminder)
+            if toggle.isOn { self.reminderDate = picker.date }
+            else { self.reminderDate = nil }
+            updateDelegate?.updateReminder(reminder: self.reminderDate)
+            saveDelegate?.saveReminder(reminder: self.reminderDate)
         }
     }
     
     func configureToggle() {
-        if self.reminder != nil { toggle.isOn = true }
+        if self.reminderDate != nil { toggle.isOn = true }
         else { toggle.isOn = false }
         toggle.addTarget(self, action: #selector(toggleTapped), for: .valueChanged)
     }
@@ -69,10 +70,9 @@ class ReminderViewController: UIViewController {
     func configurePicker() {
         picker.datePickerMode = .time
         picker.minuteInterval = 5
-        if let reminder = self.reminder {
-            if let date = getReminderAsDate(from: reminder) { picker.date = date }
-        } else {
-            if let date = getReminderAsDate(from: "9:00 AM") { picker.date = date }
+        if let reminder = self.reminderDate { picker.date = reminder }
+        else {
+            if let date = calendarManger.getTimeAsDate(time: "9:00 AM") { picker.date = date }
             picker.isEnabled = false
         }
         picker.addTarget(self, action: #selector(pickerChanged), for: .valueChanged)
@@ -93,7 +93,7 @@ class ReminderViewController: UIViewController {
     @objc func toggleTapped(sender: UISwitch) {
         if sender.isOn {
             picker.isEnabled = true
-            reminderLabel.text = getReminderAsString()
+            reminderLabel.text = calendarManger.getTimeAsString(time: picker.date)
         } else {
             picker.isEnabled = false
             reminderLabel.text = "No Reminder"
@@ -101,37 +101,15 @@ class ReminderViewController: UIViewController {
     }
     
     @objc func pickerChanged() {
-        if picker.isEnabled { reminderLabel.text = getReminderAsString() }
+        if picker.isEnabled { reminderLabel.text = calendarManger.getTimeAsString(time: picker.date) }
         else { reminderLabel.text = "No Reminder" }
-    }
-    
-    func getReminderAsString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        formatter.amSymbol = "AM"
-        formatter.pmSymbol = "PM"
-        let time = picker.date
-        return formatter.string(from: time)
-    }
-    
-    func getReminderAsDate(from reminder: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        formatter.amSymbol = "AM"
-        formatter.pmSymbol = "PM"
-        if let date = formatter.date(from: reminder) {
-            let calendar = Calendar.current
-            let hour = calendar.component(.hour, from: date)
-            let minutes = calendar.component(.minute, from: date)
-            return calendar.date(bySettingHour: hour, minute: minutes, second: 0, of: date)
-        } else { return nil }
     }
 }
 
 protocol UpdateReminderDelegate {
-    func updateReminder(reminder: String?)
+    func updateReminder(reminder: Date?)
 }
 
 protocol SaveReminderDelegate {
-    func saveReminder(reminder: String?)
+    func saveReminder(reminder: Date?)
 }

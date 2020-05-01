@@ -43,4 +43,25 @@ class CalendarManager {
         
         return days
     }
+    
+    func getTimeAsString(time: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        formatter.amSymbol = "AM"
+        formatter.pmSymbol = "PM"
+        return formatter.string(from: time)
+    }
+    
+    func getTimeAsDate(time: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        formatter.amSymbol = "AM"
+        formatter.pmSymbol = "PM"
+        if let date = formatter.date(from: time) {
+            let calendar = Calendar.current
+            let hour = calendar.component(.hour, from: date)
+            let minutes = calendar.component(.minute, from: date)
+            return calendar.date(bySettingHour: hour, minute: minutes, second: 0, of: date)
+        } else { return nil }
+    }
 }

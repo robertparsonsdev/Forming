@@ -94,7 +94,7 @@ class NewHabitCell: UICollectionViewCell {
         addSubview(titleButton)
         titleButton.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
         addSubview(reminderLabel)
-        reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 65, height: 25)
+        reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 70, height: 25)
         addSubview(priorityLabel)
         priorityLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: reminderLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
         addSubview(checkboxStackView)
@@ -116,7 +116,7 @@ class NewHabitCell: UICollectionViewCell {
         let priorityText = NSMutableAttributedString()
         for _ in 0..<habit.priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
         priorityLabel.attributedText = priorityText
-        if let reminder = habit.reminder { reminderLabel.text = "\(reminder) " } else { reminderLabel.text = "" }
+        if let reminder = habit.reminder { reminderLabel.text = "\(calendarManager.getTimeAsString(time: reminder)) " } else { reminderLabel.text = "" }
         self.color = habit.color
         self.days = habit.days
         self.statuses = habit.statuses

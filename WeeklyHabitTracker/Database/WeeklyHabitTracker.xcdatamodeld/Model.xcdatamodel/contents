@@ -7,7 +7,7 @@
         <attribute name="days" optional="YES" attributeType="Transformable" valueTransformerName=""/>
         <attribute name="dueToday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="priority" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="reminder" optional="YES" attributeType="String"/>
+        <attribute name="reminder" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="repeatability" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statusValues" optional="YES" attributeType="Transformable"/>
         <attribute name="title" optional="YES" attributeType="String"/>

@@ -11,6 +11,7 @@ import UIKit
 class NewHabitViewController: UIViewController, UITextFieldDelegate {
     var delegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
+    let calendarManager = CalendarManager.shared
     var editMode = false
     var habit: Habit? {
         didSet {
@@ -49,7 +50,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         
     var formingTableView: FormingTableView?
     var priority: Int64 = 0
-    var reminder: String? = "9:00 AM"
+    var reminder: Date? = CalendarManager.shared.getTimeAsDate(time: "9:00 AM")
     var repeatability: Int64 = 1
     
     let haptics = UISelectionFeedbackGenerator()
@@ -287,7 +288,7 @@ extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate
         self.priority = priority
     }
     
-    func saveReminder(reminder: String?) {
+    func saveReminder(reminder: Date?) {
         self.reminder = reminder
     }
     
