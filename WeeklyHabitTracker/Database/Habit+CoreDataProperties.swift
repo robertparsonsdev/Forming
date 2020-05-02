@@ -27,6 +27,7 @@ extension Habit {
     @NSManaged public var buttonState: Bool
     @NSManaged public var dateCreated: Date
     @NSManaged public var dueToday: Bool
+    @NSManaged public var currentDate: Date
     
     public var statuses: [Status] {
         get {
