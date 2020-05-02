@@ -60,4 +60,16 @@ class CalUtility {
             return calendar.date(bySettingHour: hour, minute: minutes, second: 0, of: date)
         } else { return nil }
     }
+    
+    static func getFutureDate() -> Date {
+        let date = Date()
+        let calendar = Calendar.current
+        return calendar.date(byAdding: .year, value: 100, to: date)!
+    }
+    
+    static func getCurrentDate() -> Date {
+        let date = Date()
+        let calendar = Calendar.current
+        return calendar.date(byAdding: .second, value: 0, to: date)!
+    }
 }

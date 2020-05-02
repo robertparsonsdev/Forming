@@ -16,17 +16,19 @@ private var currentSort: Sort?
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var habits = [Habit]()
     let persistenceManager: PersistenceService
+    let defaults: UserDefaults
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     
-    let alertController = UIAlertController(title: "Sort By:", message: "Current sort: ", preferredStyle: .actionSheet)
-    var defaultSort: Sort?
-    let sorts: [String: Sort] = ["Alphabetical": .alphabetical, "Date Created": .dateCreated, "Due Today": .dueToday, "Priority": .priority, "Reminder Time": .reminderTime]
+    let alertController = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+    var defaultSort: Sort = .dateCreated
     let searchController = UISearchController()
     var filteredHabits = [Habit]()
     
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults) {
         self.persistenceManager = persistenceManager
+        self.defaults = defaults
+        if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
         super.init(collectionViewLayout: layout)
     }
     
@@ -81,10 +83,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func configureSortAlertController() {
+        alertController.message = "Current sort: \(self.defaultSort.rawValue)"
         alertController.view.tintColor = .systemGreen
-        let sorted = sorts.sorted { $0.key < $1.key }
-        for element in sorted {
-            alertController.addAction(UIAlertAction(title: element.key, style: .default, handler: alertTapped))
+        Sort.allCases.forEach { (sort) in
+            alertController.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: alertTapped))
         }
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
@@ -121,8 +123,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             return
         } else { self.removeEmptyStateView() }
         
-        // self.habits = sortHabits(on: currentSort)
-        updateData(on: self.habits)
+        sortHabits()
     }
     
     func deleteHabit(_ habit: Habit) {
@@ -136,25 +137,29 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.habits = persistenceManager.fetch(Habit.self)
         
         if habits.isEmpty { self.showEmptyStateView() }
+        else { sortHabits() }
     }
     
     func alertTapped(sender: UIAlertAction) {
         if let sortTitle = sender.title {
-            if let sort = sorts[sortTitle] {
-                self.defaultSort = sort
-                self.sort()
-            }
+            self.defaultSort = Sort(rawValue: sortTitle)!
+            defaults.set(self.defaultSort.rawValue, forKey: "sort")
+            alertController.message = "Current sort: \(self.defaultSort.rawValue)"
+            self.sortHabits()
         }
     }
     
-    func sort() {
+    func sortHabits() {
         switch self.defaultSort {
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
-        case .dateCreated: ()
+        case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
         case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.dueToday && !hab2.dueToday }
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }
-        case .reminderTime: ()
-        default: ()
+        case .reminderTime: self.habits.sort { (hab1, hab2) -> Bool in
+            let reminder1 = hab1.reminder ?? CalUtility.getFutureDate()
+            let reminder2 = hab2.reminder ?? CalUtility.getFutureDate()
+            return reminder1.compare(reminder2) == .orderedAscending
+            }
         }
         updateData(on: self.habits)
     }

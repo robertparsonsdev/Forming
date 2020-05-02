@@ -8,6 +8,10 @@
 
 import Foundation
 
-enum Sort {
-    case alphabetical, dateCreated, dueToday, priority, reminderTime
+enum Sort: String, CaseIterable {
+    case alphabetical = "Alphabetical"
+    case dateCreated = "Date Created"
+    case dueToday = "Due Today"
+    case priority = "Priority"
+    case reminderTime = "Reminder Time"
 }

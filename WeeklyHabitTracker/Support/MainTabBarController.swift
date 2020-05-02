@@ -18,7 +18,7 @@ class MainTabBarController: UITabBarController {
 
     fileprivate func setUpViewControllers() {
         let boldConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .bold))
-        let homeNavController = buildTabBarControllers(withTitle: "Habits", andImage: UIImage(named: "checkmark", in: nil, with: boldConfig)!, andRootVC: HomeCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(), persistenceManager: PersistenceService.shared))
+        let homeNavController = buildTabBarControllers(withTitle: "Habits", andImage: UIImage(named: "checkmark", in: nil, with: boldConfig)!, andRootVC: HomeCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(), persistenceManager: PersistenceService.shared, defaults: UserDefaults.standard))
         let historyNavController = buildTabBarControllers(withTitle: "History", andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!, andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout()))
         let settingsNavController = buildTabBarControllers(withTitle: "Settings", andImage: UIImage(named: "gear", in: nil, with: boldConfig)!, andRootVC: SettingsViewController())
         viewControllers = [homeNavController, historyNavController, settingsNavController]
