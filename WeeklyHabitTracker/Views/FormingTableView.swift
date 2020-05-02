@@ -54,7 +54,9 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Priority"
-            cell.detailTextLabel?.text = priorities[Int(self.priority)]
+//            cell.detailTextLabel?.text = priorities[Int(self.priority)]
+//            cell.detailTextLabel?.attributedText = getPriorityAttText(index: Int(self.priority))
+            cell.detailTextLabel?.text = exclamation(index: Int(self.priority))
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
@@ -100,9 +102,30 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
-        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = priorities[Int(sender.value)]
+//        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = priorities[Int(sender.value)]
+//        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.attributedText = getPriorityAttText(index: Int(sender.value))
+        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = exclamation(index: Int(sender.value))
         tableDelegate?.savePriority(priority: Int64(sender.value))
     }
+    
+    func exclamation(index: Int) -> String {
+        switch index {
+        case 1: return "!"
+        case 2: return "!!"
+        case 3: return "!!!"
+        default: return "None"
+        }
+    }
+    
+//    func getPriorityAttText(index: Int) -> NSMutableAttributedString {
+//        let priorityAttachment = NSTextAttachment(image: UIImage(named: "exclamationmark")!)
+//        let attributedText = NSMutableAttributedString()
+//        if index == 0 { return NSMutableAttributedString(string: "None") }
+//        else {
+//            for _ in 0..<index { attributedText.append(NSAttributedString(attachment: priorityAttachment)) }
+//            return attributedText
+//        }
+//    }
 }
 
 protocol FormingTableViewDelegate {
