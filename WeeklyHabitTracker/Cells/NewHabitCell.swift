@@ -178,7 +178,7 @@ class NewHabitCell: UICollectionViewCell {
         self.statuses[index] = status
         habit?.statuses = self.statuses
         persistenceManager?.save()
-        habit?.statuses.forEach { print($0.rawValue) }
+        habit?.statuses.forEach { print($0.rawValue, terminator: " ") }
         print()
     }
     

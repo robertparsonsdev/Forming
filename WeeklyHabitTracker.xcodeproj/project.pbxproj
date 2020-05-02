@@ -123,6 +123,7 @@
 				EEAD7EDB244BA3BF002225F8 /* Status.swift */,
 				EECBF3DE2457CBBE0050DFB8 /* Section.swift */,
 				EE9A71502458AFEA0082D135 /* Sort.swift */,
+				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -148,7 +149,6 @@
 			children = (
 				EEA64ED9244A17BC008202D0 /* Utilities */,
 				EEA64ED624492BB1008202D0 /* Database */,
-				EEC0FE97244699B000FC618F /* Managers */,
 				EEC0FE942446576700FC618F /* Extensions */,
 				EEC0FE8D24464EFC00FC618F /* Cells */,
 				EEC0FE8F24464F1F00FC618F /* Support */,
@@ -202,14 +202,6 @@
 				EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		EEC0FE97244699B000FC618F /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
-			);
-			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
