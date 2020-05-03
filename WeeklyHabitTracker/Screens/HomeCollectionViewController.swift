@@ -172,6 +172,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
     }
+    
+    @objc func becameActive() {
+        print("became active")
+    }
 }
 
 // MARK: - Delegates

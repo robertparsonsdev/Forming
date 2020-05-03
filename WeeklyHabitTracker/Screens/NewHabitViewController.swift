@@ -113,6 +113,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             if self.dayStatuses[CalUtility.getCurrentDay()] != .empty { initialHabit.dueToday = true }
             else { initialHabit.dueToday = false }
             initialHabit.dateCreated = CalUtility.getCurrentDate()
+            initialHabit.currentDate = CalUtility.getCurrentDate()
         } else {
             habit?.title = titleTextField.text
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }

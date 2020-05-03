@@ -19,6 +19,7 @@ class NewHabitCell: UICollectionViewCell {
     var color: Int64 = -1
     var days = [Bool]()
     var statuses = [Status]()
+    var currentDate: Date?
 
     let titleButton = UIButton()
     let checkboxStackView = UIStackView()
@@ -119,6 +120,7 @@ class NewHabitCell: UICollectionViewCell {
         self.color = habit.color
         self.days = habit.days
         self.statuses = habit.statuses
+//        if Calendar.current.isDateInToday(habit.currentDate) { print(true) } else { print(false) }
         
         setupCheckboxes()
     }
@@ -278,6 +280,7 @@ class NewHabitCell: UICollectionViewCell {
         DispatchQueue.main.async {
             let oldDay = self.currentDay
             self.currentDay = CalUtility.getCurrentDay()
+            self.habit?.currentDate = CalUtility.getCurrentDate()
             
             if oldDay != 6 {
                 if self.statuses[oldDay] != .empty {
@@ -301,6 +304,10 @@ class NewHabitCell: UICollectionViewCell {
                 }
             }
         }
+    }
+    
+    @objc func becameActive() {
+        print("became active")
     }
 }
 
