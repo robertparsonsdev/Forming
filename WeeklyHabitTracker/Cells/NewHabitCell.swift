@@ -277,6 +277,8 @@ class NewHabitCell: UICollectionViewCell {
         DispatchQueue.main.async {
             let oldDay = self.currentDay
             self.currentDay = CalUtility.getCurrentDay()
+            if self.statuses[self.currentDay] == .incomplete { self.habit?.dueToday = true }
+            else { self.habit?.dueToday = false }
             
             if oldDay != 6 {
                 if self.statuses[oldDay] != .empty {
@@ -289,7 +291,7 @@ class NewHabitCell: UICollectionViewCell {
                     else { self.habit?.buttonState = false }
                     self.replace(checkbox: self.checkboxStackView.arrangedSubviews[self.currentDay] as! UIButton, atIndex: self.currentDay)
                 }
-            } else if oldDay == 6 {
+            } else {
                 self.habit?.buttonState = false
                 // print("update status to failed or completed for oldIndex and save week to history")
                 for (index, view) in self.checkboxStackView.arrangedSubviews.enumerated() {
