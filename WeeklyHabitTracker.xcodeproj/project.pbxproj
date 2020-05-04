@@ -51,6 +51,7 @@
 		EE2DF00D2458F60800FEA015 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewControllerExt.swift; sourceTree = "<group>"; };
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		EE35BF3B245FBF7800919965 /* Forming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forming.entitlements; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
@@ -147,6 +148,7 @@
 		EEC0FE72244646E500FC618F /* WeeklyHabitTracker */ = {
 			isa = PBXGroup;
 			children = (
+				EE35BF3B245FBF7800919965 /* Forming.entitlements */,
 				EEA64ED9244A17BC008202D0 /* Utilities */,
 				EEA64ED624492BB1008202D0 /* Database */,
 				EEC0FE942446576700FC618F /* Extensions */,
@@ -440,6 +442,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WeeklyHabitTracker/Forming.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2PZN25HHY7;
 				INFOPLIST_FILE = WeeklyHabitTracker/Info.plist;
@@ -459,6 +462,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WeeklyHabitTracker/Forming.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2PZN25HHY7;
 				INFOPLIST_FILE = WeeklyHabitTracker/Info.plist;
