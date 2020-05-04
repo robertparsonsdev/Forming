@@ -451,7 +451,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rjparsons.WeeklyHabitTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertparsons4.WeeklyHabitTracker;
 				PRODUCT_NAME = Forming;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -471,7 +471,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rjparsons.WeeklyHabitTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertparsons4.WeeklyHabitTracker;
 				PRODUCT_NAME = Forming;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
