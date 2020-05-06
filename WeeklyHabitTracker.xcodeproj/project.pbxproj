@@ -16,6 +16,8 @@
 		EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */; };
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
+		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
+		EE911087246242660021190C /* HistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* HistoryCell.swift */; };
 		EE9A71512458AFEA0082D135 /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sort.swift */; };
 		EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* NewHabitViewController.swift */; };
 		EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */; };
@@ -53,6 +55,8 @@
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		EE35BF3B245FBF7800919965 /* Forming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forming.entitlements; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
+		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
+		EE911086246242660021190C /* HistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCell.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
 		EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTitleLabel.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 				EECBF3DE2457CBBE0050DFB8 /* Section.swift */,
 				EE9A71502458AFEA0082D135 /* Sort.swift */,
 				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
+				EE91108424623F730021190C /* UIHelper.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -169,6 +174,7 @@
 				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
 				EEC0FE9224464F7F00FC618F /* HabitCell.swift */,
 				EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */,
+				EE911086246242660021190C /* HistoryCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -283,6 +289,7 @@
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
 				EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
+				EE91108524623F730021190C /* UIHelper.swift in Sources */,
 				EE9A71512458AFEA0082D135 /* Sort.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */,
@@ -294,6 +301,7 @@
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */,
+				EE911087246242660021190C /* HistoryCell.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
 				EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */,

@@ -39,7 +39,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - CollectionView Functions
+    // MARK: - CollectionView Lifecycle Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
