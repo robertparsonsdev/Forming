@@ -17,6 +17,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     var habits = [Habit]()
     let persistenceManager: PersistenceService
     let defaults: UserDefaults
+    let notificationCenter = NotificationCenter.default
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     var currentDate: Date?
     let currentDateKey = "currentDate"
@@ -39,7 +40,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - CollectionView Lifecycle Functions
+    // MARK: - CollectionView Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
@@ -48,7 +49,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(NewHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -58,11 +60,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         
         configureDataSource()
         updateHabits()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.updateCellsForDayChange(nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -183,6 +180,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         present(navController, animated: true)
     }
     
+    @objc func didBecomeActive() {
+        if habits.count == 0 { return }
+        updateCellsForDayChange(nil)
+    }
+    
     @objc func updateCellsForDayChange(_ notification: Notification?) {
         if notification == nil {
             if let currentDate = self.currentDate {
@@ -197,7 +199,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             self.currentDate = CalUtility.getCurrentDate()
             for cell in self.collectionView.visibleCells {
                 if let cell = cell as? NewHabitCell {
-                    cell.dayChanged()
+                    cell.dayChanged(fromBackground: notification == nil)
                 }
             }
         }
