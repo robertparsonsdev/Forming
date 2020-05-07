@@ -273,11 +273,19 @@ class NewHabitCell: UICollectionViewCell {
         }
     }
     
-    @objc func dayChanged() {
+    @objc func dayChanged(fromBackground bground: Bool) {
         DispatchQueue.main.async {
-            let oldDay = self.currentDay
-            self.currentDay = CalUtility.getCurrentDay()
-            if self.statuses[self.currentDay] == .incomplete { self.habit?.dueToday = true }
+            let oldDay, newDay: Int
+            if bground {
+                oldDay = self.currentDay - 1
+                newDay = self.currentDay
+            } else {
+                oldDay = self.currentDay
+                self.currentDay = CalUtility.getCurrentDay()
+                newDay = self.currentDay
+            }
+            
+            if self.statuses[newDay] == .incomplete { self.habit?.dueToday = true }
             else { self.habit?.dueToday = false }
             
             if oldDay != 6 {
@@ -286,10 +294,10 @@ class NewHabitCell: UICollectionViewCell {
                     self.replace(checkbox: self.checkboxStackView.arrangedSubviews[oldDay] as! UIButton, atIndex: oldDay)
                 }
                 
-                if self.statuses[self.currentDay] != .empty {
-                    if self.statuses[self.currentDay] == .completed || self.statuses[self.currentDay] == .failed { self.habit?.buttonState = true }
+                if self.statuses[newDay] != .empty {
+                    if self.statuses[newDay] == .completed || self.statuses[newDay] == .failed { self.habit?.buttonState = true }
                     else { self.habit?.buttonState = false }
-                    self.replace(checkbox: self.checkboxStackView.arrangedSubviews[self.currentDay] as! UIButton, atIndex: self.currentDay)
+                    self.replace(checkbox: self.checkboxStackView.arrangedSubviews[newDay] as! UIButton, atIndex: newDay)
                 }
             } else {
                 self.habit?.buttonState = false

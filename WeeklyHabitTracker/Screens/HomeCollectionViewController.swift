@@ -182,16 +182,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     @objc func didBecomeActive() {
         if habits.count == 0 { return }
+        if Calendar.current.isDateInToday(self.currentDate!) { return }
         updateCellsForDayChange(nil)
     }
     
-    @objc func updateCellsForDayChange(_ notification: Notification?) {
-        if notification == nil {
-            if let currentDate = self.currentDate {
-                if Calendar.current.isDateInToday(currentDate) { return }
-            }
-        }
-
+    @objc func updateCellsForDayChange(_ calendarDayChanged: Notification?) {
         print("changing days...")
         self.currentDate = CalUtility.getCurrentDate()
         defaults.set(self.currentDate, forKey: self.currentDateKey)
@@ -199,7 +194,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             self.currentDate = CalUtility.getCurrentDate()
             for cell in self.collectionView.visibleCells {
                 if let cell = cell as? NewHabitCell {
-                    cell.dayChanged(fromBackground: notification == nil)
+                    cell.dayChanged(fromBackground: calendarDayChanged == nil)
                 }
             }
         }
