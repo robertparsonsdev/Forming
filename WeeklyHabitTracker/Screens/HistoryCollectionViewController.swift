@@ -11,8 +11,7 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class HistoryCollectionViewController: UICollectionViewController {
-    var archives = ["Work on Forming", "Walk Levi", "Read"]
-    var colors = [UIColor.systemBlue, UIColor.systemOrange, UIColor.systemPink]
+    var archives: [String] = []
     let persistenceManager: PersistenceService
     
     let searchController = UISearchController()
@@ -34,6 +33,11 @@ class HistoryCollectionViewController: UICollectionViewController {
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.collectionViewLayout = UIHelper.createTwoColumnFlowLayout(in: collectionView)
+        
+        if archives.count == 0 {
+            self.showEmptyStateView(withText: "\n\n\n\n\nYour habit history will be displayed here when you complete your first week of habits.")
+            return
+        }
 
         self.collectionView!.register(HistoryCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
@@ -63,8 +67,6 @@ class HistoryCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HistoryCell
-        cell.setTitleLabelText(archives[indexPath.row])
-        cell.setBackgroundColor(colors[indexPath.row])
         return cell
     }
 
