@@ -11,7 +11,6 @@ import UIKit
 class ReminderViewController: UIViewController {
     var updateDelegate: UpdateReminderDelegate?
     var saveDelegate: SaveReminderDelegate?
-    let calendarManger = CalendarManager.shared
     var reminderDate: Date?
 
     let reminderLabel = FormingPickerLabel()
@@ -34,7 +33,7 @@ class ReminderViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Reminder"
 
-        if self.reminderDate != nil { reminderLabel.text = calendarManger.getTimeAsString(time: self.reminderDate!) }
+        if self.reminderDate != nil { reminderLabel.text = CalUtility.getTimeAsString(time: self.reminderDate!) }
         else { reminderLabel.text = "No Reminder" }
         configureToggle()
         configureDefaultLabel()
@@ -72,7 +71,7 @@ class ReminderViewController: UIViewController {
         picker.minuteInterval = 5
         if let reminder = self.reminderDate { picker.date = reminder }
         else {
-            if let date = calendarManger.getTimeAsDate(time: "9:00 AM") { picker.date = date }
+            if let date = CalUtility.getTimeAsDate(time: "9:00 AM") { picker.date = date }
             picker.isEnabled = false
         }
         picker.addTarget(self, action: #selector(pickerChanged), for: .valueChanged)
@@ -93,7 +92,7 @@ class ReminderViewController: UIViewController {
     @objc func toggleTapped(sender: UISwitch) {
         if sender.isOn {
             picker.isEnabled = true
-            reminderLabel.text = calendarManger.getTimeAsString(time: picker.date)
+            reminderLabel.text = CalUtility.getTimeAsString(time: picker.date)
         } else {
             picker.isEnabled = false
             reminderLabel.text = "No Reminder"
@@ -101,7 +100,7 @@ class ReminderViewController: UIViewController {
     }
     
     @objc func pickerChanged() {
-        if picker.isEnabled { reminderLabel.text = calendarManger.getTimeAsString(time: picker.date) }
+        if picker.isEnabled { reminderLabel.text = CalUtility.getTimeAsString(time: picker.date) }
         else { reminderLabel.text = "No Reminder" }
     }
 }

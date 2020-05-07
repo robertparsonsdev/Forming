@@ -62,7 +62,7 @@ class HabitCell: UICollectionViewCell {
     func configureBoxes(days: [Bool]) {
         for view in self.boxStackView.arrangedSubviews { view.removeFromSuperview() }
         guard let statuses = habit?.statuses else { return }
-        let currentDay = CalendarManager.shared.getCurrentDay()
+        let currentDay = CalUtility.getCurrentDay()
         
         for (index, day) in days.enumerated() {
             let button = UIButton()
@@ -135,7 +135,7 @@ class HabitCell: UICollectionViewCell {
     
     @objc func updateBoxes() {
         DispatchQueue.main.async {
-            let newDate = CalendarManager.shared.getCurrentDay()
+            let newDate = CalUtility.getCurrentDay()
             let oldIndex: Int
             guard let days = self.habit?.days else { return }
             guard let statuses = self.habit?.statuses else { return }
@@ -206,7 +206,7 @@ class HabitCell: UICollectionViewCell {
     
     @objc func boxLongPressed(gesture: UILongPressGestureRecognizer) {
         guard let button = gesture.view as? UIButton else { return }
-        let currentDay = CalendarManager.shared.getCurrentDay()
+        let currentDay = CalUtility.getCurrentDay()
         let index = button.tag
         guard let days = self.habit?.days else { return }
         

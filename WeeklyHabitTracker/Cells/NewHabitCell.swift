@@ -11,7 +11,6 @@ import UIKit
 class NewHabitCell: UICollectionViewCell {
     var persistenceManager: PersistenceService?
     var delegate: HabitCellDelegate?
-    var calendarManager = CalendarManager.shared
     var currentDay = -1
     var habit: Habit? {
         didSet { if let habit = self.habit { self.configureData(habit: habit) } }
@@ -102,7 +101,7 @@ class NewHabitCell: UICollectionViewCell {
     }
     
     func configureData(habit: Habit) {
-        self.currentDay = calendarManager.getCurrentDay()
+        self.currentDay = CalUtility.getCurrentDay()
         if let title = habit.title {
             self.title = title
             let symbolAttachment = NSTextAttachment()
@@ -116,7 +115,7 @@ class NewHabitCell: UICollectionViewCell {
         let priorityText = NSMutableAttributedString()
         for _ in 0..<habit.priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
         priorityLabel.attributedText = priorityText
-        if let reminder = habit.reminder { reminderLabel.text = "\(calendarManager.getTimeAsString(time: reminder)) " } else { reminderLabel.text = "" }
+        if let reminder = habit.reminder { reminderLabel.text = "\(CalUtility.getTimeAsString(time: reminder)) " } else { reminderLabel.text = "" }
         self.color = habit.color
         self.days = habit.days
         self.statuses = habit.statuses
@@ -278,14 +277,13 @@ class NewHabitCell: UICollectionViewCell {
     @objc func dayChanged() {
         DispatchQueue.main.async {
             let oldDay = self.currentDay
-            self.currentDay = self.calendarManager.getCurrentDay()
+            self.currentDay = CalUtility.getCurrentDay()
             
             if oldDay != 6 && self.checkboxStackView.arrangedSubviews[oldDay] is UIButton {
                 if self.statuses[oldDay] == .incomplete { self.changeStatus(forIndex: oldDay, andStatus: .failed) }
                 self.replace(checkbox: self.checkboxStackView.arrangedSubviews[oldDay] as! UIButton, atIndex: oldDay)
                 if self.statuses[self.currentDay] == .completed || self.statuses[self.currentDay] == .failed { self.habit?.buttonState = true }
                 else { self.habit?.buttonState = false }
-                self.replace(checkbox: self.checkboxStackView.arrangedSubviews[self.currentDay] as! UIButton, atIndex: self.currentDay)
             } else if oldDay == 6 {
                 self.habit?.buttonState = false
                 // print("update status to failed or completed for oldIndex and save week to history")

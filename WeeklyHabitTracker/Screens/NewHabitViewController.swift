@@ -11,7 +11,6 @@ import UIKit
 class NewHabitViewController: UIViewController, UITextFieldDelegate {
     var delegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
-    let calendarManager = CalendarManager.shared
     var editMode = false
     var habit: Habit? {
         didSet {
@@ -50,7 +49,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         
     var formingTableView: FormingTableView?
     var priority: Int64 = 0
-    var reminder: Date? = CalendarManager.shared.getTimeAsDate(time: "9:00 AM")
+    var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
     var repeatability: Int64 = 1
     
     let haptics = UISelectionFeedbackGenerator()
@@ -111,7 +110,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             initialHabit.priority = self.priority
             initialHabit.reminder = self.reminder
             initialHabit.repeatability = self.repeatability
-            if self.dayStatuses[CalendarManager.shared.getCurrentDay()] != .empty { initialHabit.dueToday = true }
+            if self.dayStatuses[CalUtility.getCurrentDay()] != .empty { initialHabit.dueToday = true }
             else { initialHabit.dueToday = false }
         } else {
             habit?.title = titleTextField.text
@@ -134,7 +133,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             habit?.priority = self.priority
             habit?.reminder = self.reminder
             habit?.repeatability = self.repeatability
-            if habit?.statuses[CalendarManager.shared.getCurrentDay()] != .empty { habit?.dueToday = true }
+            if habit?.statuses[CalUtility.getCurrentDay()] != .empty { habit?.dueToday = true }
             else { habit?.dueToday = false }
         }
         

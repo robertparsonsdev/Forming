@@ -13,7 +13,6 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     var reminder: Date?
     var repeatability: Int64
     var tableDelegate: FormingTableViewDelegate?
-    let calendarManager = CalendarManager.shared
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
     let repeatData = [0: "Just This Week", 1: "Every Week", 2: "Every Two Weeks", 3: "Every Three Weeks", 4: "Every Four Weeks"]
@@ -61,7 +60,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             cell.selectionStyle = .none
         case 1:
             cell.textLabel?.text = "Reminder"
-            if let reminder = self.reminder { cell.detailTextLabel?.text = calendarManager.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
+            if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
             cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
         default:
@@ -116,7 +115,7 @@ extension FormingTableView: UpdateReminderDelegate, UpdateRepeatDelegate {
         let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
         if let unwrappedReminder = reminder {
             self.reminder = unwrappedReminder
-            cell?.detailTextLabel?.text = calendarManager.getTimeAsString(time: unwrappedReminder)
+            cell?.detailTextLabel?.text = CalUtility.getTimeAsString(time: unwrappedReminder)
         }
         else {
             self.reminder = nil

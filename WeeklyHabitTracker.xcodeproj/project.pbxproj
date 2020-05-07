@@ -38,7 +38,7 @@
 		EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */; };
 		EEC0FE9324464F7F00FC618F /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE9224464F7F00FC618F /* HabitCell.swift */; };
 		EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE952446578600FC618F /* UIViewExt.swift */; };
-		EEC0FE99244699BE00FC618F /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalendarManager.swift */; };
+		EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalUtility.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
 /* End PBXBuildFile section */
 
@@ -76,7 +76,7 @@
 		EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderCell.swift; sourceTree = "<group>"; };
 		EEC0FE9224464F7F00FC618F /* HabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EEC0FE952446578600FC618F /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
-		EEC0FE98244699BE00FC618F /* CalendarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarManager.swift; sourceTree = "<group>"; };
+		EEC0FE98244699BE00FC618F /* CalUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalUtility.swift; sourceTree = "<group>"; };
 		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -207,7 +207,7 @@
 		EEC0FE97244699B000FC618F /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				EEC0FE98244699BE00FC618F /* CalendarManager.swift */,
+				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -299,7 +299,7 @@
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
-				EEC0FE99244699BE00FC618F /* CalendarManager.swift in Sources */,
+				EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
 				EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */,

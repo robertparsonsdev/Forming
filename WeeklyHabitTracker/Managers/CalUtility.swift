@@ -8,18 +8,14 @@
 
 import Foundation
 
-class CalendarManager {
-    static let shared = CalendarManager()
-    
-    private init() {}
-    
-    func getCurrentDay() -> Int {
+class CalUtility {
+    static func getCurrentDay() -> Int {
         let date = Date()
         let calendar = Calendar.current
         return calendar.component(.weekday, from: date) - 1
     }
     
-    func getCurrentWeek() -> [String] {
+    static func getCurrentWeek() -> [String] {
         let date = Date()
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
@@ -44,7 +40,7 @@ class CalendarManager {
         return days
     }
     
-    func getTimeAsString(time: Date) -> String {
+    static func getTimeAsString(time: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"
         formatter.amSymbol = "AM"
@@ -52,7 +48,7 @@ class CalendarManager {
         return formatter.string(from: time)
     }
     
-    func getTimeAsDate(time: String) -> Date? {
+    static func getTimeAsDate(time: String) -> Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"
         formatter.amSymbol = "AM"
