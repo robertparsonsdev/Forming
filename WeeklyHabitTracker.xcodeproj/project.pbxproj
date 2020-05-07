@@ -102,6 +102,7 @@
 				EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */,
 				EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */,
 				EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */,
+				EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -145,7 +146,6 @@
 				EEC0FE7C244646EA00FC618F /* Assets.xcassets */,
 				EEC0FE7E244646EA00FC618F /* LaunchScreen.storyboard */,
 				EEC0FE81244646EA00FC618F /* Info.plist */,
-				EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */,
 			);
 			path = WeeklyHabitTracker;
 			sourceTree = "<group>";

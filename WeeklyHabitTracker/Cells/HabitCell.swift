@@ -11,8 +11,6 @@ import CoreHaptics
 
 class HabitCell: UICollectionViewCell {
     var persistenceManager: PersistenceService?
-    let defaults = UserDefaults.standard
-    let key = "isSelected"
     var delegate: HabitCellDelegate?
     var habit: Habit? {
         didSet {
@@ -78,7 +76,7 @@ class HabitCell: UICollectionViewCell {
                 button.addTarget(self, action: #selector(todayBoxTapped), for: .touchUpInside)
                 button.setImage(UIImage(named: "square", in: nil, with: blackConfig), for: .normal)
                 button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
-                button.isSelected = defaults.bool(forKey: key)
+                if let state = habit?.buttonState { print("button state", state); button.isSelected = state }
                 switch statuses[currentDay] {
                 case .completed: button.imageView?.tintColor = .systemGreen
                 case .incomplete: button.imageView?.tintColor = .label
@@ -138,7 +136,7 @@ class HabitCell: UICollectionViewCell {
             let oldIndex: Int
             guard let days = self.habit?.days else { return }
             guard let statuses = self.habit?.statuses else { return }
-            self.defaults.set(false, forKey: self.key)
+            self.habit?.buttonState = false
             
             switch newDate {
             case 0: oldIndex = 6
@@ -173,7 +171,7 @@ class HabitCell: UICollectionViewCell {
         
         if sender.isSelected == true {
             sender.isSelected = false
-            defaults.set(sender.isSelected, forKey: key)
+            self.habit?.buttonState = sender.isSelected
             sender.imageView?.tintColor = .label
             switch statuses[tag] {
             case .completed: changeStatus(forIndex: tag, andStatus: .incomplete)
@@ -182,7 +180,7 @@ class HabitCell: UICollectionViewCell {
             }
         } else {
             sender.isSelected = true
-            defaults.set(sender.isSelected, forKey: key)
+            self.habit?.buttonState = sender.isSelected
             switch statuses[tag] {
             case .incomplete: sender.imageView?.tintColor = .systemGreen; changeStatus(forIndex: tag, andStatus: .completed)
             default: ()
@@ -212,7 +210,7 @@ class HabitCell: UICollectionViewCell {
                 DispatchQueue.main.async { self.configureBoxes(days: days) }
                 if button.tag == currentDay {
                     button.isSelected = false
-                    self.defaults.set(button.isSelected, forKey: self.key)
+                    self.habit?.buttonState = button.isSelected
                 }
             })
             alertController.addAction(UIAlertAction(title: "Complete", style: .default) { [weak self] _ in
@@ -221,7 +219,7 @@ class HabitCell: UICollectionViewCell {
                 DispatchQueue.main.async { self.configureBoxes(days: days) }
                 if button.tag == currentDay {
                     button.isSelected = true
-                    self.defaults.set(button.isSelected, forKey: self.key)
+                    self.habit?.buttonState = button.isSelected
                 }
             })
             if button.tag != currentDay {
