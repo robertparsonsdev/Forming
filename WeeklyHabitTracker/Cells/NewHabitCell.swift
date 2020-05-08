@@ -58,7 +58,6 @@ class NewHabitCell: UICollectionViewCell {
         layer.cornerRadius = 14
         backgroundColor = .tertiarySystemFill
         clipsToBounds = true
-        NotificationCenter.default.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
     }
     
     func configureTitleButton() {
@@ -304,10 +303,6 @@ class NewHabitCell: UICollectionViewCell {
                 }
             }
         }
-    }
-    
-    @objc func becameActive() {
-        print("became active")
     }
 }
 

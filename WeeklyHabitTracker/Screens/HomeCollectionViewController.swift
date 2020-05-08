@@ -44,6 +44,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
+        NotificationCenter.default.addObserver(self, selector: #selector(fromDayChangeNotification), name: .NSCalendarDayChanged, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(NewHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -173,8 +174,14 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         present(navController, animated: true)
     }
     
-    @objc func becameActive() {
-        print("became active")
+    @objc func fromDayChangeNotification() {
+        DispatchQueue.main.async {
+            for cell in self.collectionView.visibleCells {
+                if let cell = cell as? NewHabitCell {
+                    cell.dayChanged()
+                }
+            }
+        }
     }
 }
 
