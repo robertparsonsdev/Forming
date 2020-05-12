@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE01A6E0246A54A7007B45C2 /* FinalHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE01A6DF246A54A7007B45C2 /* FinalHabitCell.swift */; };
 		EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02E51E244FBD410039B015 /* FormingTableView.swift */; };
 		EE070C772459F7AB00CAACB2 /* NewHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */; };
 		EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE01A6DF246A54A7007B45C2 /* FinalHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalHabitCell.swift; sourceTree = "<group>"; };
 		EE02E51E244FBD410039B015 /* FormingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTableView.swift; sourceTree = "<group>"; };
 		EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitCell.swift; sourceTree = "<group>"; };
 		EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				EEC0FE9224464F7F00FC618F /* HabitCell.swift */,
 				EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */,
 				EE911086246242660021190C /* HistoryCell.swift */,
+				EE01A6DF246A54A7007B45C2 /* FinalHabitCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -301,6 +304,7 @@
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */,
+				EE01A6E0246A54A7007B45C2 /* FinalHabitCell.swift in Sources */,
 				EE911087246242660021190C /* HistoryCell.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,

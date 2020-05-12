@@ -49,11 +49,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
-        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
-        self.collectionView.register(NewHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(FinalHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         configureSearchController()
         configureSortAlertController()
@@ -100,10 +100,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! NewHabitCell
-            cell.habit = habit
-            cell.delegate = self
-            cell.persistenceManager = self.persistenceManager
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FinalHabitCell
+            cell.set(delegate: self)
+            cell.set(habit: habit)
             return cell
         })
                 

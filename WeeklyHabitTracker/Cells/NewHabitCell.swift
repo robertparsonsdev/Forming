@@ -313,8 +313,8 @@ class NewHabitCell: UICollectionViewCell {
     }
 }
 
-// MARK: - Protocols
-protocol HabitCellDelegate {
-    func presentNewHabitViewController(with habit: Habit)
-    func presentAlertController(with alert: UIAlertController)
-}
+//// MARK: - Protocols
+//protocol HabitCellDelegate {
+//    func presentNewHabitViewController(with habit: Habit)
+//    func presentAlertController(with alert: UIAlertController)
+//}
