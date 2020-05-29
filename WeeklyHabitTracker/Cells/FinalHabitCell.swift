@@ -9,8 +9,9 @@
 import UIKit
 
 class FinalHabitCell: UICollectionViewCell {
+    private var habit: Habit?
     private var delegate: HabitCellDelegate?
-    private var currentDay = -1
+    private var currentDay: Int
     
     private let titleButton = UIButton()
     private let checkboxStackView = UIStackView()
@@ -30,6 +31,7 @@ class FinalHabitCell: UICollectionViewCell {
     
     // MARK: - Initializers
     override init(frame: CGRect) {
+        self.currentDay = CalUtility.getCurrentDay()
         super.init(frame: frame)
         
         configureCell()
@@ -55,7 +57,7 @@ class FinalHabitCell: UICollectionViewCell {
         titleButton.contentHorizontalAlignment = .left
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         titleButton.titleLabel?.textColor = .white
-//        titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+        titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
     }
     
     func configureReminderLabel() {
@@ -91,21 +93,137 @@ class FinalHabitCell: UICollectionViewCell {
         checkboxStackView.anchor(top: titleButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
-    // MARK: Functions
+    // MARK: - Functions
     func set(delegate: HabitCellDelegate) {
         self.delegate = delegate
     }
     
     func set(habit: Habit) {
-        // set UI elements
+        self.habit = habit
+        if let title = habit.title {
+            let symbolAttachment = NSTextAttachment()
+            symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: boldConfig)
+            symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
+            let attributedTitle = NSMutableAttributedString(string: "  \(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+            attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
+            titleButton.setAttributedTitle(attributedTitle, for: .normal)
+        }
+        titleButton.backgroundColor = FormingColors.getColor(fromValue: habit.color)
+        let priorityText = NSMutableAttributedString()
+        for _ in 0..<habit.priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
+        priorityLabel.attributedText = priorityText
+        if let reminder = habit.reminder { reminderLabel.text = "\(CalUtility.getTimeAsString(time: reminder)) " } else { reminderLabel.text = "" }
+        
+        setupCheckboxes(withDays: habit.days, withState: habit.buttonState, andStatuses: habit.statuses)
     }
     
-    // MARK: Selectors
+    func setupCheckboxes(withDays days: [Bool], withState state: Bool, andStatuses statuses: [Status]) {
+        if !checkboxStackView.arrangedSubviews.isEmpty { for view in checkboxStackView.arrangedSubviews { view.removeFromSuperview() } }
+        
+        for (index, day) in days.enumerated() {
+            if day && index == currentDay { checkboxStackView.addArrangedSubview(createTodayCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
+            else if day { checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
+            else { checkboxStackView.addArrangedSubview(UIView()) }
+        }
+    }
     
+    func createTodayCheckbox(withTag tag: Int, withState state: Bool, andStatuses statuses: [Status]) -> UIButton {
+        let button = UIButton()
+        button.isSelected = state
+        button.tag = tag
+        button.addTarget(self, action: #selector(todayCheckboxTapped), for: .touchUpInside)
+        button.addGestureRecognizer(createLongGesture())
+        button.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
+        switch statuses[tag] {
+        case .incomplete: button.imageView?.tintColor = .label
+        case .completed:
+            button.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: self.blackConfig), for: .selected)
+            button.imageView?.tintColor = .systemGreen
+        case .failed:
+            button.setImage(UIImage(named: "xmark.square.fill", in: nil, with: self.blackConfig), for: .selected)
+            button.imageView?.tintColor = .systemRed
+        default: ()
+        }
+        return button
+    }
+    
+    func createCheckbox(withTag tag: Int, withState state: Bool, andStatuses statuses: [Status]) -> UIButton {
+        let button = UIButton()
+        button.tag = tag
+        button.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
+        button.addGestureRecognizer(createLongGesture())
+        switch statuses[tag] {
+        case .incomplete:
+            button.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
+            button.imageView?.tintColor = .label
+        case .completed:
+            button.setImage(UIImage(named: "checkmark.square", in: nil, with: self.thinConfig), for: .normal)
+            button.imageView?.tintColor = .systemGreen
+        case .failed:
+            button.setImage(UIImage(named: "xmark.square", in: nil, with: thinConfig), for: .normal)
+            button.imageView?.tintColor = .systemRed
+        default: ()
+        }
+        return button
+    }
+    
+    func createLongGesture() -> UILongPressGestureRecognizer {
+        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(checkboxLongPressed))
+        longGesture.minimumPressDuration = 0.5
+        return longGesture
+    }
+    
+    func changeStatus(forIndex index: Int, andStatus status: Status) {
+        if let habit = self.habit {
+            habit.statuses[index] = status
+            self.habit?.statuses = habit.statuses
+        }
+    }
+    
+    // MARK: - Selectors
+    @objc func titleTapped() {
+        if let habit = self.habit {
+            delegate?.presentNewHabitViewController(with: habit)
+        }
+    }
+    
+    @objc func todayCheckboxTapped(sender: UIButton) {
+        selectionGenerator.selectionChanged()
+        if sender.isSelected == true {
+            sender.isSelected = false
+            self.habit?.buttonState = sender.isSelected
+            sender.imageView?.tintColor = .label
+            changeStatus(forIndex: sender.tag, andStatus: .incomplete)
+        } else {
+            sender.isSelected = true
+            self.habit?.buttonState = sender.isSelected
+            if sender.image(for: .selected) == UIImage(named: "xmark.square.fill", in: nil, with: blackConfig) {
+                sender.setImage(UIImage(named: "xmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                sender.imageView?.tintColor = .systemRed
+                changeStatus(forIndex: sender.tag, andStatus: .failed)
+            } else {
+                sender.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
+                sender.imageView?.tintColor = .systemGreen
+                changeStatus(forIndex: sender.tag, andStatus: .completed)
+            }
+        }
+        delegate?.saveToPersistence(habit: self.habit!)
+    }
+    
+    @objc func checkboxTapped(sender: UIButton) {
+        DispatchQueue.main.async { sender.shake() }
+    }
+    
+    @objc func checkboxLongPressed(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            delegate?.presentAlertController(with: self.alertController!)
+        }
+    }
 }
 
 // MARK: - Protocols
 protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
+    func saveToPersistence(habit: Habit)
     func presentAlertController(with alert: UIAlertController)
 }

@@ -133,14 +133,15 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func deleteHabit(_ habit: Habit) {
-        var snapshot = self.dataSource.snapshot()
-        snapshot.deleteItems([habit])
-        DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: true)
-        }
+//        var snapshot = self.dataSource.snapshot()
+//        snapshot.deleteItems([habit])
+//        DispatchQueue.main.async {
+//            self.dataSource.apply(snapshot, animatingDifferences: true)
+//        }
         
         persistenceManager.delete(habit)
         self.habits = persistenceManager.fetch(Habit.self)
+        updateData(on: self.habits)
         
         if habits.isEmpty { self.showEmptyStateView() }
         else { sortHabits() }
@@ -202,7 +203,18 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 }
 
 // MARK: - Delegates
-extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
+extension HomeCollectionViewController: SaveHabitDelegate {
+    func saveHabit() {
+        self.updateHabits()
+        collectionView.reloadData()
+    }
+    
+    func delete(habit: Habit) {
+        self.deleteHabit(habit)
+    }
+}
+
+extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
         newHabitVC.habit = habit
@@ -212,19 +224,16 @@ extension HomeCollectionViewController: HabitCellDelegate, SaveHabitDelegate {
         DispatchQueue.main.async { self.present(navController, animated: true) }
     }
     
+    func saveToPersistence(habit: Habit) {
+        self.persistenceManager.save()
+        habit.statuses.forEach { print($0.rawValue, terminator: " ") }
+        print()
+    }
+    
     func presentAlertController(with alert: UIAlertController) {
         DispatchQueue.main.async {
             self.present(alert, animated: true)
         }
-    }
-    
-    func saveHabit() {
-        self.updateHabits()
-        collectionView.reloadData()
-    }
-    
-    func delete(habit: Habit) {
-        self.deleteHabit(habit)
     }
 }
 
