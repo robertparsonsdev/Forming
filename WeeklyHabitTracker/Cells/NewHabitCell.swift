@@ -269,7 +269,7 @@ class NewHabitCell: UICollectionViewCell {
             alertController = UIAlertController(title: "Change \(dayNames[checkbox.tag])'s status?", message: "Knowing the correct status of what you've done (e.g. completing or failing a habit) helps you to form better habits.", preferredStyle: .actionSheet)
             alertController?.view.tintColor = .systemGreen
             createAlertActions(checkbox: checkbox)
-            delegate?.presentAlertController(with: alertController!)
+//            delegate?.presentAlertController(with: alertController!)
         }
     }
     

@@ -12,13 +12,13 @@ class FinalHabitCell: UICollectionViewCell {
     private var habit: Habit?
     private var delegate: HabitCellDelegate?
     private var currentDay: Int
+    private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     private let titleButton = UIButton()
     private let checkboxStackView = UIStackView()
     private let reminderLabel = UILabel()
     private let priorityLabel = UILabel()
     private var alertController: UIAlertController?
-    private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     private let selectionGenerator = UISelectionFeedbackGenerator()
     private let impactGenerator = UIImpactFeedbackGenerator()
@@ -122,7 +122,7 @@ class FinalHabitCell: UICollectionViewCell {
         
         for (index, day) in days.enumerated() {
             if day && index == currentDay { checkboxStackView.addArrangedSubview(createTodayCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
-            else if day { checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
+            else if day { checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatuses: statuses)) }
             else { checkboxStackView.addArrangedSubview(UIView()) }
         }
     }
@@ -147,7 +147,7 @@ class FinalHabitCell: UICollectionViewCell {
         return button
     }
     
-    func createCheckbox(withTag tag: Int, withState state: Bool, andStatuses statuses: [Status]) -> UIButton {
+    func createCheckbox(withTag tag: Int, andStatuses statuses: [Status]) -> UIButton {
         let button = UIButton()
         button.tag = tag
         button.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
@@ -178,6 +178,42 @@ class FinalHabitCell: UICollectionViewCell {
             habit.statuses[index] = status
             self.habit?.statuses = habit.statuses
         }
+    }
+    
+    func replace(withCheckbox checkbox: UIButton, atIndex index: Int, withState state: Bool = false) {
+        DispatchQueue.main.async {
+            checkbox.removeFromSuperview()
+            if index == self.currentDay {
+                self.checkboxStackView.insertArrangedSubview(self.createTodayCheckbox(withTag: checkbox.tag, withState: state, andStatuses: self.habit!.statuses), at: index)
+            } else {
+                self.checkboxStackView.insertArrangedSubview(self.createCheckbox(withTag: checkbox.tag, andStatuses: self.habit!.statuses), at: index)
+            }
+        }
+    }
+    
+    func createAlertActions(checkbox: UIButton) {
+        alertController?.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self] (_) in
+            guard let self = self else { return }
+            if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
+            self.changeStatus(forIndex: checkbox.tag, andStatus: .completed)
+            self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
+            self.delegate?.saveToPersistence(habit: self.habit!)
+        }))
+        alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
+            guard let self = self else { return }
+            if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
+            self.changeStatus(forIndex: checkbox.tag, andStatus: .failed)
+            self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
+            self.delegate?.saveToPersistence(habit: self.habit!)
+        }))
+        alertController?.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self] (_) in
+            guard let self = self else { return }
+            if checkbox.tag == self.currentDay { self.habit?.buttonState = false }
+            self.changeStatus(forIndex: checkbox.tag, andStatus: .incomplete)
+            self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: false)
+            self.delegate?.saveToPersistence(habit: self.habit!)
+        }))
+        alertController?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
     // MARK: - Selectors
@@ -216,9 +252,17 @@ class FinalHabitCell: UICollectionViewCell {
     
     @objc func checkboxLongPressed(gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
-            delegate?.presentAlertController(with: self.alertController!)
+            impactGenerator.impactOccurred()
+            guard let checkbox = gesture.view as? UIButton else { return }
+            alertController = UIAlertController()
+            alertController?.title = "Change \(dayNames[checkbox.tag])'s status?"
+            alertController?.message = "Knowing the correct status of what you've done (e.g. completing or failing a habit) helps you to form better habits."
+            alertController?.view.tintColor = .systemGreen
+            createAlertActions(checkbox: checkbox)
+            delegate?.presentAlertController(with: alertController!)
         }
     }
+    
 }
 
 // MARK: - Protocols

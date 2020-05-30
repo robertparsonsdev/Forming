@@ -22,8 +22,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     var currentDate: Date?
     let currentDateKey = "currentDate"
     
-    let alertController = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+    let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     var defaultSort: Sort = .dateCreated
+    
     let searchController = UISearchController()
     var filteredHabits = [Habit]()
     
@@ -90,12 +91,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func configureSortAlertController() {
-        alertController.message = "Current sort: \(self.defaultSort.rawValue)"
-        alertController.view.tintColor = .systemGreen
+        sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
+        sortAC.view.tintColor = .systemGreen
         Sort.allCases.forEach { (sort) in
-            alertController.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: alertTapped))
+            sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: sortAlertTapped))
         }
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
     func configureDataSource() {
@@ -133,12 +134,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func deleteHabit(_ habit: Habit) {
-//        var snapshot = self.dataSource.snapshot()
-//        snapshot.deleteItems([habit])
-//        DispatchQueue.main.async {
-//            self.dataSource.apply(snapshot, animatingDifferences: true)
-//        }
-        
         persistenceManager.delete(habit)
         self.habits = persistenceManager.fetch(Habit.self)
         updateData(on: self.habits)
@@ -147,11 +142,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         else { sortHabits() }
     }
     
-    func alertTapped(sender: UIAlertAction) {
+    func sortAlertTapped(sender: UIAlertAction) {
         if let sortTitle = sender.title {
             self.defaultSort = Sort(rawValue: sortTitle)!
             defaults.set(self.defaultSort.rawValue, forKey: "sort")
-            alertController.message = "Current sort: \(self.defaultSort.rawValue)"
+            sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
             self.sortHabits()
         }
     }
@@ -251,6 +246,6 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        present(alertController, animated: true)
+        present(sortAC, animated: true)
     }
 }

@@ -242,7 +242,7 @@ class HabitCell: UICollectionViewCell {
                 }
             })
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            delegate?.presentAlertController(with: alertController)
+//            delegate?.presentAlertController(with: alertController)
         }
     }
     
