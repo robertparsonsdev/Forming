@@ -27,7 +27,6 @@ extension Habit {
     @NSManaged public var buttonState: Bool
     @NSManaged public var dateCreated: Date
     @NSManaged public var dueToday: Bool
-    @NSManaged private var currentDayValue: Int64
     
     public var statuses: [Status] {
         get {
@@ -44,10 +43,5 @@ extension Habit {
             }
             self.statusValues = array 
         }
-    }
-    
-    public var currentDay: Int {
-        get { return Int(self.currentDayValue) }
-        set { self.currentDayValue = Int64(newValue) }
     }
 }

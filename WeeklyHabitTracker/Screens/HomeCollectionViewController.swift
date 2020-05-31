@@ -21,6 +21,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     var currentDate: Date?
     let currentDateKey = "currentDate"
+    var currentDay: Int?
     
     let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     var defaultSort: Sort = .dateCreated
@@ -34,6 +35,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.defaults = defaults
         if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
         if let date = defaults.object(forKey: self.currentDateKey) { self.currentDate = date as? Date } else { self.currentDate = CalUtility.getCurrentDate() }
+        self.currentDay = CalUtility.getCurrentDay()
         super.init(collectionViewLayout: layout)
     }
     
@@ -103,6 +105,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FinalHabitCell
             cell.set(delegate: self)
+            if let currentDay = self.currentDay { cell.set(currentDay: currentDay) }
+            else { cell.set(currentDay: CalUtility.getCurrentDay()) }
             cell.set(habit: habit)
             return cell
         })
@@ -182,19 +186,19 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func updateCellsForDayChange(_ calendarDayChanged: Notification?) {
-        print("changing days...")
         self.currentDate = CalUtility.getCurrentDate()
+        self.currentDay = CalUtility.getCurrentDay()
         defaults.set(self.currentDate, forKey: self.currentDateKey)
-        let dayIndex = CalUtility.getCurrentDay()
+        
+        guard let currentDay = self.currentDay else { return }
         for (index, habit) in self.habits.enumerated() {
-            if habit.statuses[dayIndex - 1] == .incomplete { habit.statuses[dayIndex - 1] = .failed }
-            if habit.statuses[dayIndex] == .completed || habit.statuses[dayIndex] == .failed { habit.buttonState = true }
+            if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
+            if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
             self.habits[index] = habit
-            self.habits[index].currentDay = dayIndex
         }
         saveToPersistence(habit: self.habits[0])
         updateData(on: self.habits)
-//        DispatchQueue.main.async { self.collectionView.reloadData() }
+        DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
 }
