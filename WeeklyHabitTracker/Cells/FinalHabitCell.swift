@@ -11,7 +11,6 @@ import UIKit
 class FinalHabitCell: UICollectionViewCell {
     private var habit: Habit?
     private var delegate: HabitCellDelegate?
-    private var currentDay: Int
     private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     private let titleButton = UIButton()
@@ -31,8 +30,8 @@ class FinalHabitCell: UICollectionViewCell {
     
     // MARK: - Initializers
     override init(frame: CGRect) {
-        self.currentDay = CalUtility.getCurrentDay()
         super.init(frame: frame)
+        print("cell reloaded")
         
         configureCell()
         configureTitleButton()
@@ -121,7 +120,7 @@ class FinalHabitCell: UICollectionViewCell {
         if !checkboxStackView.arrangedSubviews.isEmpty { for view in checkboxStackView.arrangedSubviews { view.removeFromSuperview() } }
         
         for (index, day) in days.enumerated() {
-            if day && index == currentDay { checkboxStackView.addArrangedSubview(createTodayCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
+            if day && index == habit?.currentDay { checkboxStackView.addArrangedSubview(createTodayCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
             else if day { checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatuses: statuses)) }
             else { checkboxStackView.addArrangedSubview(UIView()) }
         }
@@ -183,7 +182,7 @@ class FinalHabitCell: UICollectionViewCell {
     func replace(withCheckbox checkbox: UIButton, atIndex index: Int, withState state: Bool = false) {
         DispatchQueue.main.async {
             checkbox.removeFromSuperview()
-            if index == self.currentDay {
+            if index == self.habit?.currentDay {
                 self.checkboxStackView.insertArrangedSubview(self.createTodayCheckbox(withTag: checkbox.tag, withState: state, andStatuses: self.habit!.statuses), at: index)
             } else {
                 self.checkboxStackView.insertArrangedSubview(self.createCheckbox(withTag: checkbox.tag, andStatuses: self.habit!.statuses), at: index)
@@ -194,21 +193,21 @@ class FinalHabitCell: UICollectionViewCell {
     func createAlertActions(checkbox: UIButton) {
         alertController?.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
-            if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
+            if checkbox.tag == self.habit?.currentDay { self.habit?.buttonState = true }
             self.changeStatus(forIndex: checkbox.tag, andStatus: .completed)
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
             self.delegate?.saveToPersistence(habit: self.habit!)
         }))
         alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
             guard let self = self else { return }
-            if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
+            if checkbox.tag == self.habit?.currentDay { self.habit?.buttonState = true }
             self.changeStatus(forIndex: checkbox.tag, andStatus: .failed)
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
             self.delegate?.saveToPersistence(habit: self.habit!)
         }))
         alertController?.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
-            if checkbox.tag == self.currentDay { self.habit?.buttonState = false }
+            if checkbox.tag == self.habit?.currentDay { self.habit?.buttonState = false }
             self.changeStatus(forIndex: checkbox.tag, andStatus: .incomplete)
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: false)
             self.delegate?.saveToPersistence(habit: self.habit!)

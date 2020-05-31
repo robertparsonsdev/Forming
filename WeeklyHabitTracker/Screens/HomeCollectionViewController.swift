@@ -50,7 +50,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
-//        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
 //        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
@@ -185,14 +185,16 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         print("changing days...")
         self.currentDate = CalUtility.getCurrentDate()
         defaults.set(self.currentDate, forKey: self.currentDateKey)
-        DispatchQueue.main.async {
-            self.currentDate = CalUtility.getCurrentDate()
-            for cell in self.collectionView.visibleCells {
-                if let cell = cell as? NewHabitCell {
-                    cell.dayChanged(fromBackground: calendarDayChanged == nil)
-                }
-            }
+        let dayIndex = CalUtility.getCurrentDay()
+        for (index, habit) in self.habits.enumerated() {
+            if habit.statuses[dayIndex - 1] == .incomplete { habit.statuses[dayIndex - 1] = .failed }
+            if habit.statuses[dayIndex] == .completed || habit.statuses[dayIndex] == .failed { habit.buttonState = true }
+            self.habits[index] = habit
+            self.habits[index].currentDay = dayIndex
         }
+        saveToPersistence(habit: self.habits[0])
+        updateData(on: self.habits)
+//        DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
 }
