@@ -114,7 +114,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             else { initialHabit.dueToday = false }
             initialHabit.dateCreated = CalUtility.getCurrentDate()
             initialHabit.buttonState = false
-            initialHabit.currentDay = CalUtility.getCurrentDay()
         } else {
             habit?.title = titleTextField.text
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
@@ -141,7 +140,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             habit?.repeatability = self.repeatability
             if habit?.statuses[CalUtility.getCurrentDay()] != .empty { habit?.dueToday = true }
             else { habit?.dueToday = false }
-            habit?.currentDay = CalUtility.getCurrentDay()
         }
         
         persistenceManager.save()

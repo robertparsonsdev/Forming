@@ -53,7 +53,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
-//        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(FinalHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -191,11 +191,23 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         defaults.set(self.currentDate, forKey: self.currentDateKey)
         
         guard let currentDay = self.currentDay else { return }
-        for (index, habit) in self.habits.enumerated() {
-            if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
-            if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
-            self.habits[index] = habit
+        if currentDay == 0 {
+            for (habitIndex, habit) in self.habits.enumerated() {
+                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
+                // save to archive persistence
+                for (statusIndex, status) in habit.statuses.enumerated() {
+                    if status != .empty { habit.statuses[statusIndex] = .incomplete }
+                }
+                self.habits[habitIndex] = habit
+            }
+        } else {
+            for (index, habit) in self.habits.enumerated() {
+                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
+                if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
+                self.habits[index] = habit
+            }
         }
+        
         saveToPersistence(habit: self.habits[0])
         updateData(on: self.habits)
         DispatchQueue.main.async { self.collectionView.reloadData() }
