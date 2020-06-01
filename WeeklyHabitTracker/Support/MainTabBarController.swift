@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 class MainTabBarController: UITabBarController {
     let persistenceManager = PersistenceService.shared
@@ -15,6 +16,12 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         UITabBar.appearance().tintColor = .systemGreen
         setUpViewControllers()
+        
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+            if granted { print("granted") }
+            else { print("not granted") }
+        }
     }
 
     fileprivate func setUpViewControllers() {

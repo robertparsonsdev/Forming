@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import UserNotifications
 
 class NewHabitViewController: UIViewController, UITextFieldDelegate {
     var delegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
+    let center: UNUserNotificationCenter
     var editMode = false
     var habit: Habit? {
         didSet {
@@ -28,11 +30,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
     }
     
     let scrollView = UIScrollView()
-
     let titleLabel = FormingTitleLabel(title: "Title:")
     let colorLabel = FormingTitleLabel(title: "Color:")
     let daysLabel = FormingTitleLabel(title: "Days:")
-    
     let titleTextField = FormingTextField(placeholder: "Example: Run 1 Mile" , returnKeyType: .done)
     
     let topColors = [FormingColors.getColor(fromValue: 0), FormingColors.getColor(fromValue: 1), FormingColors.getColor(fromValue: 2), FormingColors.getColor(fromValue: 3), FormingColors.getColor(fromValue: 4)]
@@ -54,8 +54,9 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
     
     let haptics = UISelectionFeedbackGenerator()
     
-    init(persistenceManager: PersistenceService) {
+    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter) {
         self.persistenceManager = persistenceManager
+        self.center = notificationCenter
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -144,6 +145,23 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         
         persistenceManager.save()
         delegate?.saveHabit()
+        
+        if let reminder = self.reminder {
+            for (index, day) in self.dayFlags.enumerated() {
+                if day {
+                    let content = UNMutableNotificationContent()
+                    content.title = "Habit Reminder: \(self.titleTextField.text ?? "")"
+                    content.body = "You have a \(CalUtility.getTimeAsString(time: reminder)) daily reminder set for this habit."
+                    content.sound = UNNotificationSound.default
+                    content.categoryIdentifier = "alarm"
+                    content.userInfo = ["customData": self.titleTextField.text ?? ""]
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: CalUtility.getReminderComps(time: reminder, weekday: index + 1), repeats: true)
+                    let request = UNNotificationRequest(identifier: "\(self.titleTextField.text ?? "")-\(String(index))", content: content, trigger: trigger)
+                    self.center.add(request)
+                }
+            }
+        }
+        
         dismiss(animated: true)
     }
     
@@ -155,6 +173,11 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
                     self.delegate?.delete(habit: habitToDelete)
+                    var array = [String]()
+                    for index in 0...6 {
+                        array.append("\(self.titleTextField.text ?? "")-\(String(index))")
+                    }
+                    self.center.removePendingNotificationRequests(withIdentifiers: array)
                     self.dismiss(animated: true)
                 }
             })

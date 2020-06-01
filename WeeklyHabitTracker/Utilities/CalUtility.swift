@@ -72,4 +72,13 @@ class CalUtility {
         let calendar = Calendar.current
         return calendar.date(byAdding: .second, value: 0, to: date)!
     }
+    
+    static func getReminderComps(time: Date, weekday: Int) -> DateComponents {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.hour = calendar.component(.hour, from: time)
+        components.minute = calendar.component(.minute, from: time)
+        components.weekday = weekday
+        return components
+    }
 }

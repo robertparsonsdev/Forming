@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
@@ -18,6 +19,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     let persistenceManager: PersistenceService
     let defaults: UserDefaults
     let notificationCenter = NotificationCenter.default
+    let userNotificationCenter = UNUserNotificationCenter.current()
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     var currentDate: Date?
     let currentDateKey = "currentDate"
@@ -28,7 +30,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     let searchController = UISearchController()
     var filteredHabits = [Habit]()
-    
+        
     // MARK: - Initializers
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults) {
         self.persistenceManager = persistenceManager
@@ -172,7 +174,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
+        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.delegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
@@ -229,7 +231,7 @@ extension HomeCollectionViewController: SaveHabitDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager)
+        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.habit = habit
         newHabitVC.delegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
@@ -241,6 +243,9 @@ extension HomeCollectionViewController: HabitCellDelegate {
         self.persistenceManager.save()
         habit.statuses.forEach { print($0.rawValue, terminator: " ") }
         print()
+        userNotificationCenter.getPendingNotificationRequests { (results) in
+            for result in results { print(result) }
+        }
     }
     
     func presentAlertController(with alert: UIAlertController) {

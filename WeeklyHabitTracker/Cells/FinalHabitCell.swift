@@ -32,7 +32,6 @@ class FinalHabitCell: UICollectionViewCell {
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
-        print("cell reloaded")
         
         configureCell()
         configureTitleButton()
