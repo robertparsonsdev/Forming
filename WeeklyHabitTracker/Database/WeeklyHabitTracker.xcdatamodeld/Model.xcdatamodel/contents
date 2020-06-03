@@ -11,8 +11,9 @@
         <attribute name="repeatability" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statusValues" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;Int64&gt;"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="uniqueID" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Habit" positionX="-63" positionY="-18" width="128" height="193"/>
+        <element name="Habit" positionX="-63" positionY="-18" width="128" height="208"/>
     </elements>
 </model>

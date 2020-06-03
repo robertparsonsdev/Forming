@@ -184,6 +184,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     @objc func didBecomeActive() {
         if habits.count == 0 { return }
         if Calendar.current.isDateInToday(self.currentDate!) { return }
+        title = CalUtility.getDateAsString(date: self.currentDate!)
         updateCellsForDayChange(nil)
     }
     
@@ -206,6 +207,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             for (index, habit) in self.habits.enumerated() {
                 if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
                 if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
+                
                 self.habits[index] = habit
             }
         }

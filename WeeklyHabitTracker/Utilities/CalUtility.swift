@@ -48,6 +48,12 @@ class CalUtility {
         return formatter.string(from: time)
     }
     
+    static func getDateAsString(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter.string(from: date)
+    }
+    
     static func getTimeAsDate(time: String) -> Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"

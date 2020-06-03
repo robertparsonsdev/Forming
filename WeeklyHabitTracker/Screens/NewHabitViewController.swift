@@ -115,12 +115,41 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             else { initialHabit.dueToday = false }
             initialHabit.dateCreated = CalUtility.getCurrentDate()
             initialHabit.buttonState = false
+            initialHabit.uniqueID = UUID().uuidString
+            
+            if let reminder = initialHabit.reminder, let title = initialHabit.title {
+                for (index, day) in initialHabit.days.enumerated() {
+                    if day {
+                        self.center.add(createNotificationRequest(withTitle: title, andTime: reminder, andIndex: index, andID: initialHabit.uniqueID))
+                    }
+                }
+            }
         } else {
-            habit?.title = titleTextField.text
+            habit?.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
             if self.dayFlags[CalUtility.getCurrentDay()] != habit?.days[CalUtility.getCurrentDay()] {
                 if self.dayFlags[CalUtility.getCurrentDay()] { habit?.buttonState = false }
             }
+            
+            deleteNotificationRequests(fromID: habit!.uniqueID)
+            for i in 0...6 {
+                self.center.add(createNotificationRequest(withTitle: habit!.title!, andTime: habit!.reminder!, andIndex: i, andID: habit!.uniqueID))
+            }
+
+            
+//            if self.reminder == nil {
+//                if let id = habit?.uniqueID { deleteNotificationRequests(fromID: id) }
+//            } else if (self.reminder != habit?.reminder) || (self.dayFlags != habit?.days ) {
+//                if let reminder = self.reminder, let title = habit?.title, let id = habit?.uniqueID {
+//                    deleteNotificationRequests(fromID: id)
+//                    for (index, day) in self.dayFlags.enumerated() {
+//                        if day {
+//                            self.center.add(createNotificationRequest(withTitle: title, andTime: reminder, andIndex: index, andID: id))
+//                        }
+//                    }
+//                }
+//            }
+            
             if habit?.days != dayFlags {
                 for (index, day) in dayFlags.enumerated() {
                     if day {
@@ -146,23 +175,33 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         persistenceManager.save()
         delegate?.saveHabit()
         
-        if let reminder = self.reminder {
-            for (index, day) in self.dayFlags.enumerated() {
-                if day {
-                    let content = UNMutableNotificationContent()
-                    content.title = "Habit Reminder: \(self.titleTextField.text ?? "")"
-                    content.body = "You have a \(CalUtility.getTimeAsString(time: reminder)) daily reminder set for this habit."
-                    content.sound = UNNotificationSound.default
-                    content.categoryIdentifier = "alarm"
-                    content.userInfo = ["customData": self.titleTextField.text ?? ""]
-                    let trigger = UNCalendarNotificationTrigger(dateMatching: CalUtility.getReminderComps(time: reminder, weekday: index + 1), repeats: true)
-                    let request = UNNotificationRequest(identifier: "\(self.titleTextField.text ?? "")-\(String(index))", content: content, trigger: trigger)
-                    self.center.add(request)
+        dismiss(animated: true)
+    }
+    
+    func createNotificationRequest(withTitle title: String, andTime time: Date, andIndex index: Int, andID id: String) -> UNNotificationRequest{
+        print("apple")
+        let content = UNMutableNotificationContent()
+        content.title = "Habit Reminder: \(title)"
+        content.body = "You have a \(CalUtility.getTimeAsString(time: time)) daily reminder set for this habit."
+        content.sound = UNNotificationSound.default
+        content.categoryIdentifier = "alarm"
+        content.userInfo = ["customData": id]
+        let trigger = UNCalendarNotificationTrigger(dateMatching: CalUtility.getReminderComps(time: time, weekday: index + 1), repeats: true)
+        return UNNotificationRequest(identifier: "\(id)-\(String(index))", content: content, trigger: trigger)
+    }
+    
+    func deleteNotificationRequests(fromID id: String) {
+        self.center.getPendingNotificationRequests { (requests) in
+            var identifiers = [String]()
+            for request in requests {
+                if request.identifier.contains(id) {
+                    identifiers.append(request.identifier)
+                    print("pineapple")
                 }
             }
+            self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
+//            self.center.removeDeliveredNotifications(withIdentifiers: identifiers)
         }
-        
-        dismiss(animated: true)
     }
     
     @objc func deleteButtonTapped() {
@@ -172,12 +211,8 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
+                    self.deleteNotificationRequests(fromID: habitToDelete.uniqueID)
                     self.delegate?.delete(habit: habitToDelete)
-                    var array = [String]()
-                    for index in 0...6 {
-                        array.append("\(self.titleTextField.text ?? "")-\(String(index))")
-                    }
-                    self.center.removePendingNotificationRequests(withIdentifiers: array)
                     self.dismiss(animated: true)
                 }
             })
