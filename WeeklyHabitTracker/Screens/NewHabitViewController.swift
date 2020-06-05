@@ -131,24 +131,18 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
                 if self.dayFlags[CalUtility.getCurrentDay()] { habit?.buttonState = false }
             }
             
-            deleteNotificationRequests(fromID: habit!.uniqueID)
-            for i in 0...6 {
-                self.center.add(createNotificationRequest(withTitle: habit!.title!, andTime: habit!.reminder!, andIndex: i, andID: habit!.uniqueID))
+            if self.reminder == nil {
+                if let id = habit?.uniqueID, let days = habit?.days { deleteNotificationRequests(fromID: id, andDays: days) }
+            } else if (self.reminder != habit?.reminder) || (self.dayFlags != habit?.days ) {
+                if let reminder = self.reminder, let title = habit?.title, let id = habit?.uniqueID, let days = habit?.days {
+                    deleteNotificationRequests(fromID: id, andDays: days)
+                    for (index, day) in self.dayFlags.enumerated() {
+                        if day {
+                            self.center.add(createNotificationRequest(withTitle: title, andTime: reminder, andIndex: index, andID: id))
+                        }
+                    }
+                }
             }
-
-            
-//            if self.reminder == nil {
-//                if let id = habit?.uniqueID { deleteNotificationRequests(fromID: id) }
-//            } else if (self.reminder != habit?.reminder) || (self.dayFlags != habit?.days ) {
-//                if let reminder = self.reminder, let title = habit?.title, let id = habit?.uniqueID {
-//                    deleteNotificationRequests(fromID: id)
-//                    for (index, day) in self.dayFlags.enumerated() {
-//                        if day {
-//                            self.center.add(createNotificationRequest(withTitle: title, andTime: reminder, andIndex: index, andID: id))
-//                        }
-//                    }
-//                }
-//            }
             
             if habit?.days != dayFlags {
                 for (index, day) in dayFlags.enumerated() {
@@ -179,7 +173,6 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
     }
     
     func createNotificationRequest(withTitle title: String, andTime time: Date, andIndex index: Int, andID id: String) -> UNNotificationRequest{
-        print("apple")
         let content = UNMutableNotificationContent()
         content.title = "Habit Reminder: \(title)"
         content.body = "You have a \(CalUtility.getTimeAsString(time: time)) daily reminder set for this habit."
@@ -190,18 +183,13 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
         return UNNotificationRequest(identifier: "\(id)-\(String(index))", content: content, trigger: trigger)
     }
     
-    func deleteNotificationRequests(fromID id: String) {
-        self.center.getPendingNotificationRequests { (requests) in
-            var identifiers = [String]()
-            for request in requests {
-                if request.identifier.contains(id) {
-                    identifiers.append(request.identifier)
-                    print("pineapple")
-                }
-            }
-            self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
-//            self.center.removeDeliveredNotifications(withIdentifiers: identifiers)
+    func deleteNotificationRequests(fromID id: String, andDays days: [Bool]) {
+        var identifiers = [String]()
+        for (index, day) in days.enumerated() {
+            if day { identifiers.append("\(id)-\(String(index))") }
         }
+        self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
+        self.center.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
     
     @objc func deleteButtonTapped() {
@@ -211,7 +199,7 @@ class NewHabitViewController: UIViewController, UITextFieldDelegate {
             deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
-                    self.deleteNotificationRequests(fromID: habitToDelete.uniqueID)
+                    self.deleteNotificationRequests(fromID: habitToDelete.uniqueID, andDays: habitToDelete.days)
                     self.delegate?.delete(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }

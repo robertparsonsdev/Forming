@@ -52,6 +52,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
+        navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
@@ -65,6 +66,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         
         configureDataSource()
         updateHabits()
+    }
+    
+    @objc func notifTapped() {
+        userNotificationCenter.getPendingNotificationRequests { (results) in
+            for result in results { print(result) }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -245,9 +252,6 @@ extension HomeCollectionViewController: HabitCellDelegate {
         self.persistenceManager.save()
         habit.statuses.forEach { print($0.rawValue, terminator: " ") }
         print()
-        userNotificationCenter.getPendingNotificationRequests { (results) in
-            for result in results { print(result) }
-        }
     }
     
     func presentAlertController(with alert: UIAlertController) {
