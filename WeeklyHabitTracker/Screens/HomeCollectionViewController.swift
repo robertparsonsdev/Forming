@@ -189,9 +189,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func didBecomeActive() {
-        if habits.count == 0 { return }
-        if Calendar.current.isDateInToday(self.currentDate!) { return }
-        title = CalUtility.getDateAsString(date: self.currentDate!)
+        title = "Active"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.title = "Habits" }
+        guard habits.count > 0 else { return }
+        guard !Calendar.current.isDateInToday(self.currentDate!) else { return }
         updateCellsForDayChange(nil)
     }
     
