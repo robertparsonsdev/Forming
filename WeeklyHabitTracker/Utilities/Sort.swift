@@ -10,6 +10,7 @@ import Foundation
 
 enum Sort: String, CaseIterable {
     case alphabetical = "Alphabetical"
+    case color = "Color"
     case dateCreated = "Date Created"
     case dueToday = "Due Today"
     case priority = "Priority"

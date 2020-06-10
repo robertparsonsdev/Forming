@@ -51,7 +51,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))]
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped)),
+                                              UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))]
         navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
@@ -79,7 +80,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 100)
+        return CGSize(width: view.frame.width, height: 80)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -95,8 +96,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search for Habit"
-        searchController.searchBar.showsBookmarkButton = true
-        searchController.searchBar.setImage(UIImage(named: "arrow.up.arrow.down"), for: .bookmark, state: .normal)
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
@@ -167,6 +166,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func sortHabits() {
         switch self.defaultSort {
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
+        case .color: self.habits.sort { (hab1, hab2) -> Bool in hab1.color < hab2.color }
         case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
         case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.dueToday && !hab2.dueToday }
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }
@@ -225,6 +225,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
+    @objc func sortButtonTapped() {
+        present(sortAC, animated: true)
+    }
+    
 }
 
 // MARK: - Delegates
@@ -273,9 +277,5 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         updateData(on: self.habits)
-    }
-    
-    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        present(sortAC, animated: true)
     }
 }
