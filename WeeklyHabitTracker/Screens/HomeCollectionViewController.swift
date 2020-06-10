@@ -60,7 +60,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
-        self.collectionView.register(FinalHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         configureSearchController()
         configureSortAlertController()
@@ -111,7 +111,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FinalHabitCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
             cell.set(delegate: self)
             if let currentDay = self.currentDay { cell.set(currentDay: currentDay) }
             else { cell.set(currentDay: CalUtility.getCurrentDay()) }

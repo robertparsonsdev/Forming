@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE01A6E0246A54A7007B45C2 /* FinalHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE01A6DF246A54A7007B45C2 /* FinalHabitCell.swift */; };
 		EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02E51E244FBD410039B015 /* FormingTableView.swift */; };
-		EE070C772459F7AB00CAACB2 /* NewHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */; };
 		EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */; };
 		EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369E2450A14700AFFBEB /* RepeatViewController.swift */; };
 		EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */; };
@@ -17,6 +15,7 @@
 		EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */; };
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
+		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
 		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
 		EE911087246242660021190C /* HistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* HistoryCell.swift */; };
 		EE9A71512458AFEA0082D135 /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sort.swift */; };
@@ -39,16 +38,13 @@
 		EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE8924464A8300FC618F /* MainTabBarController.swift */; };
 		EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE8B24464D7600FC618F /* HistoryCollectionViewController.swift */; };
 		EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */; };
-		EEC0FE9324464F7F00FC618F /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE9224464F7F00FC618F /* HabitCell.swift */; };
 		EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE952446578600FC618F /* UIViewExt.swift */; };
 		EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalUtility.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EE01A6DF246A54A7007B45C2 /* FinalHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalHabitCell.swift; sourceTree = "<group>"; };
 		EE02E51E244FBD410039B015 /* FormingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTableView.swift; sourceTree = "<group>"; };
-		EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitCell.swift; sourceTree = "<group>"; };
 		EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
 		EE10369E2450A14700AFFBEB /* RepeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatViewController.swift; sourceTree = "<group>"; };
 		EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingPickerLabel.swift; sourceTree = "<group>"; };
@@ -57,6 +53,7 @@
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		EE35BF3B245FBF7800919965 /* Forming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forming.entitlements; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
+		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE911086246242660021190C /* HistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCell.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
@@ -81,7 +78,6 @@
 		EEC0FE8924464A8300FC618F /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		EEC0FE8B24464D7600FC618F /* HistoryCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCollectionViewController.swift; sourceTree = "<group>"; };
 		EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderCell.swift; sourceTree = "<group>"; };
-		EEC0FE9224464F7F00FC618F /* HabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EEC0FE952446578600FC618F /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		EEC0FE98244699BE00FC618F /* CalUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalUtility.swift; sourceTree = "<group>"; };
 		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
@@ -173,11 +169,9 @@
 		EEC0FE8D24464EFC00FC618F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				EE7C151A24917B9000194EA9 /* HabitCell.swift */,
 				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
-				EEC0FE9224464F7F00FC618F /* HabitCell.swift */,
-				EE070C762459F7AB00CAACB2 /* NewHabitCell.swift */,
 				EE911086246242660021190C /* HistoryCell.swift */,
-				EE01A6DF246A54A7007B45C2 /* FinalHabitCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -304,7 +298,7 @@
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */,
-				EE01A6E0246A54A7007B45C2 /* FinalHabitCell.swift in Sources */,
+				EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */,
 				EE911087246242660021190C /* HistoryCell.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
@@ -314,8 +308,6 @@
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,
-				EE070C772459F7AB00CAACB2 /* NewHabitCell.swift in Sources */,
-				EEC0FE9324464F7F00FC618F /* HabitCell.swift in Sources */,
 				EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */,
 				EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */,
 				EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */,
