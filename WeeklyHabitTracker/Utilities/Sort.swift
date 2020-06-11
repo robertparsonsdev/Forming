@@ -13,6 +13,7 @@ enum Sort: String, CaseIterable {
     case color = "Color"
     case dateCreated = "Date Created"
     case dueToday = "Due Today"
+    case flag = "Flag"
     case priority = "Priority"
     case reminderTime = "Reminder Time"
 }

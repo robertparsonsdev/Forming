@@ -168,7 +168,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
         case .color: self.habits.sort { (hab1, hab2) -> Bool in hab1.color < hab2.color }
         case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
-        case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.dueToday && !hab2.dueToday }
+        case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.statuses[self.currentDay!] < hab2.statuses[self.currentDay!] }
+        case .flag: self.habits.sort { (hab1, hab2) -> Bool in hab1.flag && !hab2.flag}
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }
         case .reminderTime: self.habits.sort { (hab1, hab2) -> Bool in
             let reminder1 = hab1.reminder ?? CalUtility.getFutureDate()
@@ -215,6 +216,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             for (index, habit) in self.habits.enumerated() {
                 if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
                 if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
+                else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
+                
                 
                 self.habits[index] = habit
             }

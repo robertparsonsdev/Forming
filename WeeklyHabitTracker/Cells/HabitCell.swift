@@ -17,6 +17,7 @@ class HabitCell: UICollectionViewCell {
     private let titleButton = UIButton()
     private let checkboxStackView = UIStackView()
     private let reminderLabel = UILabel()
+    private let flagLabel = UILabel()
     private let priorityLabel = UILabel()
     private var alertController: UIAlertController?
     
@@ -28,6 +29,7 @@ class HabitCell: UICollectionViewCell {
     private let boldConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .bold), scale: .small)
     private let blackConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .black), scale: .large)
     private let priorityAttachment = NSTextAttachment()
+    private let flagAttachment = NSTextAttachment()
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -36,6 +38,7 @@ class HabitCell: UICollectionViewCell {
         configureCell()
         configureTitleButton()
         configureReminderLabel()
+        configureFlagLabel()
         configurePriorityLabel()
         configureStackView()
         configureConstraints()
@@ -62,8 +65,17 @@ class HabitCell: UICollectionViewCell {
     func configureReminderLabel() {
         reminderLabel.font = UIFont.systemFont(ofSize: 15)
         reminderLabel.textColor = .white
-        reminderLabel.textAlignment = .right
+        reminderLabel.textAlignment = .center
         reminderLabel.isUserInteractionEnabled = false
+    }
+    
+    func configureFlagLabel() {
+        flagLabel.font = UIFont.systemFont(ofSize: 15)
+        flagLabel.textAlignment = .center
+        flagLabel.textColor = .white
+        flagLabel.isUserInteractionEnabled = false
+        flagAttachment.image = UIImage(named: "flag.fill", in: nil, with: regularConfig)
+        flagAttachment.image = flagAttachment.image?.withTintColor(.white)
     }
     
     func configurePriorityLabel() {
@@ -85,9 +97,11 @@ class HabitCell: UICollectionViewCell {
         addSubview(titleButton)
         titleButton.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
         addSubview(reminderLabel)
-        reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 70, height: 25)
+        reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 70, height: 25)
         addSubview(priorityLabel)
         priorityLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: reminderLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
+        addSubview(flagLabel)
+        flagLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: priorityLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
         addSubview(checkboxStackView)
         checkboxStackView.anchor(top: titleButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
@@ -116,6 +130,11 @@ class HabitCell: UICollectionViewCell {
         for _ in 0..<habit.priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
         priorityLabel.attributedText = priorityText
         if let reminder = habit.reminder { reminderLabel.text = "\(CalUtility.getTimeAsString(time: reminder)) " } else { reminderLabel.text = "" }
+        if habit.flag {
+            let flagText = NSMutableAttributedString()
+            flagText.append(NSAttributedString(attachment: flagAttachment))
+            flagLabel.attributedText = flagText
+        } else { flagLabel.attributedText = nil }
         
         setupCheckboxes(withDays: habit.days, withState: habit.buttonState, andStatuses: habit.statuses)
     }

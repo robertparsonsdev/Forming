@@ -23,11 +23,10 @@ extension Habit {
     @NSManaged private var statusValues: [Int64]
     @NSManaged public var priority: Int64
     @NSManaged public var reminder: Date?
-    @NSManaged public var repeatability: Int64
     @NSManaged public var buttonState: Bool
     @NSManaged public var dateCreated: Date
-    @NSManaged public var dueToday: Bool
     @NSManaged public var uniqueID: String
+    @NSManaged public var flag: Bool
     
     public var statuses: [Status] {
         get {

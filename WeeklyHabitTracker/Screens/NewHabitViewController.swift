@@ -24,8 +24,8 @@ class NewHabitViewController: UIViewController {
                 colorFlags[Int(color)] = true
             }
             if let priority = habit?.priority { self.priority = priority }
+            if let flag = habit?.flag { self.flag = flag }
             if let reminder = habit?.reminder { self.reminder = reminder } else { self.reminder = nil }
-            if let repeatability = habit?.repeatability { self.repeatability = repeatability }
         }
     }
     
@@ -49,8 +49,8 @@ class NewHabitViewController: UIViewController {
         
     var formingTableView: FormingTableView?
     var priority: Int64 = 0
+    var flag: Bool = false
     var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
-    var repeatability: Int64 = 1
     
     let haptics = UISelectionFeedbackGenerator()
     
@@ -71,7 +71,7 @@ class NewHabitViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = editMode ? "Edit Habit" : "New Habit"
         titleTextField.delegate = self
-        formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, repeatability: self.repeatability)
+        formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
         formingTableView?.tableDelegate = self
         
         configureScrollView()
@@ -207,9 +207,7 @@ class NewHabitViewController: UIViewController {
             initialHabit.statuses = dayStatuses
             initialHabit.priority = self.priority
             initialHabit.reminder = self.reminder
-            initialHabit.repeatability = self.repeatability
-            if self.dayStatuses[CalUtility.getCurrentDay()] != .empty { initialHabit.dueToday = true }
-            else { initialHabit.dueToday = false }
+            initialHabit.flag = self.flag
             initialHabit.dateCreated = CalUtility.getCurrentDate()
             initialHabit.buttonState = false
             initialHabit.uniqueID = UUID().uuidString
@@ -258,9 +256,7 @@ class NewHabitViewController: UIViewController {
             }
             habit?.priority = self.priority
             habit?.reminder = self.reminder
-            habit?.repeatability = self.repeatability
-            if habit?.statuses[CalUtility.getCurrentDay()] != .empty { habit?.dueToday = true }
-            else { habit?.dueToday = false }
+            habit?.flag = self.flag
         }
         
         persistenceManager.save()
@@ -332,7 +328,7 @@ extension NewHabitViewController: UITextFieldDelegate {
     }
 }
 
-extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate, SaveRepeatDelegate {
+extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate {
     func pushViewController(view: UIViewController) {
         navigationController?.pushViewController(view, animated: true)
     }
@@ -341,12 +337,12 @@ extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate
         self.priority = priority
     }
     
-    func saveReminder(reminder: Date?) {
-        self.reminder = reminder
+    func saveFlag(flag: Bool) {
+        self.flag = flag
     }
     
-    func saveRepeat(repeatability: Int64) {
-        self.repeatability = repeatability
+    func saveReminder(reminder: Date?) {
+        self.reminder = reminder
     }
 }
 

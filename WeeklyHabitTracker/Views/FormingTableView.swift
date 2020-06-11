@@ -10,20 +10,20 @@ import UIKit
 
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
     var priority: Int64
+    var flag: Bool
     var reminder: Date?
-    var repeatability: Int64
     var tableDelegate: FormingTableViewDelegate?
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
-    let repeatData = [0: "Just This Week", 1: "Every Week", 2: "Every Two Weeks", 3: "Every Three Weeks", 4: "Every Four Weeks"]
     
     let stepper = UIStepper()
+    let flagSwitch = UISwitch()
     let haptics = UISelectionFeedbackGenerator()
     
-    init(priority: Int64, reminder: Date?, repeatability: Int64) {
+    init(priority: Int64, reminder: Date?, flag: Bool) {
         self.priority = priority
+        self.flag = flag
         self.reminder = reminder
-        self.repeatability = repeatability
         super.init(frame: .zero, style: .plain)
         
         delegate = self
@@ -32,6 +32,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
         configureStepper()
+        configureFlagSwitch()
     }
     
     required init?(coder: NSCoder) {
@@ -54,40 +55,34 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Priority"
-//            cell.detailTextLabel?.text = priorities[Int(self.priority)]
-//            cell.detailTextLabel?.attributedText = getPriorityAttText(index: Int(self.priority))
             cell.detailTextLabel?.text = exclamation(index: Int(self.priority))
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
         case 1:
+            cell.textLabel?.text = "Flag"
+            cell.imageView?.image = UIImage(named: "flag.circle", in: nil, with: largeConfig)
+            cell.accessoryView = flagSwitch
+            cell.selectionStyle = .none
+        case 2:
             cell.textLabel?.text = "Reminder"
             if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
             cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
-        default:
-            cell.textLabel?.text = "Repeat"
-            cell.detailTextLabel?.text = repeatData[Int(self.repeatability)]
-            cell.imageView?.image = UIImage(named: "arrow.clockwise.circle", in: nil, with: largeConfig)
-            cell.accessoryType = .disclosureIndicator
+        default: ()
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var reminderView: ReminderViewController, repeatView: RepeatViewController
+        var reminderView: ReminderViewController
         switch indexPath.row {
-        case 1:
+        case 2:
             if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
             if let parentView = tableView.findViewController() as? NewHabitViewController { reminderView.saveDelegate = parentView.self }
             tableDelegate?.pushViewController(view: reminderView)
-        case 2:
-            repeatView = RepeatViewController(repeatability: self.repeatability, data: repeatData)
-            repeatView.updateDelegate = self
-            if let parentView = tableView.findViewController() as? NewHabitViewController { repeatView.saveDelegate = parentView.self }
-            tableDelegate?.pushViewController(view: repeatView)
         default: ()
         }
         deselectRow(at: indexPath, animated: true)
@@ -100,12 +95,20 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         stepper.addTarget(self, action: #selector(stepperTapped), for: .valueChanged)
     }
     
+    func configureFlagSwitch() {
+        flagSwitch.isOn = self.flag
+        flagSwitch.addTarget(self, action: #selector(flagSwitchTapped), for: .valueChanged)
+    }
+    
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
-//        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = priorities[Int(sender.value)]
-//        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.attributedText = getPriorityAttText(index: Int(sender.value))
         cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = exclamation(index: Int(sender.value))
         tableDelegate?.savePriority(priority: Int64(sender.value))
+    }
+    
+    @objc func flagSwitchTapped(sender: UISwitch) {
+        haptics.selectionChanged()
+        tableDelegate?.saveFlag(flag: sender.isOn)
     }
     
     func exclamation(index: Int) -> String {
@@ -116,24 +119,15 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         default: return "None"
         }
     }
-    
-//    func getPriorityAttText(index: Int) -> NSMutableAttributedString {
-//        let priorityAttachment = NSTextAttachment(image: UIImage(named: "exclamationmark")!)
-//        let attributedText = NSMutableAttributedString()
-//        if index == 0 { return NSMutableAttributedString(string: "None") }
-//        else {
-//            for _ in 0..<index { attributedText.append(NSAttributedString(attachment: priorityAttachment)) }
-//            return attributedText
-//        }
-//    }
 }
 
 protocol FormingTableViewDelegate {
     func pushViewController(view: UIViewController)
     func savePriority(priority: Int64)
+    func saveFlag(flag: Bool)
 }
 
-extension FormingTableView: UpdateReminderDelegate, UpdateRepeatDelegate {
+extension FormingTableView: UpdateReminderDelegate {
     func updateReminder(reminder: Date?) {
         let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
         if let unwrappedReminder = reminder {
@@ -144,11 +138,5 @@ extension FormingTableView: UpdateReminderDelegate, UpdateRepeatDelegate {
             self.reminder = nil
             cell?.detailTextLabel?.text = "None"
         }
-    }
-    
-    func updateRepeat(repeatability: Int64) {
-        let cell = self.cellForRow(at: IndexPath(row: 2, section: 0))
-        cell?.detailTextLabel?.text = repeatData[Int(repeatability)]
-        self.repeatability = repeatability
     }
 }
