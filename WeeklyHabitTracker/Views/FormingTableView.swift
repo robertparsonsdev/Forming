@@ -60,15 +60,15 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             cell.accessoryView = stepper
             cell.selectionStyle = .none
         case 1:
-            cell.textLabel?.text = "Flag"
-            cell.imageView?.image = UIImage(named: "flag.circle", in: nil, with: largeConfig)
-            cell.accessoryView = flagSwitch
-            cell.selectionStyle = .none
-        case 2:
             cell.textLabel?.text = "Reminder"
             if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
             cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
             cell.accessoryType = .disclosureIndicator
+        case 2:
+            cell.textLabel?.text = "Flag"
+            cell.imageView?.image = UIImage(named: "flag.circle", in: nil, with: largeConfig)
+            cell.accessoryView = flagSwitch
+            cell.selectionStyle = .none
         default: ()
         }
         return cell
@@ -77,7 +77,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var reminderView: ReminderViewController
         switch indexPath.row {
-        case 2:
+        case 1:
             if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
