@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 
 class NewHabitViewController: UIViewController {
-    var delegate: SaveHabitDelegate?
+    var habitDelegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
     let center: UNUserNotificationCenter
     var editMode = false
@@ -197,7 +197,6 @@ class NewHabitViewController: UIViewController {
         
         if !editMode {
             let initialHabit = Habit(context: persistenceManager.context)
-            let initialArchive = Archive(context: persistenceManager.context)
             initialHabit.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
             initialHabit.days = dayFlags
             if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
@@ -212,6 +211,9 @@ class NewHabitViewController: UIViewController {
             initialHabit.dateCreated = CalUtility.getCurrentDate()
             initialHabit.buttonState = false
             initialHabit.uniqueID = UUID().uuidString
+            let initialArchive = Archive(context: persistenceManager.context)
+            initialArchive.title = initialHabit.title
+            initialArchive.color = initialHabit.color
             initialHabit.history = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
@@ -259,10 +261,12 @@ class NewHabitViewController: UIViewController {
             habit?.priority = self.priority
             habit?.reminder = self.reminder
             habit?.flag = self.flag
+            habit?.history?.title = habit?.title
+            if let color = habit?.color { habit?.history?.color = color }
         }
         
         persistenceManager.save()
-        delegate?.saveHabit()
+        habitDelegate?.saveHabit()
         
         dismiss(animated: true)
     }
@@ -275,7 +279,7 @@ class NewHabitViewController: UIViewController {
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
                     self.deleteNotificationRequests(fromID: habitToDelete.uniqueID, andDays: habitToDelete.days)
-                    self.delegate?.delete(habit: habitToDelete)
+                    self.habitDelegate?.delete(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }
             })

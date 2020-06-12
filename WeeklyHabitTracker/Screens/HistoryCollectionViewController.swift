@@ -11,14 +11,17 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class HistoryCollectionViewController: UICollectionViewController {
-    var archives: [String] = []
+    var archives: [Archive] = []
     let persistenceManager: PersistenceService
+    let notificationCenter: NotificationCenter
+    var dataSource: UICollectionViewDiffableDataSource<Section, Archive>!
     
     let searchController = UISearchController()
     
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService) {
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, notifCenter: NotificationCenter) {
         self.persistenceManager = persistenceManager
+        self.notificationCenter = notifCenter
         super.init(collectionViewLayout: layout)
     }
     
@@ -33,15 +36,13 @@ class HistoryCollectionViewController: UICollectionViewController {
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.collectionViewLayout = UIHelper.createTwoColumnFlowLayout(in: collectionView)
-        
-        if archives.count == 0 {
-            self.showEmptyStateView(withText: "\n\n\n\n\nYour habit history will be displayed here when you complete your first week of habits.")
-            return
-        }
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(rawValue: "reload"), object: nil)
 
-        self.collectionView!.register(HistoryCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView!.register(ArchiveTitleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         configureSearchController()
+        configureDataSource()
+        updateArchives()
     }
     
     // MARK: - Configuration Functions
@@ -52,24 +53,51 @@ class HistoryCollectionViewController: UICollectionViewController {
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
+    
+    func configureDataSource() {
+        self.dataSource = UICollectionViewDiffableDataSource<Section, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ArchiveTitleCell
+            cell.setTitleLabelText(archive.title ?? "")
+            cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
+            return cell
+        })
+    }
 
     // MARK: UICollectionViewDataSource
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
         return archives.count
     }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HistoryCell
-        return cell
+    
+    // MARK: - Functions
+    func updateData(on archives: [Archive]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Archive>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(archives)
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
-
+    
+    func updateArchives() {
+        self.archives = persistenceManager.fetch(Archive.self)
+        guard !self.archives.isEmpty else {
+            self.showEmptyStateView(withText: "You can view the history and statistics of your habits after completing at least one week of a habit.")
+            return
+        }
+        // alphabetize archives
+        updateData(on: self.archives)
+    }
+    
+    // MARK: - Selectors
+    @objc func reloadArchives() {
+        updateArchives()
+        collectionView.reloadData()
+    }
 }
 
 // MARK: - Delegates

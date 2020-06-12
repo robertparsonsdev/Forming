@@ -18,8 +18,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private var habits = [Habit]()
     let persistenceManager: PersistenceService
     let defaults: UserDefaults
-    let notificationCenter = NotificationCenter.default
-    let userNotificationCenter = UNUserNotificationCenter.current()
+    let notificationCenter: NotificationCenter
+    let userNotificationCenter: UNUserNotificationCenter
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     var currentDate: Date?
     let currentDateKey = "currentDate"
@@ -32,9 +32,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     var filteredHabits = [Habit]()
         
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults) {
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter, notifCenter: NotificationCenter) {
         self.persistenceManager = persistenceManager
         self.defaults = defaults
+        self.notificationCenter = notifCenter
+        self.userNotificationCenter = userNotifCenter
         if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
         if let date = defaults.object(forKey: self.currentDateKey) { self.currentDate = date as? Date } else { self.currentDate = CalUtility.getCurrentDate() }
         self.currentDay = CalUtility.getCurrentDay()
@@ -183,7 +185,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - Selectors
     @objc func newTapped() {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
-        newHabitVC.delegate = self
+        newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
@@ -239,6 +241,8 @@ extension HomeCollectionViewController: SaveHabitDelegate {
     func saveHabit() {
         self.updateHabits()
         collectionView.reloadData()
+        
+        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func delete(habit: Habit) {
@@ -250,7 +254,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
         let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.habit = habit
-        newHabitVC.delegate = self
+        newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         DispatchQueue.main.async { self.present(navController, animated: true) }
