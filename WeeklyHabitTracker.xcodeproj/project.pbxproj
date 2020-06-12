@@ -44,6 +44,8 @@
 		EEC168BF249302F100343467 /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */; };
+		EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */; };
+		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +90,8 @@
 		EEC168BE249302F100343467 /* Archive+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailCollectionViewController.swift; sourceTree = "<group>"; };
+		EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedHabitCell.swift; sourceTree = "<group>"; };
+		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +260,8 @@
 			isa = PBXGroup;
 			children = (
 				EE911086246242660021190C /* ArchiveTitleCell.swift */,
+				EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */,
+				EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -342,6 +348,7 @@
 				EEAC31D7249324DD00BA5A30 /* Archive+CoreDataProperties.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */,
+				EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
@@ -357,6 +364,7 @@
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
 				EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */,
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
+				EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */,
 				EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */,
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
 				EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */,

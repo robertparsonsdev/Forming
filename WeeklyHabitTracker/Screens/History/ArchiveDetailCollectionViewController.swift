@@ -9,6 +9,7 @@
 import UIKit
 
 private let reuseIdentifier = "Cell"
+private let headerReuseIdentifier = "Header Cell"
 
 class ArchiveDetailCollectionViewController: UICollectionViewController {
 
@@ -21,7 +22,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController {
         collectionView.alwaysBounceVertical = true
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView!.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
         configureDataSource()
     }
@@ -46,11 +48,13 @@ class ArchiveDetailCollectionViewController: UICollectionViewController {
     // MARK: - Functions
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
-            return nil
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
+            return cell
         })
         
         self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
-            return nil
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as? ArchiveDetailHeaderCell
+            return header
         }
     }
 }
