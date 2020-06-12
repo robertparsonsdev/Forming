@@ -81,7 +81,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
-            if let parentView = tableView.findViewController() as? NewHabitViewController { reminderView.saveDelegate = parentView.self }
+            if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
             tableDelegate?.pushViewController(view: reminderView)
         default: ()
         }

@@ -19,7 +19,7 @@
 		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
 		EE911087246242660021190C /* ArchiveTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* ArchiveTitleCell.swift */; };
 		EE9A71512458AFEA0082D135 /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sort.swift */; };
-		EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* NewHabitViewController.swift */; };
+		EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */; };
 		EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */; };
 		EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECF2447B349008202D0 /* FormingTextField.swift */; };
 		EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */; };
@@ -42,7 +42,6 @@
 		EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE952446578600FC618F /* UIViewExt.swift */; };
 		EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalUtility.swift */; };
 		EEC168BF249302F100343467 /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */; };
-		EEC168C0249302F100343467 /* Archive+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC168BE249302F100343467 /* Archive+CoreDataProperties.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,7 +59,7 @@
 		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE911086246242660021190C /* ArchiveTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveTitleCell.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
-		EEA64ECB24476346008202D0 /* NewHabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitViewController.swift; sourceTree = "<group>"; };
+		EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailViewController.swift; sourceTree = "<group>"; };
 		EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTitleLabel.swift; sourceTree = "<group>"; };
 		EEA64ECF2447B349008202D0 /* FormingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTextField.swift; sourceTree = "<group>"; };
 		EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColorButton.swift; sourceTree = "<group>"; };
@@ -188,12 +187,9 @@
 		EEC0FE8E24464F0E00FC618F /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				EEC0FE872446498A00FC618F /* HomeCollectionViewController.swift */,
-				EEC0FE8B24464D7600FC618F /* HistoryCollectionViewController.swift */,
-				EEA64ECB24476346008202D0 /* NewHabitViewController.swift */,
-				EE3126B4244E82BE001EE83A /* SettingsViewController.swift */,
-				EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */,
-				EE10369E2450A14700AFFBEB /* RepeatViewController.swift */,
+				EEEB97CB24941EC0006DE24D /* Home */,
+				EEEB97CC24941ECE006DE24D /* History */,
+				EEEB97CD24941EE1006DE24D /* Settings */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -216,6 +212,33 @@
 				EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		EEEB97CB24941EC0006DE24D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				EEC0FE872446498A00FC618F /* HomeCollectionViewController.swift */,
+				EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */,
+				EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */,
+				EE10369E2450A14700AFFBEB /* RepeatViewController.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		EEEB97CC24941ECE006DE24D /* History */ = {
+			isa = PBXGroup;
+			children = (
+				EEC0FE8B24464D7600FC618F /* HistoryCollectionViewController.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		EEEB97CD24941EE1006DE24D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				EE3126B4244E82BE001EE83A /* SettingsViewController.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,7 +268,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Robert Parsons";
 				TargetAttributes = {
 					EEC0FE6F244646E500FC618F = {
@@ -305,7 +328,6 @@
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
 				EEC168BF249302F100343467 /* Archive+CoreDataClass.swift in Sources */,
-				EEC168C0249302F100343467 /* Archive+CoreDataProperties.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
@@ -316,7 +338,7 @@
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
 				EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */,
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
-				EEA64ECC24476346008202D0 /* NewHabitViewController.swift in Sources */,
+				EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */,
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,

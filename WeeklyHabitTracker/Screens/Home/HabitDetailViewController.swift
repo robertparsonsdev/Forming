@@ -9,7 +9,7 @@
 import UIKit
 import UserNotifications
 
-class NewHabitViewController: UIViewController {
+class HabitDetailViewController: UIViewController {
     var habitDelegate: SaveHabitDelegate?
     let persistenceManager: PersistenceService
     let center: UNUserNotificationCenter
@@ -328,13 +328,13 @@ class NewHabitViewController: UIViewController {
 }
 
 // MARK: - Delegates
-extension NewHabitViewController: UITextFieldDelegate {
+extension HabitDetailViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
     }
 }
 
-extension NewHabitViewController: FormingTableViewDelegate, SaveReminderDelegate {
+extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDelegate {
     func pushViewController(view: UIViewController) {
         navigationController?.pushViewController(view, animated: true)
     }

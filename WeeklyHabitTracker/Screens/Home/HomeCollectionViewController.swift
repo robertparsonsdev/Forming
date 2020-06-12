@@ -184,7 +184,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
@@ -252,7 +252,7 @@ extension HomeCollectionViewController: SaveHabitDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let newHabitVC = NewHabitViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.habit = habit
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
