@@ -15,7 +15,7 @@ private let headerReuseIdentifier = "Header Cell"
 private var currentSort: Sort?
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-    var habits = [Habit]()
+    private var habits = [Habit]()
     let persistenceManager: PersistenceService
     let defaults: UserDefaults
     let notificationCenter = NotificationCenter.default
