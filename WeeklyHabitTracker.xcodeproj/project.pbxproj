@@ -43,6 +43,7 @@
 		EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalUtility.swift */; };
 		EEC168BF249302F100343467 /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
+		EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
 		EEC168BE249302F100343467 /* Archive+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
+		EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailCollectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,9 +179,8 @@
 		EEC0FE8D24464EFC00FC618F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				EE7C151A24917B9000194EA9 /* HabitCell.swift */,
-				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
-				EE911086246242660021190C /* ArchiveTitleCell.swift */,
+				EEEB97D024942453006DE24D /* Home */,
+				EEEB97D12494245F006DE24D /* History */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -229,6 +230,7 @@
 			isa = PBXGroup;
 			children = (
 				EEC0FE8B24464D7600FC618F /* HistoryCollectionViewController.swift */,
+				EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -239,6 +241,23 @@
 				EE3126B4244E82BE001EE83A /* SettingsViewController.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		EEEB97D024942453006DE24D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				EE7C151A24917B9000194EA9 /* HabitCell.swift */,
+				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		EEEB97D12494245F006DE24D /* History */ = {
+			isa = PBXGroup;
+			children = (
+				EE911086246242660021190C /* ArchiveTitleCell.swift */,
+			);
+			path = History;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -340,6 +359,7 @@
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
 				EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */,
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
+				EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,
 				EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */,

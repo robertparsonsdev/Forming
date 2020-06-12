@@ -63,14 +63,19 @@ class HistoryCollectionViewController: UICollectionViewController {
         })
     }
 
-    // MARK: UICollectionViewDataSource
+    // MARK: CollectionView Functions
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return archives.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let archiveDetailVC = ArchiveDetailCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        archiveDetailVC.title = archives[indexPath.row].title
+        navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
     // MARK: - Functions
