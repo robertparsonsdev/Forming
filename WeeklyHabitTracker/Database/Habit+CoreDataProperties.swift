@@ -27,6 +27,7 @@ extension Habit {
     @NSManaged public var dateCreated: Date
     @NSManaged public var uniqueID: String
     @NSManaged public var flag: Bool
+    @NSManaged public var history: Archive?
     
     public var statuses: [Status] {
         get {

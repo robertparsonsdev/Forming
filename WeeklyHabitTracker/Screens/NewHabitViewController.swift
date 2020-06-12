@@ -197,6 +197,7 @@ class NewHabitViewController: UIViewController {
         
         if !editMode {
             let initialHabit = Habit(context: persistenceManager.context)
+            let initialArchive = Archive(context: persistenceManager.context)
             initialHabit.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
             initialHabit.days = dayFlags
             if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
@@ -211,6 +212,7 @@ class NewHabitViewController: UIViewController {
             initialHabit.dateCreated = CalUtility.getCurrentDate()
             initialHabit.buttonState = false
             initialHabit.uniqueID = UUID().uuidString
+            initialHabit.history = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
                 for (index, day) in initialHabit.days.enumerated() {
