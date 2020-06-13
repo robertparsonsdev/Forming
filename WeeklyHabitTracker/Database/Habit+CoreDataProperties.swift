@@ -27,7 +27,6 @@ extension Habit {
     @NSManaged public var statusValues: Array<Int64>
     @NSManaged public var title: String?
     @NSManaged public var uniqueID: String
-    @NSManaged public var oldHabits: NSOrderedSet?
     @NSManaged public var archive: Archive
     
     public var statuses: [Status] {
@@ -46,40 +45,5 @@ extension Habit {
             self.statusValues = array
         }
     }
-
-}
-
-// MARK: Generated accessors for oldHabits
-extension Habit {
-
-    @objc(insertObject:inOldHabitsAtIndex:)
-    @NSManaged public func insertIntoOldHabits(_ value: ArchivedHabit, at idx: Int)
-
-    @objc(removeObjectFromOldHabitsAtIndex:)
-    @NSManaged public func removeFromOldHabits(at idx: Int)
-
-    @objc(insertOldHabits:atIndexes:)
-    @NSManaged public func insertIntoOldHabits(_ values: [ArchivedHabit], at indexes: NSIndexSet)
-
-    @objc(removeOldHabitsAtIndexes:)
-    @NSManaged public func removeFromOldHabits(at indexes: NSIndexSet)
-
-    @objc(replaceObjectInOldHabitsAtIndex:withObject:)
-    @NSManaged public func replaceOldHabits(at idx: Int, with value: ArchivedHabit)
-
-    @objc(replaceOldHabitsAtIndexes:withOldHabits:)
-    @NSManaged public func replaceOldHabits(at indexes: NSIndexSet, with values: [ArchivedHabit])
-
-    @objc(addOldHabitsObject:)
-    @NSManaged public func addToOldHabits(_ value: ArchivedHabit)
-
-    @objc(removeOldHabitsObject:)
-    @NSManaged public func removeFromOldHabits(_ value: ArchivedHabit)
-
-    @objc(addOldHabits:)
-    @NSManaged public func addToOldHabits(_ values: NSOrderedSet)
-
-    @objc(removeOldHabits:)
-    @NSManaged public func removeFromOldHabits(_ values: NSOrderedSet)
 
 }

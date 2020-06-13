@@ -261,6 +261,9 @@ class HabitDetailViewController: UIViewController {
             habit?.priority = self.priority
             habit?.reminder = self.reminder
             habit?.flag = self.flag
+            if let updatedHabit = habit {
+                habit?.archive.habit = updatedHabit
+            }
 //            habit?.archive.title = habit?.title
 //            if let color = habit?.color { habit?.archive.color = color }
         }

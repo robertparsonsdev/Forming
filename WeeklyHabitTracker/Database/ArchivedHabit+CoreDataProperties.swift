@@ -20,7 +20,6 @@ extension ArchivedHabit {
     @NSManaged public var startDate: Date?
     @NSManaged public var endDate: Date?
     @NSManaged public var notes: String?
-    @NSManaged public var originalHabit: Habit?
     @NSManaged public var archive: Archive?
 
 }

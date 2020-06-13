@@ -11,7 +11,7 @@ import UIKit
 private let reuseIdentifier = "Archived Habit Cell"
 private let headerReuseIdentifier = "Archived Detail Header"
 
-class ArchiveDetailCollectionViewController: UICollectionViewController {
+class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private let archive: Archive
     private let archivedHabits: [ArchivedHabit]?
     private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
@@ -50,7 +50,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 150)
+        return CGSize(width: view.frame.width, height: view.frame.width / 3)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -63,8 +63,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController {
 
     // MARK: - Configuration Functions
     func configureDataSource() {
-        self.dataSource = UICollectionViewDiffableDataSource<Section, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
+        self.dataSource = UICollectionViewDiffableDataSource<Section, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
+            cell?.set(archivedHabit: archivedHabit)
             return cell
         })
         
