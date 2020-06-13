@@ -57,8 +57,8 @@ class HistoryCollectionViewController: UICollectionViewController {
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<Section, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ArchiveTitleCell
-            cell.setTitleLabelText(archive.title ?? "")
-            cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
+            cell.setTitleLabelText(archive.habit.title ?? "")
+            cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.habit.color))
             return cell
         })
     }
@@ -74,7 +74,7 @@ class HistoryCollectionViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let archiveDetailVC = ArchiveDetailCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        archiveDetailVC.title = archives[indexPath.row].title
+        archiveDetailVC.title = archives[indexPath.row].habit.title
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     

@@ -211,9 +211,9 @@ class HabitDetailViewController: UIViewController {
             initialHabit.dateCreated = CalUtility.getCurrentDate()
             initialHabit.buttonState = false
             initialHabit.uniqueID = UUID().uuidString
+            
             let initialArchive = Archive(context: persistenceManager.context)
-            initialArchive.title = initialHabit.title
-            initialArchive.color = initialHabit.color
+            initialArchive.habit = initialHabit
             initialHabit.archive = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
@@ -261,8 +261,8 @@ class HabitDetailViewController: UIViewController {
             habit?.priority = self.priority
             habit?.reminder = self.reminder
             habit?.flag = self.flag
-            habit?.archive.title = habit?.title
-            if let color = habit?.color { habit?.archive.color = color }
+//            habit?.archive.title = habit?.title
+//            if let color = habit?.color { habit?.archive.color = color }
         }
         
         persistenceManager.save()

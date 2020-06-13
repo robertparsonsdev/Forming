@@ -17,8 +17,6 @@ extension Archive {
         return NSFetchRequest<Archive>(entityName: "Archive")
     }
 
-    @NSManaged public var color: Int64
-    @NSManaged public var title: String?
     @NSManaged public var archivedHabits: NSOrderedSet?
     @NSManaged public var habit: Habit
 
