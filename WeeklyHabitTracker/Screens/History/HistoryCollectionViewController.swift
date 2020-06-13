@@ -73,8 +73,9 @@ class HistoryCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let archiveDetailVC = ArchiveDetailCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        archiveDetailVC.title = archives[indexPath.row].habit.title
+        let test = ArchivedHabit(context: persistenceManager.context)
+        archives[indexPath.row].addToArchivedHabits(test)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archives[indexPath.row])
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
@@ -100,7 +101,6 @@ class HistoryCollectionViewController: UICollectionViewController {
     
     // MARK: - Selectors
     @objc func reloadArchives() {
-        print("reload")
         updateArchives()
         collectionView.reloadData()
     }

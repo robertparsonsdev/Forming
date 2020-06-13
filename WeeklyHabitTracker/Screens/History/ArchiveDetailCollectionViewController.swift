@@ -8,13 +8,28 @@
 
 import UIKit
 
-private let reuseIdentifier = "Cell"
-private let headerReuseIdentifier = "Header Cell"
+private let reuseIdentifier = "Archived Habit Cell"
+private let headerReuseIdentifier = "Archived Detail Header"
 
 class ArchiveDetailCollectionViewController: UICollectionViewController {
-
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
+    private let archive: Archive
+    private let archivedHabits: [ArchivedHabit]?
+    private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
     
+    // MARK: - Initializers
+    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive) {
+        self.archive = archive
+        if let array = archive.archivedHabits?.array as? [ArchivedHabit] { self.archivedHabits = array }
+        else { self.archivedHabits = nil }
+        super.init(collectionViewLayout: layout)
+        self.title = archive.habit.title
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Lifecycle Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
@@ -22,10 +37,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController {
         collectionView.alwaysBounceVertical = true
 
         // Register cell classes
-        self.collectionView!.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
         configureDataSource()
+        updateData(on: self.archivedHabits!)
     }
 
     // MARK: CollectionView Functions
@@ -45,16 +61,27 @@ class ArchiveDetailCollectionViewController: UICollectionViewController {
         return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
 
-    // MARK: - Functions
+    // MARK: - Configuration Functions
     func configureDataSource() {
-        self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
+        self.dataSource = UICollectionViewDiffableDataSource<Section, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
             return cell
         })
         
         self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as? ArchiveDetailHeaderCell
+            print("header created")
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
             return header
+        }
+    }
+    
+    // MARK: - Functions
+    func updateData(on archivedHabits: [ArchivedHabit]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ArchivedHabit>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(archivedHabits)
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: true)
         }
     }
 }
