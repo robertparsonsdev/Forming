@@ -25,12 +25,9 @@
 		EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */; };
 		EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ED42448E050008202D0 /* FormingDayButton.swift */; };
 		EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64EDA244A17D4008202D0 /* FormingColors.swift */; };
-		EEAC31D7249324DD00BA5A30 /* Archive+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAC31D6249324DD00BA5A30 /* Archive+CoreDataProperties.swift */; };
 		EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EDB244BA3BF002225F8 /* Status.swift */; };
 		EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */; };
 		EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */; };
-		EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */; };
-		EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */; };
 		EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE73244646E500FC618F /* AppDelegate.swift */; };
 		EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE75244646E500FC618F /* SceneDelegate.swift */; };
 		EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7C244646EA00FC618F /* Assets.xcassets */; };
@@ -41,11 +38,16 @@
 		EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */; };
 		EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE952446578600FC618F /* UIViewExt.swift */; };
 		EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalUtility.swift */; };
-		EEC168BF249302F100343467 /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */; };
 		EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */; };
 		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
+		EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */; };
+		EEEB97E3249452FB006DE24D /* Archive+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DD249452FB006DE24D /* Archive+CoreDataProperties.swift */; };
+		EEEB97E4249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DE249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift */; };
+		EEEB97E5249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DF249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift */; };
+		EEEB97E6249452FB006DE24D /* Habit+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97E0249452FB006DE24D /* Habit+CoreDataClass.swift */; };
+		EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,12 +70,9 @@
 		EEA64ED22447D5CF008202D0 /* FormingColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColorButton.swift; sourceTree = "<group>"; };
 		EEA64ED42448E050008202D0 /* FormingDayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingDayButton.swift; sourceTree = "<group>"; };
 		EEA64EDA244A17D4008202D0 /* FormingColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingColors.swift; sourceTree = "<group>"; };
-		EEAC31D6249324DD00BA5A30 /* Archive+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Archive+CoreDataProperties.swift"; path = "WeeklyHabitTracker/Database/Archive+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EEAD7EDB244BA3BF002225F8 /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
 		EEAD7EDE244BB4BB002225F8 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
-		EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataClass.swift"; sourceTree = "<group>"; };
-		EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EEC0FE70244646E500FC618F /* Forming.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forming.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEC0FE73244646E500FC618F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE75244646E500FC618F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -86,12 +85,16 @@
 		EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderCell.swift; sourceTree = "<group>"; };
 		EEC0FE952446578600FC618F /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		EEC0FE98244699BE00FC618F /* CalUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalUtility.swift; sourceTree = "<group>"; };
-		EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
-		EEC168BE249302F100343467 /* Archive+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailCollectionViewController.swift; sourceTree = "<group>"; };
 		EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedHabitCell.swift; sourceTree = "<group>"; };
 		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
+		EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
+		EEEB97DD249452FB006DE24D /* Archive+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		EEEB97DE249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArchivedHabit+CoreDataClass.swift"; sourceTree = "<group>"; };
+		EEEB97DF249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArchivedHabit+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		EEEB97E0249452FB006DE24D /* Habit+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataClass.swift"; sourceTree = "<group>"; };
+		EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,11 +125,13 @@
 		EEA64ED624492BB1008202D0 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */,
+				EEEB97DD249452FB006DE24D /* Archive+CoreDataProperties.swift */,
+				EEEB97DE249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift */,
+				EEEB97DF249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift */,
+				EEEB97E0249452FB006DE24D /* Habit+CoreDataClass.swift */,
+				EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */,
 				EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */,
-				EEAD7EE2244BB948002225F8 /* Habit+CoreDataClass.swift */,
-				EEAD7EE3244BB948002225F8 /* Habit+CoreDataProperties.swift */,
-				EEC168BD249302F100343467 /* Archive+CoreDataClass.swift */,
-				EEC168BE249302F100343467 /* Archive+CoreDataProperties.swift */,
 				EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */,
 			);
 			path = Database;
@@ -148,7 +153,6 @@
 		EEC0FE67244646E500FC618F = {
 			isa = PBXGroup;
 			children = (
-				EEAC31D6249324DD00BA5A30 /* Archive+CoreDataProperties.swift */,
 				EEC0FE72244646E500FC618F /* WeeklyHabitTracker */,
 				EEC0FE71244646E500FC618F /* Products */,
 			);
@@ -340,29 +344,30 @@
 				EEC0FE882446498A00FC618F /* HomeCollectionViewController.swift in Sources */,
 				EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */,
 				EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */,
+				EEEB97E6249452FB006DE24D /* Habit+CoreDataClass.swift in Sources */,
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
-				EEAD7EE4244BB948002225F8 /* Habit+CoreDataClass.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE91108524623F730021190C /* UIHelper.swift in Sources */,
 				EE9A71512458AFEA0082D135 /* Sort.swift in Sources */,
-				EEAC31D7249324DD00BA5A30 /* Archive+CoreDataProperties.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
+				EEEB97E3249452FB006DE24D /* Archive+CoreDataProperties.swift in Sources */,
 				EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */,
+				EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */,
 				EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
+				EEEB97E4249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
-				EEC168BF249302F100343467 /* Archive+CoreDataClass.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */,
 				EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */,
 				EE911087246242660021190C /* ArchiveTitleCell.swift in Sources */,
+				EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
-				EEAD7EE5244BB948002225F8 /* Habit+CoreDataProperties.swift in Sources */,
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
 				EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */,
 				EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */,
@@ -371,6 +376,7 @@
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,
 				EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */,
+				EEEB97E5249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift in Sources */,
 				EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */,
 				EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */,
 			);

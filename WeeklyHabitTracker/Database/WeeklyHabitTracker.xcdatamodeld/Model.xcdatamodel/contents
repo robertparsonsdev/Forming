@@ -3,7 +3,15 @@
     <entity name="Archive" representedClassName="Archive" syncable="YES">
         <attribute name="color" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="oldHabits" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Habit" inverseName="history" inverseEntity="Habit"/>
+        <relationship name="archivedHabits" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ArchivedHabit" inverseName="archive" inverseEntity="ArchivedHabit"/>
+        <relationship name="habit" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Habit" inverseName="archive" inverseEntity="Habit"/>
+    </entity>
+    <entity name="ArchivedHabit" representedClassName="ArchivedHabit" syncable="YES">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="archive" maxCount="1" deletionRule="Nullify" destinationEntity="Archive" inverseName="archivedHabits" inverseEntity="Archive"/>
+        <relationship name="originalHabit" maxCount="1" deletionRule="Nullify" destinationEntity="Habit" inverseName="oldHabits" inverseEntity="Habit"/>
     </entity>
     <entity name="Habit" representedClassName=".Habit" syncable="YES">
         <attribute name="buttonState" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -16,10 +24,12 @@
         <attribute name="statusValues" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;Int64&gt;"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="uniqueID" optional="YES" attributeType="String"/>
-        <relationship name="history" maxCount="1" deletionRule="Nullify" destinationEntity="Archive" inverseName="oldHabits" inverseEntity="Archive"/>
+        <relationship name="archive" maxCount="1" deletionRule="Nullify" destinationEntity="Archive" inverseName="habit" inverseEntity="Archive"/>
+        <relationship name="oldHabits" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ArchivedHabit" inverseName="originalHabit" inverseEntity="ArchivedHabit"/>
     </entity>
     <elements>
-        <element name="Archive" positionX="-63" positionY="54" width="128" height="88"/>
-        <element name="Habit" positionX="-461.44140625" positionY="93.8671875" width="128" height="208"/>
+        <element name="Archive" positionX="-63" positionY="54" width="128" height="103"/>
+        <element name="Habit" positionX="-461.44140625" positionY="93.8671875" width="128" height="223"/>
+        <element name="ArchivedHabit" positionX="-261" positionY="153" width="128" height="118"/>
     </elements>
 </model>

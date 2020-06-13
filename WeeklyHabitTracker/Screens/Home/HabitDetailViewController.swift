@@ -214,7 +214,7 @@ class HabitDetailViewController: UIViewController {
             let initialArchive = Archive(context: persistenceManager.context)
             initialArchive.title = initialHabit.title
             initialArchive.color = initialHabit.color
-            initialHabit.history = initialArchive
+            initialHabit.archive = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
                 for (index, day) in initialHabit.days.enumerated() {
@@ -261,8 +261,8 @@ class HabitDetailViewController: UIViewController {
             habit?.priority = self.priority
             habit?.reminder = self.reminder
             habit?.flag = self.flag
-            habit?.history?.title = habit?.title
-            if let color = habit?.color { habit?.history?.color = color }
+            habit?.archive.title = habit?.title
+            if let color = habit?.color { habit?.archive.color = color }
         }
         
         persistenceManager.save()

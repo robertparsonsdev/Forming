@@ -1,5 +1,5 @@
 //
-//  Archive+CoreDataClass.swift
+//  ArchivedHabit+CoreDataClass.swift
 //  WeeklyHabitTracker
 //
 //  Created by Robert Parsons on 6/12/20.
@@ -10,7 +10,7 @@
 import Foundation
 import CoreData
 
-@objc(Archive)
-public class Archive: NSManagedObject {
+@objc(ArchivedHabit)
+public class ArchivedHabit: NSManagedObject {
 
 }

@@ -2,7 +2,7 @@
 //  Archive+CoreDataProperties.swift
 //  WeeklyHabitTracker
 //
-//  Created by Robert Parsons on 6/11/20.
+//  Created by Robert Parsons on 6/12/20.
 //  Copyright © 2020 Robert Parsons. All rights reserved.
 //
 //
@@ -17,25 +17,44 @@ extension Archive {
         return NSFetchRequest<Archive>(entityName: "Archive")
     }
 
-    @NSManaged public var title: String?
     @NSManaged public var color: Int64
-    @NSManaged public var oldHabits: NSSet?
+    @NSManaged public var title: String?
+    @NSManaged public var archivedHabits: NSOrderedSet?
+    @NSManaged public var habit: Habit
 
 }
 
-// MARK: Generated accessors for oldHabits
+// MARK: Generated accessors for archivedHabits
 extension Archive {
 
-    @objc(addOldHabitsObject:)
-    @NSManaged public func addToOldHabits(_ value: Habit)
+    @objc(insertObject:inArchivedHabitsAtIndex:)
+    @NSManaged public func insertIntoArchivedHabits(_ value: ArchivedHabit, at idx: Int)
 
-    @objc(removeOldHabitsObject:)
-    @NSManaged public func removeFromOldHabits(_ value: Habit)
+    @objc(removeObjectFromArchivedHabitsAtIndex:)
+    @NSManaged public func removeFromArchivedHabits(at idx: Int)
 
-    @objc(addOldHabits:)
-    @NSManaged public func addToOldHabits(_ values: NSSet)
+    @objc(insertArchivedHabits:atIndexes:)
+    @NSManaged public func insertIntoArchivedHabits(_ values: [ArchivedHabit], at indexes: NSIndexSet)
 
-    @objc(removeOldHabits:)
-    @NSManaged public func removeFromOldHabits(_ values: NSSet)
+    @objc(removeArchivedHabitsAtIndexes:)
+    @NSManaged public func removeFromArchivedHabits(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInArchivedHabitsAtIndex:withObject:)
+    @NSManaged public func replaceArchivedHabits(at idx: Int, with value: ArchivedHabit)
+
+    @objc(replaceArchivedHabitsAtIndexes:withArchivedHabits:)
+    @NSManaged public func replaceArchivedHabits(at indexes: NSIndexSet, with values: [ArchivedHabit])
+
+    @objc(addArchivedHabitsObject:)
+    @NSManaged public func addToArchivedHabits(_ value: ArchivedHabit)
+
+    @objc(removeArchivedHabitsObject:)
+    @NSManaged public func removeFromArchivedHabits(_ value: ArchivedHabit)
+
+    @objc(addArchivedHabits:)
+    @NSManaged public func addToArchivedHabits(_ values: NSOrderedSet)
+
+    @objc(removeArchivedHabits:)
+    @NSManaged public func removeFromArchivedHabits(_ values: NSOrderedSet)
 
 }
