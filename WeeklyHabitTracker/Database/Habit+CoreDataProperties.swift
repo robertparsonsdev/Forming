@@ -24,7 +24,7 @@ extension Habit {
     @NSManaged public var flag: Bool
     @NSManaged public var priority: Int64
     @NSManaged public var reminder: Date?
-    @NSManaged public var statusValues: Array<Int64>
+    @NSManaged private var statusValues: Array<Int64>
     @NSManaged public var title: String?
     @NSManaged public var uniqueID: String
     @NSManaged public var archive: Archive

@@ -50,7 +50,7 @@ class CalUtility {
     
     static func getDateAsString(date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
+        formatter.dateStyle = .medium
         return formatter.string(from: date)
     }
     

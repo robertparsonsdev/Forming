@@ -38,10 +38,8 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         
         stackView.addArrangedSubview(percentLabel)
         let view = UIView()
-        view.backgroundColor = .systemPink
         stackView.addArrangedSubview(view)
         let vieww = UIView()
-        vieww.backgroundColor = .systemGreen
         stackView.addArrangedSubview(vieww)
     }
     

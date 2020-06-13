@@ -8,6 +8,7 @@
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="statusValues" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;Int64&gt;"/>
         <relationship name="archive" maxCount="1" deletionRule="Nullify" destinationEntity="Archive" inverseName="archivedHabits" inverseEntity="Archive"/>
     </entity>
     <entity name="Habit" representedClassName=".Habit" syncable="YES">
@@ -25,7 +26,7 @@
     </entity>
     <elements>
         <element name="Archive" positionX="-63" positionY="54" width="128" height="73"/>
-        <element name="ArchivedHabit" positionX="-261" positionY="153" width="128" height="103"/>
+        <element name="ArchivedHabit" positionX="-261" positionY="153" width="128" height="118"/>
         <element name="Habit" positionX="-461.44140625" positionY="93.8671875" width="128" height="208"/>
     </elements>
 </model>

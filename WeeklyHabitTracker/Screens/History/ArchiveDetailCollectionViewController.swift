@@ -66,6 +66,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.dataSource = UICollectionViewDiffableDataSource<Section, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
             cell?.set(archivedHabit: archivedHabit)
+            cell?.set(delegate: self)
             return cell
         })
         
@@ -84,5 +85,14 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
+    }
+}
+
+// MARK: - Delegates
+extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
+    func pushViewController(with archivedHabit: ArchivedHabit) {
+        let vc = ArchivedHabitDetailViewController()
+        vc.set(archivedHabit: archivedHabit)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

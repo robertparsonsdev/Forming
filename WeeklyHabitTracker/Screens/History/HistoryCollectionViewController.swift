@@ -74,6 +74,9 @@ class HistoryCollectionViewController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let test = ArchivedHabit(context: persistenceManager.context)
+        test.statuses = archives[indexPath.row].habit.statuses
+        test.startDate = Date()
+        test.endDate = Date()
         archives[indexPath.row].addToArchivedHabits(test)
         let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archives[indexPath.row])
         navigationController?.pushViewController(archiveDetailVC, animated: true)

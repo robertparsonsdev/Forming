@@ -264,8 +264,6 @@ class HabitDetailViewController: UIViewController {
             if let updatedHabit = habit {
                 habit?.archive.habit = updatedHabit
             }
-//            habit?.archive.title = habit?.title
-//            if let color = habit?.color { habit?.archive.color = color }
         }
         
         persistenceManager.save()
