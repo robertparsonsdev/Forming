@@ -200,35 +200,36 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func updateCellsForDayChange(_ calendarDayChanged: Notification?) {
-        self.currentDate = CalUtility.getCurrentDate()
+//        self.currentDate = CalUtility.getCurrentDate()
         self.currentDay = CalUtility.getCurrentDay()
-        defaults.set(self.currentDate, forKey: self.currentDateKey)
-        
-        guard let currentDay = self.currentDay else { return }
-        if currentDay == 0 {
-            for (habitIndex, habit) in self.habits.enumerated() {
-                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
-                let archivedHabit = ArchivedHabit(context: persistenceManager.context)
-                archivedHabit.archive = habit.archive
-                archivedHabit.statuses = habit.statuses
-                archivedHabit.startDate = CalUtility.getLastStartDate()
-                archivedHabit.endDate = CalUtility.getLastEndDate()
-                habit.archive.insertIntoArchivedHabits(archivedHabit, at: 0)
-                for (statusIndex, status) in habit.statuses.enumerated() {
-                    if status != .empty { habit.statuses[statusIndex] = .incomplete }
-                }
-                self.habits[habitIndex] = habit
-            }
-        } else {
-            for (index, habit) in self.habits.enumerated() {
-                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
-                if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
-                else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
-                
-                self.habits[index] = habit
-            }
-        }
-        
+//        defaults.set(self.currentDate, forKey: self.currentDateKey)
+//        print(self.currentDay)
+//
+//        guard let currentDay = self.currentDay else { return }
+//        if currentDay == 0 {
+//            for (habitIndex, habit) in self.habits.enumerated() {
+//                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
+//                let archivedHabit = ArchivedHabit(context: persistenceManager.context)
+//                archivedHabit.archive = habit.archive
+//                archivedHabit.statuses = habit.statuses
+//                archivedHabit.startDate = CalUtility.getLastStartDate()
+//                archivedHabit.endDate = CalUtility.getLastEndDate()
+//                habit.archive.insertIntoArchivedHabits(archivedHabit, at: 0)
+//                for (statusIndex, status) in habit.statuses.enumerated() {
+//                    if status != .empty { habit.statuses[statusIndex] = .incomplete }
+//                }
+//                self.habits[habitIndex] = habit
+//            }
+//        } else {
+//            for (index, habit) in self.habits.enumerated() {
+//                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
+//                if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
+//                else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
+//
+//                self.habits[index] = habit
+//            }
+//        }
+        self.habits = persistenceManager.updateHabitsForDayChange()
         saveToPersistence(habit: self.habits[0])
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
         updateData(on: self.habits)

@@ -13,6 +13,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        print("did finish launching")
+        let habits = PersistenceService.shared.fetch(Habit.self)
+        print(habits[0].days)
         return true
     }
 
