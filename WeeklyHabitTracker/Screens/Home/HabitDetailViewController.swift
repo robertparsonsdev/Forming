@@ -216,6 +216,7 @@ class HabitDetailViewController: UIViewController {
             initialArchive.title = initialHabit.title ?? "Error"
             initialArchive.color = initialHabit.color
             initialArchive.habit = initialHabit
+            initialArchive.active = true
             initialHabit.archive = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
@@ -284,6 +285,7 @@ class HabitDetailViewController: UIViewController {
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
                     self.deleteNotificationRequests(fromID: habitToDelete.uniqueID, andDays: habitToDelete.days)
+                    habitToDelete.archive.active = false
                     self.habitDelegate?.delete(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }

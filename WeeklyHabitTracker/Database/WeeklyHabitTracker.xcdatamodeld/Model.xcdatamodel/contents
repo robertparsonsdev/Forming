@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Archive" representedClassName="Archive" syncable="YES">
+        <attribute name="active" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="color" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" attributeType="String"/>
         <relationship name="archivedHabits" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ArchivedHabit" inverseName="archive" inverseEntity="ArchivedHabit"/>
@@ -27,7 +28,7 @@
         <relationship name="archive" maxCount="1" deletionRule="Nullify" destinationEntity="Archive" inverseName="habit" inverseEntity="Archive"/>
     </entity>
     <elements>
-        <element name="Archive" positionX="-63" positionY="54" width="128" height="103"/>
+        <element name="Archive" positionX="-63" positionY="54" width="128" height="118"/>
         <element name="ArchivedHabit" positionX="-261" positionY="153" width="128" height="118"/>
         <element name="Habit" positionX="-461.44140625" positionY="93.8671875" width="128" height="208"/>
     </elements>

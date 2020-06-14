@@ -15,10 +15,12 @@
 		EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */; };
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
 		EE3A59F0249578ED009E5D25 /* ArchivedHabitDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3A59EF249578ED009E5D25 /* ArchivedHabitDetailViewController.swift */; };
+		EE3A59F22495C720009E5D25 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3A59F12495C720009E5D25 /* HistorySection.swift */; };
+		EE3A59F42495C8B6009E5D25 /* HistorySectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3A59F32495C8B6009E5D25 /* HistorySectionHeader.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
 		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
 		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
-		EE911087246242660021190C /* ArchiveTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* ArchiveTitleCell.swift */; };
+		EE911087246242660021190C /* HistoryTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* HistoryTitleCell.swift */; };
 		EE9A71512458AFEA0082D135 /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sort.swift */; };
 		EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */; };
 		EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */; };
@@ -61,10 +63,12 @@
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		EE35BF3B245FBF7800919965 /* Forming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forming.entitlements; sourceTree = "<group>"; };
 		EE3A59EF249578ED009E5D25 /* ArchivedHabitDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedHabitDetailViewController.swift; sourceTree = "<group>"; };
+		EE3A59F12495C720009E5D25 /* HistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySection.swift; sourceTree = "<group>"; };
+		EE3A59F32495C8B6009E5D25 /* HistorySectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySectionHeader.swift; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
-		EE911086246242660021190C /* ArchiveTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveTitleCell.swift; sourceTree = "<group>"; };
+		EE911086246242660021190C /* HistoryTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTitleCell.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailViewController.swift; sourceTree = "<group>"; };
 		EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTitleLabel.swift; sourceTree = "<group>"; };
@@ -148,6 +152,7 @@
 				EE9A71502458AFEA0082D135 /* Sort.swift */,
 				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 				EE91108424623F730021190C /* UIHelper.swift */,
+				EE3A59F12495C720009E5D25 /* HistorySection.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -266,7 +271,8 @@
 		EEEB97D12494245F006DE24D /* History */ = {
 			isa = PBXGroup;
 			children = (
-				EE911086246242660021190C /* ArchiveTitleCell.swift */,
+				EE911086246242660021190C /* HistoryTitleCell.swift */,
+				EE3A59F32495C8B6009E5D25 /* HistorySectionHeader.swift */,
 				EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */,
 				EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */,
 			);
@@ -355,6 +361,8 @@
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EEEB97E3249452FB006DE24D /* Archive+CoreDataProperties.swift in Sources */,
 				EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */,
+				EE3A59F22495C720009E5D25 /* HistorySection.swift in Sources */,
+				EE3A59F42495C8B6009E5D25 /* HistorySectionHeader.swift in Sources */,
 				EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */,
 				EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
@@ -367,7 +375,7 @@
 				EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */,
 				EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */,
 				EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */,
-				EE911087246242660021190C /* ArchiveTitleCell.swift in Sources */,
+				EE911087246242660021190C /* HistoryTitleCell.swift in Sources */,
 				EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,

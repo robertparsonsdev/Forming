@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ArchiveTitleCell: UICollectionViewCell {
+class HistoryTitleCell: UICollectionViewCell {
     let titleLabel = UILabel()
     
     override init(frame: CGRect) {

@@ -21,10 +21,12 @@ extension UICollectionViewController {
     }
 
     func removeEmptyStateView() {
-        if let emptyStateView = collectionView.viewWithTag(1000) {
-            emptyStateView.removeFromSuperview()
-            navigationItem.searchController?.searchBar.isHidden = false
-            collectionView.alwaysBounceVertical = true
+        DispatchQueue.main.async {
+            if let emptyStateView = self.collectionView.viewWithTag(1000) {
+                emptyStateView.removeFromSuperview()
+                self.navigationItem.searchController?.searchBar.isHidden = false
+                self.collectionView.alwaysBounceVertical = true
+            }
         }
     }
 }

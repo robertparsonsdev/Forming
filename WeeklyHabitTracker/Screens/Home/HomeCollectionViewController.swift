@@ -246,12 +246,12 @@ extension HomeCollectionViewController: SaveHabitDelegate {
     func saveHabit() {
         self.updateHabits()
         collectionView.reloadData()
-        
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func delete(habit: Habit) {
         self.deleteHabit(habit)
+        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
 }
 
