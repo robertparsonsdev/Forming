@@ -19,6 +19,8 @@ extension Archive {
 
     @NSManaged public var archivedHabits: NSOrderedSet?
     @NSManaged public var habit: Habit
+    @NSManaged public var title: String
+    @NSManaged public var color: Int64
 
 }
 

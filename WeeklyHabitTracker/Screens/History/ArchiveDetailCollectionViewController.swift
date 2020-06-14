@@ -22,7 +22,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         if let array = archive.archivedHabits?.array as? [ArchivedHabit] { self.archivedHabits = array }
         else { self.archivedHabits = nil }
         super.init(collectionViewLayout: layout)
-        self.title = archive.habit.title
+        self.title = archive.title
     }
     
     required init?(coder: NSCoder) {
@@ -41,7 +41,13 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
         configureDataSource()
-        updateData(on: self.archivedHabits!)
+        if let archivedHabits = self.archivedHabits {
+            if archivedHabits.count == 0 {
+                self.showEmptyStateView(withText: "At the beginning of each new week, the previous week's habit will be added here.")
+            } else {
+                updateData(on: archivedHabits)
+            }
+        }
     }
 
     // MARK: CollectionView Functions

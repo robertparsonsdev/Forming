@@ -213,6 +213,8 @@ class HabitDetailViewController: UIViewController {
             initialHabit.uniqueID = UUID().uuidString
             
             let initialArchive = Archive(context: persistenceManager.context)
+            initialArchive.title = initialHabit.title ?? "Error"
+            initialArchive.color = initialHabit.color
             initialArchive.habit = initialHabit
             initialHabit.archive = initialArchive
             
@@ -262,6 +264,8 @@ class HabitDetailViewController: UIViewController {
             habit?.reminder = self.reminder
             habit?.flag = self.flag
             if let updatedHabit = habit {
+                habit?.archive.title = updatedHabit.title ?? "Title Error"
+                habit?.archive.color = updatedHabit.color
                 habit?.archive.habit = updatedHabit
             }
         }

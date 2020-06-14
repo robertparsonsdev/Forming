@@ -11,12 +11,14 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class HistoryCollectionViewController: UICollectionViewController {
-    var archives: [Archive] = []
-    let persistenceManager: PersistenceService
-    let notificationCenter: NotificationCenter
-    var dataSource: UICollectionViewDiffableDataSource<Section, Archive>!
+    private var archives: [Archive] = []
+    private let persistenceManager: PersistenceService
+    private let notificationCenter: NotificationCenter
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Archive>!
     
-    let searchController = UISearchController()
+    private let searchController = UISearchController()
+    private var filteredArchives: [Archive] = []
+    private var isSearching = false
     
     // MARK: - Initializers
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, notifCenter: NotificationCenter) {
@@ -57,8 +59,8 @@ class HistoryCollectionViewController: UICollectionViewController {
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<Section, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ArchiveTitleCell
-            cell.setTitleLabelText(archive.habit.title ?? "")
-            cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.habit.color))
+            cell.setTitleLabelText(archive.title)
+            cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
             return cell
         })
     }
@@ -73,12 +75,9 @@ class HistoryCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let test = ArchivedHabit(context: persistenceManager.context)
-        test.statuses = archives[indexPath.row].habit.statuses
-        test.startDate = Date()
-        test.endDate = Date()
-        archives[indexPath.row].addToArchivedHabits(test)
-        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archives[indexPath.row])
+        let activeArray = self.isSearching ? self.filteredArchives : self.archives
+        let archive = activeArray[indexPath.row]
+        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
@@ -95,10 +94,11 @@ class HistoryCollectionViewController: UICollectionViewController {
     func updateArchives() {
         self.archives = persistenceManager.fetch(Archive.self)
         guard !self.archives.isEmpty else {
-            self.showEmptyStateView(withText: "You can view the history and statistics of your habits after completing at least one week of a habit.")
+            self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")
             return
         }
-        // alphabetize archives
+        self.removeEmptyStateView()
+        self.archives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
         updateData(on: self.archives)
     }
     
@@ -112,10 +112,16 @@ class HistoryCollectionViewController: UICollectionViewController {
 // MARK: - Delegates
 extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-//
+        guard let filter = searchController.searchBar.text else { return }
+        if filter.isEmpty { updateData(on: self.archives); isSearching = false; return }
+        self.isSearching = true
+        
+        filteredArchives = self.archives.filter { ($0.title.lowercased().contains(filter.lowercased())) }
+        updateData(on: filteredArchives)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//
+        self.isSearching = false
+        updateData(on: self.archives)
     }
 }

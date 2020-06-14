@@ -55,7 +55,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped)),
                                               UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))]
-        navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
+//        navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
@@ -275,7 +275,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
 
 extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let filter = searchController.searchBar.text else { return }//, !filter.isEmpty else { return }
+        guard let filter = searchController.searchBar.text else { return }
         if filter.isEmpty { updateData(on: self.habits); return }
         
         filteredHabits = self.habits.filter { ($0.title?.lowercased().contains(filter.lowercased()))! }
