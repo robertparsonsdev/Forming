@@ -105,7 +105,9 @@ class HistoryCollectionViewController: UICollectionViewController {
     // MARK: - Selectors
     @objc func reloadArchives() {
         updateArchives()
-        collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
 }
 

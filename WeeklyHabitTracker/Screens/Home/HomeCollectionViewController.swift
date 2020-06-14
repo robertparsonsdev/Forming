@@ -208,7 +208,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         if currentDay == 0 {
             for (habitIndex, habit) in self.habits.enumerated() {
                 if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
-                // save to archive persistence
+                let archivedHabit = ArchivedHabit(context: persistenceManager.context)
+                archivedHabit.archive = habit.archive
+                archivedHabit.statuses = habit.statuses
+                archivedHabit.startDate = CalUtility.getLastStartDate()
+                archivedHabit.endDate = CalUtility.getLastEndDate()
+                habit.archive.insertIntoArchivedHabits(archivedHabit, at: 0)
                 for (statusIndex, status) in habit.statuses.enumerated() {
                     if status != .empty { habit.statuses[statusIndex] = .incomplete }
                 }
@@ -220,12 +225,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
                 if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
                 else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
                 
-                
                 self.habits[index] = habit
             }
         }
         
         saveToPersistence(habit: self.habits[0])
+        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
         updateData(on: self.habits)
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }

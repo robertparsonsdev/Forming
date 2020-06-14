@@ -87,4 +87,16 @@ class CalUtility {
         components.weekday = weekday
         return components
     }
+    
+    static func getLastStartDate() -> Date {
+        let calendar = Calendar.current
+        let date = Date()
+        return calendar.date(byAdding: .day, value: -7, to: date)!
+    }
+    
+    static func getLastEndDate() -> Date {
+        let calendar = Calendar.current
+        let date = Date()
+        return calendar.date(byAdding: .day, value: -1, to: date)!
+    }
 }
