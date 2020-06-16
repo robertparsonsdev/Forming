@@ -13,8 +13,8 @@ private let sectionReuseIdentifier = "History Section Header"
 
 class HistoryCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var archives: [Archive] = []
-    private var activeHabits: [Archive] = []
-    private var deletedHabits: [Archive] = []
+    private var activeArchives: [Archive] = []
+    private var deletedArchives: [Archive] = []
     private let persistenceManager: PersistenceService
     private let notificationCenter: NotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>!
@@ -30,6 +30,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("newDay"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("reload"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -47,7 +48,6 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.collectionViewLayout = UIHelper.createTwoColumnFlowLayout(in: collectionView)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(rawValue: "reload"), object: nil)
 
         self.collectionView.register(HistoryTitleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(HistorySectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionReuseIdentifier)
@@ -78,7 +78,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as! HistorySectionHeader
             switch indexPath.section {
             case 0: header.set(title: "Active Habits")
-            case 1: header.set(title: self.deletedHabits.count > 0 ? "Deleted Habits" : "")
+            case 1: header.set(title: self.deletedArchives.count > 0 ? "Deleted Habits" : "")
             default: header.set(title: "Error")
             }
             
@@ -88,19 +88,22 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
 
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let activeArray = self.isSearching ? self.filteredArchives : self.archives
-//        let archive = activeArray[indexPath.row]
         guard let archive = self.dataSource.itemIdentifier(for: indexPath) else { print("selection error"); return }
         let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
     // MARK: - Functions
-    func updateData(on activeHabits: [Archive], and deletedHabits: [Archive]) {
+    func updateData(on archives: [Archive]) {
+        self.activeArchives = archives.filter( { $0.active == true } )
+        self.deletedArchives = archives.filter( { $0.active == false } )
+        self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+        self.deletedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+        
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         snapshot.appendSections([.activeHabits, .deletedHabits])
-        snapshot.appendItems(activeHabits, toSection: .activeHabits)
-        snapshot.appendItems(deletedHabits, toSection: .deletedHabits)
+        snapshot.appendItems(self.activeArchives, toSection: .activeHabits)
+        snapshot.appendItems(self.deletedArchives, toSection: .deletedHabits)
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
@@ -113,12 +116,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             return
         }
         self.removeEmptyStateView()
-        self.activeHabits = self.archives.filter( { $0.active == true } )
-        self.deletedHabits = self.archives.filter( { $0.active == false } )
-
-        self.activeHabits.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
-        self.deletedHabits.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
-        updateData(on: self.activeHabits, and: self.deletedHabits)
+        updateData(on: self.archives)
     }
     
     // MARK: - Selectors
@@ -132,15 +130,15 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
 extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let filter = searchController.searchBar.text else { return }
-        if filter.isEmpty { updateData(on: self.activeHabits, and: self.deletedHabits); isSearching = false; return }
+        if filter.isEmpty { updateData(on: self.archives); isSearching = false; return }
         self.isSearching = true
         
-        filteredArchives = self.activeHabits.filter { ($0.title.lowercased().contains(filter.lowercased())) }
-        updateData(on: filteredArchives, and: self.deletedHabits)
+        self.filteredArchives = self.archives.filter { ($0.title.lowercased().contains(filter.lowercased())) }
+        updateData(on: self.filteredArchives)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.isSearching = false
-        updateData(on: self.activeHabits, and: self.deletedHabits)
+        updateData(on: self.archives)
     }
 }
