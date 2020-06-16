@@ -28,6 +28,8 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         self.persistenceManager = persistenceManager
         self.notificationCenter = notifCenter
         super.init(collectionViewLayout: layout)
+        
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("newDay"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -45,7 +47,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.collectionViewLayout = UIHelper.createTwoColumnFlowLayout(in: collectionView)
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(rawValue: "reload"), object: nil)
+//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(rawValue: "reload"), object: nil)
 
         self.collectionView.register(HistoryTitleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(HistorySectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionReuseIdentifier)
@@ -122,9 +124,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: - Selectors
     @objc func reloadArchives() {
         updateArchives()
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-        }
+        DispatchQueue.main.async { self.collectionView.reloadData() }
     }
 }
 

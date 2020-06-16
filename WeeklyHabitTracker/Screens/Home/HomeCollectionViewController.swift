@@ -21,8 +21,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     let notificationCenter: NotificationCenter
     let userNotificationCenter: UNUserNotificationCenter
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
-    var currentDate: Date?
-    let currentDateKey = "currentDate"
+//    var currentDate: Date?
+//    let currentDateKey = "currentDate"
     var currentDay: Int?
     
     let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
@@ -38,9 +38,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
         if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
-        if let date = defaults.object(forKey: self.currentDateKey) { self.currentDate = date as? Date } else { self.currentDate = CalUtility.getCurrentDate() }
+//        if let date = defaults.object(forKey: self.currentDateKey) { self.currentDate = date as? Date } else { self.currentDate = CalUtility.getCurrentDate() }
         self.currentDay = CalUtility.getCurrentDay()
         super.init(collectionViewLayout: layout)
+        
+        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -58,8 +60,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 //        navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
-        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
+//        notificationCenter.post(name: .NSCalendarDayChanged, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIScene.didActivateNotification, object: nil)
 
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -71,11 +75,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         updateHabits()
     }
     
-    @objc func notifTapped() {
-        userNotificationCenter.getPendingNotificationRequests { (results) in
-            for result in results { print(result) }
-        }
-    }
+//    @objc func notifTapped() {
+//        userNotificationCenter.getPendingNotificationRequests { (results) in
+//            for result in results { print(result) }
+//        }
+//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 30, height: 100)
@@ -115,8 +119,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
             cell.set(delegate: self)
-            if let currentDay = self.currentDay { cell.set(currentDay: currentDay) }
-            else { cell.set(currentDay: CalUtility.getCurrentDay()) }
+//            if let currentDay = self.currentDay { cell.set(currentDay: currentDay) }
+//            else { cell.set(currentDay: CalUtility.getCurrentDay()) }
             cell.set(habit: habit)
             return cell
         })
@@ -191,53 +195,32 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         present(navController, animated: true)
     }
     
-    @objc func didBecomeActive() {
-        title = "Active"
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.title = "Habits" }
-        guard habits.count > 0 else { return }
-        guard !Calendar.current.isDateInToday(self.currentDate!) else { return }
-        updateCellsForDayChange(nil)
-    }
+//    @objc func didBecomeActive() {
+//        title = "Active"
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.title = "Habits" }
+//        guard habits.count > 0 else { return }
+//        guard !Calendar.current.isDateInToday(self.currentDate!) else { return }
+//        updateCellsForDayChange(nil)
+//    }
     
-    @objc func updateCellsForDayChange(_ calendarDayChanged: Notification?) {
-//        self.currentDate = CalUtility.getCurrentDate()
-        self.currentDay = CalUtility.getCurrentDay()
-//        defaults.set(self.currentDate, forKey: self.currentDateKey)
-//        print(self.currentDay)
-//
-//        guard let currentDay = self.currentDay else { return }
-//        if currentDay == 0 {
-//            for (habitIndex, habit) in self.habits.enumerated() {
-//                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
-//                let archivedHabit = ArchivedHabit(context: persistenceManager.context)
-//                archivedHabit.archive = habit.archive
-//                archivedHabit.statuses = habit.statuses
-//                archivedHabit.startDate = CalUtility.getLastStartDate()
-//                archivedHabit.endDate = CalUtility.getLastEndDate()
-//                habit.archive.insertIntoArchivedHabits(archivedHabit, at: 0)
-//                for (statusIndex, status) in habit.statuses.enumerated() {
-//                    if status != .empty { habit.statuses[statusIndex] = .incomplete }
-//                }
-//                self.habits[habitIndex] = habit
-//            }
-//        } else {
-//            for (index, habit) in self.habits.enumerated() {
-//                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
-//                if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
-//                else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
-//
-//                self.habits[index] = habit
-//            }
-//        }
-        self.habits = persistenceManager.updateHabitsForDayChange()
-        saveToPersistence(habit: self.habits[0])
-        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
-        updateData(on: self.habits)
-        DispatchQueue.main.async { self.collectionView.reloadData() }
-    }
+//    @objc func updateCellsForDayChange(_ calendarDayChanged: Notification?) {
+////        self.currentDate = CalUtility.getCurrentDate()
+//        print("day changed")
+//        self.currentDay = CalUtility.getCurrentDay()
+//        self.habits = HabitOperations.performDayChange(onHabits: self.habits, andContext: persistenceManager.context)
+//        self.persistenceManager.save()
+//        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
+//        updateData(on: self.habits)
+//        DispatchQueue.main.async { self.collectionView.reloadData() }
+//    }
     
     @objc func sortButtonTapped() {
         present(sortAC, animated: true)
+    }
+    
+    @objc func reloadHabits() {
+        updateHabits()
+        DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
 }

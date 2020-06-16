@@ -75,34 +75,4 @@ final class PersistenceService {
             return [T]()
         }
     }
-    
-    func updateHabitsForDayChange() -> [Habit] {
-        let currentDay = CalUtility.getCurrentDay()
-        var habits = self.fetch(Habit.self)
-        
-        switch currentDay {
-        case 0:
-            for (index, habit) in habits.enumerated() {
-                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
-                let archivedHabit = ArchivedHabit(context: self.context)
-                archivedHabit.archive = habit.archive
-                archivedHabit.statuses = habit.statuses
-                archivedHabit.startDate = CalUtility.getLastStartDate()
-                archivedHabit.endDate = CalUtility.getLastEndDate()
-                habit.archive.insertIntoArchivedHabits(archivedHabit, at: 0)
-                for (statusIndex, status) in habit.statuses.enumerated() {
-                    if status != .empty { habit.statuses[statusIndex] = .incomplete }
-                }
-                habits[index] = habit
-            }
-        default:
-            for (index, habit) in habits.enumerated() {
-                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
-                if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
-                else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
-                habits[index] = habit
-            }
-        }
-        return habits
-    }
 }

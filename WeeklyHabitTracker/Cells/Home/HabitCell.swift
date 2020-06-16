@@ -11,7 +11,7 @@ import UIKit
 class HabitCell: UICollectionViewCell {
     private var habit: Habit?
     private var delegate: HabitCellDelegate?
-    private var currentDay: Int?
+    private var currentDay = CalUtility.getCurrentDay()
     private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     private let titleButton = UIButton()
@@ -116,6 +116,7 @@ class HabitCell: UICollectionViewCell {
     }
     
     func set(habit: Habit) {
+        self.currentDay = CalUtility.getCurrentDay()
         self.habit = habit
         if let title = habit.title {
             let symbolAttachment = NSTextAttachment()
