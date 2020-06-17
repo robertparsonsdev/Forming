@@ -15,9 +15,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var key = "date"
     let defaults = UserDefaults.standard
     let persistence = PersistenceService.shared
+    let center = NotificationCenter.default
+    let userCenter = UNUserNotificationCenter.current()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+            if granted { print("granted") }
+            else { print("not granted") }
+        }
+        
         if let date = defaults.object(forKey: self.key) as? Date { self.currentDate = date }
         else { self.currentDate = CalUtility.getCurrentDate(); self.defaults.set(self.currentDate, forKey: self.key) }
         // if current implementation doesn't work, try calling dayChanged in the 2 lines above
@@ -26,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
+        center.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
         
         return true
     }
@@ -69,30 +76,68 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func handleAppRefresh(task: BGAppRefreshTask) {
-        guard !Calendar.current.isDateInToday(self.currentDate!) else {
-            scheduleAppRefresh()
-            task.setTaskCompleted(success: true)
-            return
-        }
         scheduleAppRefresh()
-        self.currentDate = CalUtility.getCurrentDate()
-        self.defaults.set(self.currentDate, forKey: self.key)
         
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
-        queue.addOperation {
-            HabitOperations.performDayChange(withPersistence: self.persistence)
+        
+        let content = UNMutableNotificationContent()
+        content.subtitle = "Notification"
+        content.sound = UNNotificationSound.default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        if Calendar.current.isDateInToday(self.currentDate!) {
+            queue.addOperation {
+                content.title = "Background"
+                self.userCenter.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger))
+            }
+        } else {
+            queue.addOperation {
+                content.title = "Day Change"
+                self.userCenter.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger))
+                self.currentDate = CalUtility.getCurrentDate()
+                self.defaults.set(self.currentDate, forKey: self.key)
+                HabitOperations.performDayChange(withPersistence: self.persistence)
+            }
         }
         
         task.expirationHandler = {
             queue.cancelAllOperations()
         }
-        
+
         let lastOperation = queue.operations.last
         lastOperation?.completionBlock = {
             task.setTaskCompleted(success: !(lastOperation?.isCancelled ?? false))
         }
     }
+    
+//    func handleAppRefresh(task: BGAppRefreshTask) {
+//        guard !Calendar.current.isDateInToday(self.currentDate!) else {
+//            NotificationCenter.default.post(name: NSNotification.Name("green"), object: nil)
+//            scheduleAppRefresh()
+//            task.setTaskCompleted(success: true)
+//            return
+//        }
+//        NotificationCenter.default.post(name: NSNotification.Name("purple"), object: nil)
+//
+//        scheduleAppRefresh()
+//        self.currentDate = CalUtility.getCurrentDate()
+//        self.defaults.set(self.currentDate, forKey: self.key)
+//
+//        let queue = OperationQueue()
+//        queue.maxConcurrentOperationCount = 1
+//        queue.addOperation {
+//            HabitOperations.performDayChange(withPersistence: self.persistence)
+//        }
+//
+//        task.expirationHandler = {
+//            queue.cancelAllOperations()
+//        }
+//
+//        let lastOperation = queue.operations.last
+//        lastOperation?.completionBlock = {
+//            task.setTaskCompleted(success: !(lastOperation?.isCancelled ?? false))
+//        }
+//    }
     
     @objc func dayChanged() {
         guard !Calendar.current.isDateInToday(self.currentDate!) else { return }

@@ -19,10 +19,10 @@ class MainTabBarController: UITabBarController {
         UITabBar.appearance().tintColor = .systemGreen
         setUpViewControllers()
         
-        userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-            if granted { print("granted") }
-            else { print("not granted") }
-        }
+//        userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+//            if granted { print("granted") }
+//            else { print("not granted") }
+//        }
     }
 
     fileprivate func setUpViewControllers() {

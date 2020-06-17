@@ -43,7 +43,13 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(green), name: NSNotification.Name("green"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(purple), name: NSNotification.Name("purple"), object: nil)
+
     }
+    
+    @objc func green() { collectionView.backgroundColor = .systemGreen }
+    @objc func purple() { collectionView.backgroundColor = .systemPurple }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
