@@ -33,7 +33,10 @@ class HabitOperations {
             }
         default:
             for (index, habit) in habits.enumerated() {
-                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
+//                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
+                for dayIndex in 0..<currentDay {
+                    if habit.statuses[dayIndex] == .incomplete { habit.statuses[dayIndex] = .failed}
+                }
                 if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
                 else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
                 habits[index] = habit

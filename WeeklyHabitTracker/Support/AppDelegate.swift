@@ -29,9 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else { self.currentDate = CalUtility.getCurrentDate(); self.defaults.set(self.currentDate, forKey: self.key) }
         // if current implementation doesn't work, try calling dayChanged in the 2 lines above
         
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
-            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+        if !Calendar.current.isDateInToday(self.currentDate!) {
+            HabitOperations.performDayChange(withPersistence: self.persistence)
         }
+//        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
+//            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+//        }
         
         center.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
         
@@ -56,59 +59,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.persistence.save()
     }
     
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        scheduleAppRefresh()
-    }
+//    func applicationDidEnterBackground(_ application: UIApplication) {
+//        scheduleAppRefresh()
+//    }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        print("active")
-    }
+//    func scheduleAppRefresh() {
+//        let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
+//        request.earliestBeginDate = Date(timeIntervalSinceNow: 60)
+//
+//        do {
+//            try BGTaskScheduler.shared.submit(request)
+//        } catch {
+//            print("Could not schedule app refresh: \(error)")
+//        }
+//    }
     
-    func scheduleAppRefresh() {
-        let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 3600)
-        
-        do {
-            try BGTaskScheduler.shared.submit(request)
-        } catch {
-            print("Could not schedule app refresh: \(error)")
-        }
-    }
-    
-    func handleAppRefresh(task: BGAppRefreshTask) {
-        scheduleAppRefresh()
-        
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        
-        let content = UNMutableNotificationContent()
-        content.subtitle = "Notification"
-        content.sound = UNNotificationSound.default
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        if Calendar.current.isDateInToday(self.currentDate!) {
-            queue.addOperation {
-                content.title = "Background"
-                self.userCenter.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger))
-            }
-        } else {
-            queue.addOperation {
-                content.title = "Day Change"
-                self.userCenter.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger))
-                self.currentDate = CalUtility.getCurrentDate()
-                self.defaults.set(self.currentDate, forKey: self.key)
-                HabitOperations.performDayChange(withPersistence: self.persistence)
-            }
-        }
-        
-        task.expirationHandler = {
-            queue.cancelAllOperations()
-        }
-
-        let lastOperation = queue.operations.last
-        lastOperation?.completionBlock = {
-            task.setTaskCompleted(success: !(lastOperation?.isCancelled ?? false))
-        }
-    }
+//    func handleAppRefresh(task: BGAppRefreshTask) {
+//        scheduleAppRefresh()
+//
+//        let queue = OperationQueue()
+//        queue.maxConcurrentOperationCount = 1
+//
+//        let content = UNMutableNotificationContent()
+//        content.subtitle = "Notification"
+//        content.sound = UNNotificationSound.default
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+//        if Calendar.current.isDateInToday(self.currentDate!) {
+//            queue.addOperation {
+//                content.title = "Background"
+//                self.userCenter.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger))
+//            }
+//        } else {
+//            queue.addOperation {
+//                content.title = "Day Change"
+//                self.userCenter.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger))
+//                self.currentDate = CalUtility.getCurrentDate()
+//                self.defaults.set(self.currentDate, forKey: self.key)
+//                HabitOperations.performDayChange(withPersistence: self.persistence)
+//            }
+//        }
+//
+//        task.expirationHandler = {
+//            queue.cancelAllOperations()
+//        }
+//
+//        let lastOperation = queue.operations.last
+//        lastOperation?.completionBlock = {
+//            task.setTaskCompleted(success: !(lastOperation?.isCancelled ?? false))
+//        }
+//    }
     
 //    func handleAppRefresh(task: BGAppRefreshTask) {
 //        guard !Calendar.current.isDateInToday(self.currentDate!) else {
@@ -140,9 +139,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //    }
     
     @objc func dayChanged() {
-        guard !Calendar.current.isDateInToday(self.currentDate!) else { return }
-        self.currentDate = CalUtility.getCurrentDate()
-        self.defaults.set(self.currentDate, forKey: self.key)
+        print("day change")
+//        guard !Calendar.current.isDateInToday(self.currentDate!) else { return }
+//        self.currentDate = CalUtility.getCurrentDate()
+//        self.defaults.set(self.currentDate, forKey: self.key)
         HabitOperations.performDayChange(withPersistence: self.persistence)
     }
 }
