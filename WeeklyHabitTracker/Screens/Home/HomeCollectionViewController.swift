@@ -21,8 +21,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     let notificationCenter: NotificationCenter
     let userNotificationCenter: UNUserNotificationCenter
     var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
-//    var currentDate: Date?
-//    let currentDateKey = "currentDate"
     var currentDay: Int?
     
     let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
@@ -38,18 +36,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
         if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
-//        if let date = defaults.object(forKey: self.currentDateKey) { self.currentDate = date as? Date } else { self.currentDate = CalUtility.getCurrentDate() }
         self.currentDay = CalUtility.getCurrentDay()
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(green), name: NSNotification.Name("green"), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(purple), name: NSNotification.Name("purple"), object: nil)
 
     }
-    
-    @objc func green() { collectionView.backgroundColor = .systemGreen }
-    @objc func purple() { collectionView.backgroundColor = .systemPurple }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -66,11 +58,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 //        navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
-//        notificationCenter.addObserver(self, selector: #selector(updateCellsForDayChange), name: .NSCalendarDayChanged, object: nil)
-//        notificationCenter.post(name: .NSCalendarDayChanged, object: nil)
-//        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-//        notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIScene.didActivateNotification, object: nil)
-
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
@@ -125,8 +112,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
             cell.set(delegate: self)
-//            if let currentDay = self.currentDay { cell.set(currentDay: currentDay) }
-//            else { cell.set(currentDay: CalUtility.getCurrentDay()) }
             cell.set(habit: habit)
             return cell
         })
@@ -200,25 +185,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
     }
-    
-//    @objc func didBecomeActive() {
-//        title = "Active"
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.title = "Habits" }
-//        guard habits.count > 0 else { return }
-//        guard !Calendar.current.isDateInToday(self.currentDate!) else { return }
-//        updateCellsForDayChange(nil)
-//    }
-    
-//    @objc func updateCellsForDayChange(_ calendarDayChanged: Notification?) {
-////        self.currentDate = CalUtility.getCurrentDate()
-//        print("day changed")
-//        self.currentDay = CalUtility.getCurrentDay()
-//        self.habits = HabitOperations.performDayChange(onHabits: self.habits, andContext: persistenceManager.context)
-//        self.persistenceManager.save()
-//        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
-//        updateData(on: self.habits)
-//        DispatchQueue.main.async { self.collectionView.reloadData() }
-//    }
     
     @objc func sortButtonTapped() {
         present(sortAC, animated: true)

@@ -8,6 +8,7 @@
 
 import UIKit
 import BackgroundTasks
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -34,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
+            self.scheduleLocalNotification(withTitle: "Refresh")
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
@@ -41,6 +43,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         center.addObserver(self, selector: #selector(enteredBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         return true
+    }
+    
+    func scheduleLocalNotification(withTitle title: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = "Notification"
+        content.sound = UNNotificationSound.default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        self.userCenter.add(request)
     }
     
     @objc func enteredBackground() {
@@ -67,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func scheduleAppRefresh() {
         let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 60)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 3600)
 
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -83,12 +95,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
         if Calendar.current.isDateInToday(self.currentDate!) {
-            queue.addOperation { print("day didn't change"); self.center.post(name: NSNotification.Name("green"), object: nil) }
+            queue.addOperation { print("do nothing") }
         } else {
             queue.addOperation { self.dayChanged() }
         }
 
         task.expirationHandler = {
+            task.setTaskCompleted(success: false)
             queue.cancelAllOperations()
         }
 
