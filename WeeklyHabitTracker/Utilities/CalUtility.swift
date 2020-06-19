@@ -88,15 +88,11 @@ class CalUtility {
         return components
     }
     
-    static func getLastStartDate() -> Date {
-        let calendar = Calendar.current
-        let date = Date()
-        return calendar.date(byAdding: .day, value: -7, to: date)!
+    static func getFirstDateOfWeek() -> Date {
+        return Calendar.current.date(byAdding: .day, value: -(getCurrentDay()), to: Date())!
     }
     
-    static func getLastEndDate() -> Date {
-        let calendar = Calendar.current
-        let date = Date()
-        return calendar.date(byAdding: .day, value: -1, to: date)!
+    static func getLastDateOfWeek() -> Date {
+        return Calendar.current.date(byAdding: .day, value: (6 - getCurrentDay()), to: Date())!
     }
 }

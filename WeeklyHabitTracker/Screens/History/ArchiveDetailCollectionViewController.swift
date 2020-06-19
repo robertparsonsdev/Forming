@@ -41,13 +41,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
         configureDataSource()
-        if let archivedHabits = self.archivedHabits {
-            if archivedHabits.count == 0 {
-                self.showEmptyStateView(withText: "At the beginning of each new week, the previous week's habit will be added here.")
-            } else {
-                updateData(on: archivedHabits)
-            }
-        }
     }
 
     // MARK: CollectionView Functions
@@ -77,7 +70,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         })
         
         self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
-            print("header created")
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
             return header
         }

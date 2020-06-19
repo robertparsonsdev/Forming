@@ -219,6 +219,13 @@ class HabitDetailViewController: UIViewController {
             initialArchive.active = true
             initialHabit.archive = initialArchive
             
+            let archivedHabit = ArchivedHabit(context: persistenceManager.context)
+            archivedHabit.archive = initialArchive
+            archivedHabit.statuses = initialHabit.statuses
+            archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
+            archivedHabit.endDate = CalUtility.getLastDateOfWeek()
+            initialArchive.insertIntoArchivedHabits(archivedHabit, at: 0)
+            
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
                 for (index, day) in initialHabit.days.enumerated() {
                     if day {
