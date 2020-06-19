@@ -25,8 +25,12 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func set(percentage: String) {
+        percentLabel.text = String(format: "%.1f", percentage)
+        percentLabel.text = percentLabel.text! + "%"
+    }
+    
     func configurePercentLabel() {
-        percentLabel.text = "99.5%"
         percentLabel.textAlignment = .center
         percentLabel.font = UIFont.systemFont(ofSize: 30, weight: .black)
     }

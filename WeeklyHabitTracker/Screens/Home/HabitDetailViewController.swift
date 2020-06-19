@@ -217,6 +217,10 @@ class HabitDetailViewController: UIViewController {
             initialArchive.color = initialHabit.color
             initialArchive.habit = initialHabit
             initialArchive.active = true
+            initialArchive.successRate = 0.0
+            initialArchive.completedTotal = 0
+            initialArchive.failedTotal = 0
+            initialArchive.incompleteTotal = 0
             initialHabit.archive = initialArchive
             
             let archivedHabit = ArchivedHabit(context: persistenceManager.context)

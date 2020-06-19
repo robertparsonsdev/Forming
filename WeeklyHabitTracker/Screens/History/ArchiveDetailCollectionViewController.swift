@@ -13,14 +13,13 @@ private let headerReuseIdentifier = "Archived Detail Header"
 
 class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private let archive: Archive
-    private let archivedHabits: [ArchivedHabit]?
+    private var archivedHabits = [ArchivedHabit]()
     private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
     
     // MARK: - Initializers
     init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive) {
         self.archive = archive
         if let array = archive.archivedHabits?.array as? [ArchivedHabit] { self.archivedHabits = array }
-        else { self.archivedHabits = nil }
         super.init(collectionViewLayout: layout)
         self.title = archive.title
     }
@@ -41,6 +40,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
         configureDataSource()
+        updateData(on: self.archivedHabits)
     }
 
     // MARK: CollectionView Functions
@@ -71,6 +71,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         
         self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
+            header.set(percentage: String(self.archive.successRate))
             return header
         }
     }

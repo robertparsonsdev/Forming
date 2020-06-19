@@ -23,6 +23,16 @@ class HabitOperations {
                 if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
                     habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
                 }
+                
+                switch habit.statuses[currentDay - 1] {
+                case .completed: habit.archive.completedTotal += 1
+                case .failed: habit.archive.failedTotal += 1
+                case .incomplete: habit.archive.incompleteTotal += 1
+                default: ()
+                }
+                let total = habit.archive.completedTotal + habit.archive.failedTotal
+                if total != 0 { habit.archive.successRate = Double(habit.archive.completedTotal / total) }
+                
                 for (statusIndex, status) in habit.statuses.enumerated() {
                     if status != .empty { habit.statuses[statusIndex] = .incomplete }
                 }
@@ -37,6 +47,17 @@ class HabitOperations {
                 if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
                     habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
                 }
+                
+                switch habit.statuses[currentDay - 1] {
+                case .completed: habit.archive.completedTotal += 1
+                case .failed: habit.archive.failedTotal += 1
+                case .incomplete: habit.archive.incompleteTotal += 1
+                default: ()
+                }
+                let total = habit.archive.completedTotal + habit.archive.failedTotal
+                if total != 0 { habit.archive.successRate = Double(habit.archive.completedTotal / total) }
+                print(habit.archive.successRate)
+                
                 habits[index] = habit
             }
         }

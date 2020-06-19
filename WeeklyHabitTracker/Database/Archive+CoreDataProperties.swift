@@ -22,6 +22,10 @@ extension Archive {
     @NSManaged public var title: String
     @NSManaged public var color: Int64
     @NSManaged public var active: Bool
+    @NSManaged public var successRate: Double
+    @NSManaged public var completedTotal: Int64
+    @NSManaged public var failedTotal: Int64
+    @NSManaged public var incompleteTotal: Int64
 
 }
 
