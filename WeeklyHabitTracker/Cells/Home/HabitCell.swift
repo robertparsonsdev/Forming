@@ -201,6 +201,7 @@ class HabitCell: UICollectionViewCell {
             HabitManager.updateStats(fromStatus: habit.statuses[index], toStatus: status, fromHabit: habit)
             habit.statuses[index] = status
             self.habit?.statuses = habit.statuses
+            HabitManager.updateArchivedHabit(fromHabit: habit, notifaction: true)
         }
     }
     

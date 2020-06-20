@@ -278,6 +278,8 @@ class HabitDetailViewController: UIViewController {
                 
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
+                
+                if let udpatedHabit = habit { HabitManager.updateArchivedHabit(fromHabit: udpatedHabit, notifaction: true) }
             }
             habit?.priority = self.priority
             habit?.reminder = self.reminder
