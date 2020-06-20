@@ -39,10 +39,10 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         collectionView.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.alwaysBounceVertical = true
-        let deleteButton = UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteButtonPressed))
-        deleteButton.tintColor = .systemRed
-        let resetButton = UIBarButtonItem(title: "Reset", style: .done, target: self, action: #selector(resetButtonPressed))
-        navigationItem.rightBarButtonItems = [resetButton, deleteButton]
+        
+        let sortButton = UIBarButtonItem(image: UIImage(named:"arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonPressed))
+        let menuButton = UIBarButtonItem(image: UIImage(named:"ellipsis.circle"), style: .plain, target: self, action: #selector(menuButtonPressed))
+        navigationItem.rightBarButtonItems = [menuButton, sortButton]
         
         // Register cell classes
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -102,11 +102,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
-    @objc func deleteButtonPressed() {
+    @objc func sortButtonPressed() {
         
     }
     
-    @objc func resetButtonPressed() {
+    @objc func menuButtonPressed() {
         
     }
 }
