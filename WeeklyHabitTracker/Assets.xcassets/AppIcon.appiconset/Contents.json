@@ -1,49 +1,49 @@
 {
   "images" : [
     {
-      "filename" : "iphone20@2x.jpeg",
+      "filename" : "iphone20@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
-      "filename" : "iphone20@3x.jpeg",
+      "filename" : "iphone20@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "20x20"
     },
     {
-      "filename" : "iphone29@2x.jpeg",
+      "filename" : "iphone29@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
-      "filename" : "iphone29@3x.jpeg",
+      "filename" : "iphone29@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "29x29"
     },
     {
-      "filename" : "iphone40@2x.jpeg",
+      "filename" : "iphone40@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "40x40"
     },
     {
-      "filename" : "iphone40@3x.jpeg",
+      "filename" : "iphone40@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "40x40"
     },
     {
-      "filename" : "iphone60@2x.jpeg",
+      "filename" : "iphone60@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
     },
     {
-      "filename" : "iphone60@3x.jpeg",
+      "filename" : "iphone60@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"
@@ -94,7 +94,7 @@
       "size" : "83.5x83.5"
     },
     {
-      "filename" : "appstore.jpeg",
+      "filename" : "appstore.png",
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"
