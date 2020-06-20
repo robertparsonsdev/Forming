@@ -39,7 +39,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         collectionView.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.alwaysBounceVertical = true
-
+        let deleteButton = UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteButtonPressed))
+        deleteButton.tintColor = .systemRed
+        let resetButton = UIBarButtonItem(title: "Reset", style: .done, target: self, action: #selector(resetButtonPressed))
+        navigationItem.rightBarButtonItems = [resetButton, deleteButton]
+        
         // Register cell classes
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
@@ -77,6 +81,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
             header.set(percentage: String(format: "%.1f%%", self.archive.successRate))
+            header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, incomplete: self.archive.incompleteTotal)
             return header
         }
     }
@@ -95,6 +100,14 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     @objc func reloadArchivedHabits() {
         updateData(on: self.archivedHabits)
         DispatchQueue.main.async { self.collectionView.reloadData() }
+    }
+    
+    @objc func deleteButtonPressed() {
+        
+    }
+    
+    @objc func resetButtonPressed() {
+        
     }
 }
 
