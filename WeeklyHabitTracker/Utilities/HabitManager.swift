@@ -27,7 +27,7 @@ class HabitManager {
                     if status != .empty { habit.statuses[statusIndex] = .incomplete }
                 }
                 
-                habit.archive.insertIntoArchivedHabits(createArchivedHabit(fromContext: context, andHabit: habit), at: 0)
+                habit.archive.insertIntoArchivedHabits(createArchivedHabit(withContext: context, andHabit: habit), at: 0)
                 habits[index] = habit
             }
         default:
@@ -63,7 +63,7 @@ class HabitManager {
         return archivedHabit
     }
     
-    private static func createArchivedHabit(fromContext context: NSManagedObjectContext, andHabit habit: Habit) -> ArchivedHabit {
+    private static func createArchivedHabit(withContext context: NSManagedObjectContext, andHabit habit: Habit) -> ArchivedHabit {
         let archivedHabit = ArchivedHabit(context: context)
         archivedHabit.archive = habit.archive
         archivedHabit.statuses = habit.statuses
