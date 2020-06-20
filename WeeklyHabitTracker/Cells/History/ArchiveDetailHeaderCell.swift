@@ -9,26 +9,22 @@
 import UIKit
 
 class ArchiveDetailHeaderCell: UICollectionViewCell {
-    let mainStackView = UIStackView()
     let percentLabel = UILabel()
-    let pieChart = UILabel()
+    let completedView = FormingStatStackView(title: "Completed", color: .systemGreen)
+    let failedView = FormingStatStackView(title: "Failed", color: .systemRed)
+    let incompleteView = FormingStatStackView(title: "Incomplete", color: .systemGray)
+    let totalView = FormingStatStackView(title: "Total", color: .tertiarySystemFill)
     
-    let statsStackView = UIStackView()
-    let completedLabel = UILabel()
-    let failedLabel = UILabel()
-    let incompleteLabel = UILabel()
+    let topStackView = UIStackView()
+    let bottomStackView = UIStackView()
+    let secondaryStackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
         
         configurePercentLabel()
-        configurePieChart()
-        configureStatsLabel(label: completedLabel)
-        configureStatsLabel(label: failedLabel)
-        configureStatsLabel(label: incompleteLabel)
-        configureStatsStackView()
-        configureMainStackView()
+        configureSubStackViews()
         configureConstraints()
     }
     
@@ -41,9 +37,10 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     }
     
     func set(completed: Int64, failed: Int64, incomplete: Int64) {
-        completedLabel.text = "completed: \(completed)"
-        failedLabel.text = "failed: \(failed)"
-        incompleteLabel.text = "incomplete \(incomplete)"
+        completedView.set(stat: completed)
+        failedView.set(stat: failed)
+        incompleteView.set(stat: incomplete)
+        totalView.set(stat: completed + failed + incomplete)
     }
     
     func configurePercentLabel() {
@@ -51,51 +48,30 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         percentLabel.font = UIFont.systemFont(ofSize: 30, weight: .heavy)
     }
     
-    func configurePieChart() {
-        pieChart.textAlignment = .center
-        pieChart.font = UIFont.boldSystemFont(ofSize: 20)
-        pieChart.numberOfLines = 0
-        pieChart.text = "Pie Chart Coming Later ☢️"
-    }
-    
-    func configureStatsLabel(label: UILabel) {
-        label.layer.cornerRadius = 10
-        label.textAlignment = .center
-        label.textColor = .white
-        label.clipsToBounds = true
-        switch label {
-        case completedLabel: label.backgroundColor = .systemGreen
-        case failedLabel: label.backgroundColor = .systemRed
-        case incompleteLabel: label.backgroundColor = .systemGray
-        default: ()
-        }
-    }
-    
-    func configureStatsStackView() {
-        statsStackView.axis = .vertical
-        statsStackView.alignment = .fill
-        statsStackView.distribution = .fillEqually
-        statsStackView.spacing = 10
-        statsStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        statsStackView.isLayoutMarginsRelativeArrangement = true
-        statsStackView.addArrangedSubview(completedLabel)
-        statsStackView.addArrangedSubview(failedLabel)
-        statsStackView.addArrangedSubview(incompleteLabel)
-    }
-    
-    func configureMainStackView() {
-        mainStackView.axis = .horizontal
-        mainStackView.alignment = .fill
-        mainStackView.distribution = .fillEqually
-        mainStackView.spacing = 5
+    func configureSubStackViews() {
+        topStackView.axis = .horizontal
+        topStackView.alignment = .fill
+        topStackView.distribution = .fillEqually
+        bottomStackView.axis = .horizontal
+        bottomStackView.alignment = .fill
+        bottomStackView.distribution = .fillEqually
         
-        mainStackView.addArrangedSubview(percentLabel)
-        mainStackView.addArrangedSubview(pieChart)
-        mainStackView.addArrangedSubview(statsStackView)
+        topStackView.addArrangedSubview(completedView)
+        topStackView.addArrangedSubview(failedView)
+        bottomStackView.addArrangedSubview(incompleteView)
+        bottomStackView.addArrangedSubview(totalView)
+        
+        secondaryStackView.axis = .vertical
+        secondaryStackView.alignment = .fill
+        secondaryStackView.distribution = .fillEqually
+        secondaryStackView.addArrangedSubview(topStackView)
+        secondaryStackView.addArrangedSubview(bottomStackView)
     }
     
     func configureConstraints() {
-        addSubview(mainStackView)
-        mainStackView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+        addSubview(percentLabel)
+        percentLabel.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
+        addSubview(secondaryStackView)
+        secondaryStackView.anchor(top: topAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
     }
 }
