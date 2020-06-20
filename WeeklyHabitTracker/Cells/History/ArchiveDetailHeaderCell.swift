@@ -10,10 +10,10 @@ import UIKit
 
 class ArchiveDetailHeaderCell: UICollectionViewCell {
     let percentLabel = UILabel()
-    let completedView = FormingStatStackView(title: "Completed", color: .systemGreen)
-    let failedView = FormingStatStackView(title: "Failed", color: .systemRed)
-    let incompleteView = FormingStatStackView(title: "Incomplete", color: .systemGray)
-    let totalView = FormingStatStackView(title: "Total", color: .tertiarySystemFill)
+    let completedView = FormingStatView(title: "Completed", color: .systemGreen)
+    let failedView = FormingStatView(title: "Failed", color: .systemRed)
+    let incompleteView = FormingStatView(title: "Incomplete", color: .lightGray)
+    let totalView = FormingStatView(title: "Total", color: .label)
     
     let topStackView = UIStackView()
     let bottomStackView = UIStackView()
@@ -64,6 +64,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         secondaryStackView.axis = .vertical
         secondaryStackView.alignment = .fill
         secondaryStackView.distribution = .fillEqually
+        secondaryStackView.spacing = 5
         secondaryStackView.addArrangedSubview(topStackView)
         secondaryStackView.addArrangedSubview(bottomStackView)
     }
@@ -72,6 +73,6 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         addSubview(percentLabel)
         percentLabel.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
         addSubview(secondaryStackView)
-        secondaryStackView.anchor(top: topAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+        secondaryStackView.anchor(top: topAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
     }
 }

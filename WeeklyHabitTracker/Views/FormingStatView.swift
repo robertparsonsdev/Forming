@@ -15,7 +15,7 @@ class FormingStatView: UIView {
     init(title: String, color: UIColor) {
         super.init(frame: .zero)
         
-        configureNumberLabel(withBackground: color)
+        configureNumberLabel(withBackground: color, andTitle: title)
         configureTitleLabel(withTitle: title)
         configureConstraints()
     }
@@ -24,14 +24,17 @@ class FormingStatView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureNumberLabel(withBackground color: UIColor) {
+    func configureNumberLabel(withBackground color: UIColor, andTitle title: String) {
+        switch title {
+        case "Total": numberLabel.textColor = .systemBackground
+        default: numberLabel.textColor = .white
+        }
         numberLabel.textAlignment = .center
-        numberLabel.textColor = .white
-        numberLabel.font = UIFont.boldSystemFont(ofSize: 19)
+        numberLabel.font = UIFont.boldSystemFont(ofSize: 22)
         numberLabel.backgroundColor = color
         
         numberLabel.layer.masksToBounds = true
-        numberLabel.layer.cornerRadius = 36 / 2
+        numberLabel.layer.cornerRadius = 40 / 2
         numberLabel.clipsToBounds = true
     }
     
@@ -42,10 +45,10 @@ class FormingStatView: UIView {
     }
     
     func configureConstraints() {
-        addSubview(titleLabel)
-        titleLabel.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: 20)
         addSubview(numberLabel)
-        numberLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: nil, x: centerXAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 3, paddingRight: 0, width: 36, height: 36)
+        numberLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: nil, x: centerXAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
+        addSubview(titleLabel)
+        titleLabel.anchor(top: numberLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 3, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: 20)
     }
     
     func set(stat: Int64) {
