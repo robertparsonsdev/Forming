@@ -14,14 +14,18 @@ private let headerReuseIdentifier = "Archived Detail Header"
 class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private let archive: Archive
     private var archivedHabits = [ArchivedHabit]()
+    private let notificationCenter: NotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
     
     // MARK: - Initializers
-    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive) {
+    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive, notifCenter: NotificationCenter) {
         self.archive = archive
+        self.notificationCenter = notifCenter
         if let array = archive.archivedHabits?.array as? [ArchivedHabit] { self.archivedHabits = array }
         super.init(collectionViewLayout: layout)
-        self.title = archive.title
+        
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("newDay"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reload"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -31,6 +35,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     // MARK: - Lifecycle Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = self.archive.title
         collectionView.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.alwaysBounceVertical = true
@@ -84,6 +89,12 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
+    }
+    
+    // MARK: - Selectors
+    @objc func reloadArchivedHabits() {
+        updateData(on: self.archivedHabits)
+        DispatchQueue.main.async { self.collectionView.reloadData() }
     }
 }
 

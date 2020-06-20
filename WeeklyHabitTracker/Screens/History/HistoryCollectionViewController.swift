@@ -90,7 +90,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let archive = self.dataSource.itemIdentifier(for: indexPath) else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, notifCenter: self.notificationCenter)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     

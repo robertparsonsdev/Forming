@@ -20,13 +20,13 @@ class HabitManager {
         case 0:
             for (index, habit) in habits.enumerated() {
                 if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed; updateStats(fromStatus: .incomplete, toStatus: .failed, fromHabit: habit) }
-                if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
-                    habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
-                }
+                
+                updateArchivedHabit(fromHabit: habit, notifaction: false)
                 
                 for (statusIndex, status) in habit.statuses.enumerated() {
                     if status != .empty { habit.statuses[statusIndex] = .incomplete }
                 }
+                
                 habit.archive.insertIntoArchivedHabits(createArchivedHabit(fromContext: context, andHabit: habit), at: 0)
                 habits[index] = habit
             }
@@ -35,9 +35,8 @@ class HabitManager {
                 if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed; updateStats(fromStatus: .incomplete, toStatus: .failed, fromHabit: habit) }
                 if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
                 else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
-                if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
-                    habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
-                }
+                
+                updateArchivedHabit(fromHabit: habit, notifaction: false)
                 
                 habits[index] = habit
             }
@@ -45,6 +44,17 @@ class HabitManager {
         
         persistence.save()
         notificationCenter.post(name: NSNotification.Name("newDay"), object: nil)
+    }
+    
+    static func updateArchivedHabit(fromHabit habit: Habit, notifaction: Bool) {
+        if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
+            habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
+        }
+        
+        if notifaction {
+            let notificationCenter = NotificationCenter.default
+            notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
+        }
     }
     
     private static func updateArchivedHabit(fromArchivedHabit oldArchivedHabit: ArchivedHabit, andHabit habit: Habit) -> ArchivedHabit {
