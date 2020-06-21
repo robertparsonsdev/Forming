@@ -67,6 +67,7 @@ class ArchivedHabitCell: UICollectionViewCell {
     }
     
     private func configureStatusStackView(withStatuses statuses: [Status]) {
+        if !statusStackView.arrangedSubviews.isEmpty { for view in statusStackView.arrangedSubviews { view.removeFromSuperview() } }
         statusStackView.axis = .horizontal
         statusStackView.alignment = .fill
         statusStackView.distribution = .fillEqually
