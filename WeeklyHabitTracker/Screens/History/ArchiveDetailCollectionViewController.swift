@@ -99,7 +99,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     // MARK: - Selectors
     @objc func reloadArchivedHabits() {
         updateData(on: self.archivedHabits)
-        DispatchQueue.main.async { self.collectionView.reloadData() }
+        DispatchQueue.main.async { self.title = self.archive.title; self.collectionView.reloadData() }
     }
     
     @objc func sortButtonPressed() {

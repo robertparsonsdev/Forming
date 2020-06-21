@@ -40,7 +40,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
-
     }
     
     required init?(coder: NSCoder) {
@@ -55,7 +54,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped)),
                                               UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))]
-//        navigationItem.leftBarButtonItems = [UIBarButtonItem(title: "Notifcations", style: .plain, target: self, action: #selector(notifTapped))]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
@@ -67,13 +65,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         configureDataSource()
         updateHabits()
     }
-    
-//    @objc func notifTapped() {
-//        userNotificationCenter.getPendingNotificationRequests { (results) in
-//            for result in results { print(result) }
-//        }
-//    }
-    
+        
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 30, height: 100)
     }

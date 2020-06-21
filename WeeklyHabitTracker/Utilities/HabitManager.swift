@@ -26,6 +26,7 @@ class HabitManager {
                 for (statusIndex, status) in habit.statuses.enumerated() {
                     if status != .empty { habit.statuses[statusIndex] = .incomplete }
                 }
+                habit.buttonState = false
                 
                 habit.archive.insertIntoArchivedHabits(createArchivedHabit(withContext: context, andHabit: habit), at: 0)
                 habits[index] = habit

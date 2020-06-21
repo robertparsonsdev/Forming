@@ -195,6 +195,8 @@ class HabitDetailViewController: UIViewController {
             return
         }
         
+        DispatchQueue.main.async { self.dismiss(animated: true) }
+        
         if !editMode {
             let initialHabit = Habit(context: persistenceManager.context)
             initialHabit.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
@@ -293,8 +295,6 @@ class HabitDetailViewController: UIViewController {
         
         persistenceManager.save()
         habitDelegate?.saveHabit()
-        
-        dismiss(animated: true)
     }
     
     @objc func deleteButtonTapped() {

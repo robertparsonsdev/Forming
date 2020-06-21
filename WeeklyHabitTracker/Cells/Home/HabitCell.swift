@@ -249,7 +249,7 @@ class HabitCell: UICollectionViewCell {
     }
     
     @objc func todayCheckboxTapped(sender: UIButton) {
-        selectionGenerator.selectionChanged()
+        DispatchQueue.main.async { self.selectionGenerator.selectionChanged() }
         if sender.isSelected == true {
             sender.isSelected = false
             self.habit?.buttonState = sender.isSelected
@@ -277,7 +277,7 @@ class HabitCell: UICollectionViewCell {
     
     @objc func checkboxLongPressed(gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
-            impactGenerator.impactOccurred()
+            DispatchQueue.main.async { self.impactGenerator.impactOccurred() }
             guard let checkbox = gesture.view as? UIButton else { return }
             alertController = UIAlertController()
             alertController?.title = "Change \(dayNames[checkbox.tag])'s status?"
