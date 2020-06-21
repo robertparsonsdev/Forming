@@ -71,6 +71,6 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         addSubview(percentLabel)
         percentLabel.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 40)
         addSubview(percentSublabel)
-        percentSublabel.anchor(top: percentLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        percentSublabel.anchor(top: percentLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
     }
 }
