@@ -35,7 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
-            self.scheduleLocalNotification(withTitle: "Refresh")
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
@@ -96,9 +95,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
         if Calendar.current.isDateInToday(self.currentDate!) {
-            queue.addOperation { print("do nothing") }
+            queue.addOperation {
+                print("do nothing")
+                self.scheduleLocalNotification(withTitle: "Do Nothing Refresh")
+            }
         } else {
-            queue.addOperation { self.dayChanged() }
+            queue.addOperation {
+                self.dayChanged()
+                self.scheduleLocalNotification(withTitle: "Day Change Refresh")
+            }
         }
 
         task.expirationHandler = {
