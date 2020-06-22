@@ -12,12 +12,18 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var currentDate: Date?
-    var key = "date"
-    let defaults = UserDefaults.standard
-    let persistence = PersistenceService.shared
-    let center = NotificationCenter.default
-    let userCenter = UNUserNotificationCenter.current()
+    private var currentDate: Date?
+    private var key = "date"
+    private let defaults = UserDefaults.standard
+    private let persistence = PersistenceService.shared
+    private let notificationCenter = NotificationCenter.default
+    private let userNotificationCenter = UNUserNotificationCenter.current()
+    private var habitManager: HabitManager
+    
+    override init() {
+        self.habitManager = HabitManager(persistence: self.persistence)
+        super.init()
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -28,22 +34,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let date = defaults.object(forKey: self.key) as? Date { self.currentDate = date }
         else { self.currentDate = CalUtility.getCurrentDate(); self.defaults.set(self.currentDate, forKey: self.key) }
-        // if current implementation doesn't work, try calling dayChanged in the 2 lines above
-        
-        if !Calendar.current.isDateInToday(self.currentDate!) {
-            dayChanged()
-        }
+        if !Calendar.current.isDateInToday(self.currentDate!) { dayChanged() }
         
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
             self.scheduleLocalNotification(withTitle: "Refresh")
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
-        center.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
-        center.addObserver(self, selector: #selector(enteredBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(enteredBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         return true
     }
+    
+    func getUserDefaults() -> UserDefaults { return self.defaults }
+    func getPersistenceService() -> PersistenceService { return self.persistence }
+    func getNotificationCenter() -> NotificationCenter { return self.notificationCenter }
+    func getUserNotificationCenter() -> UNUserNotificationCenter { return self.userNotificationCenter }
+    func getHabitManager() -> HabitManager { return self.habitManager }
     
     func scheduleLocalNotification(withTitle title: String) {
         let content = UNMutableNotificationContent()
@@ -52,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         content.sound = UNNotificationSound.default
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        self.userCenter.add(request)
+        self.userNotificationCenter.add(request)
     }
     
     @objc func enteredBackground() {
@@ -115,6 +123,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func dayChanged() {
         self.currentDate = CalUtility.getCurrentDate()
         self.defaults.set(self.currentDate, forKey: self.key)
-        HabitManager.performDayChange(withPersistence: self.persistence)
+        self.habitManager.performDayChange()
+        self.persistence.save()
+        self.notificationCenter.post(name: NSNotification.Name("newDay"), object: nil)
     }
 }

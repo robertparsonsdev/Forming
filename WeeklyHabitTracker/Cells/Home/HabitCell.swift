@@ -198,10 +198,10 @@ class HabitCell: UICollectionViewCell {
     
     func changeStatus(forIndex index: Int, andStatus status: Status) {
         if let habit = self.habit {
-            HabitManager.updateStats(fromStatus: habit.statuses[index], toStatus: status, fromHabit: habit)
+            let oldStatus = habit.statuses[index]
             habit.statuses[index] = status
             self.habit?.statuses = habit.statuses
-            HabitManager.updateArchivedHabit(fromHabit: habit, notifaction: true)
+            self.delegate?.checkboxPressed(fromHabit: self.habit!, withOldStatus: oldStatus, toNewStatus: status)
         }
     }
     
@@ -222,21 +222,18 @@ class HabitCell: UICollectionViewCell {
             if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
             self.changeStatus(forIndex: checkbox.tag, andStatus: .completed)
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
-            self.delegate?.saveToPersistence(habit: self.habit!)
         }))
         alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
             guard let self = self else { return }
             if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
             self.changeStatus(forIndex: checkbox.tag, andStatus: .failed)
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
-            self.delegate?.saveToPersistence(habit: self.habit!)
         }))
         alertController?.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
             if checkbox.tag == self.currentDay { self.habit?.buttonState = false }
             self.changeStatus(forIndex: checkbox.tag, andStatus: .incomplete)
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: false)
-            self.delegate?.saveToPersistence(habit: self.habit!)
         }))
         alertController?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
@@ -268,7 +265,6 @@ class HabitCell: UICollectionViewCell {
                 changeStatus(forIndex: sender.tag, andStatus: .completed)
             }
         }
-        delegate?.saveToPersistence(habit: self.habit!)
     }
     
     @objc func checkboxTapped(sender: UIButton) {
@@ -293,6 +289,6 @@ class HabitCell: UICollectionViewCell {
 // MARK: - Protocols
 protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
-    func saveToPersistence(habit: Habit)
+    func checkboxPressed(fromHabit habit: Habit, withOldStatus oldStatus: Status, toNewStatus newStatus: Status)
     func presentAlertController(with alert: UIAlertController)
 }

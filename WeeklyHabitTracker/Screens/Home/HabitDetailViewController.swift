@@ -11,8 +11,10 @@ import UserNotifications
 
 class HabitDetailViewController: UIViewController {
     var habitDelegate: SaveHabitDelegate?
-    let persistenceManager: PersistenceService
-    let center: UNUserNotificationCenter
+    private let persistenceManager: PersistenceService
+    private let center: UNUserNotificationCenter
+    private let habitManager: HabitManager
+    
     var editMode = false
     var habit: Habit? {
         didSet {
@@ -55,9 +57,10 @@ class HabitDetailViewController: UIViewController {
     let haptics = UISelectionFeedbackGenerator()
     
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter) {
+    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter, habitManager: HabitManager) {
         self.persistenceManager = persistenceManager
         self.center = notificationCenter
+        self.habitManager = habitManager
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -274,14 +277,18 @@ class HabitDetailViewController: UIViewController {
                 
                 if let habitToUpdate = habit {
                     for (i, j) in zip(habitToUpdate.statuses, dayStatuses) {
-                        HabitManager.updateStats(fromStatus: i, toStatus: j, fromHabit: habitToUpdate)
+//                        HabitManager.updateStats(fromStatus: i, toStatus: j, fromHabit: habitToUpdate)
+                        self.habitManager.updateStats(fromStatus: i, toStatus: j, forArchive: &habitToUpdate.archive)
                     }
                 }
                 
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
                 
-                if let udpatedHabit = habit { HabitManager.updateArchivedHabit(fromHabit: udpatedHabit, notifaction: true) }
+//                if let udpatedHabit = habit { HabitManager.updateArchivedHabit(fromHabit: udpatedHabit, notifaction: true) }
+                if var currentArchivedHabit = habit?.archive.archivedHabits?.lastObject as? ArchivedHabit {
+                    self.habitManager.updateCurrentArchivedHabit(forArchivedHabit: &currentArchivedHabit, withStatuses: habit!.statuses)
+                }
             }
             habit?.priority = self.priority
             habit?.reminder = self.reminder

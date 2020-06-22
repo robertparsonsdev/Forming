@@ -16,27 +16,30 @@ private var currentSort: Sort?
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var habits = [Habit]()
-    let persistenceManager: PersistenceService
-    let defaults: UserDefaults
-    let notificationCenter: NotificationCenter
-    let userNotificationCenter: UNUserNotificationCenter
-    var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
-    var currentDay: Int?
+    private let persistence: PersistenceService
+    private let defaults: UserDefaults
+    private let notificationCenter: NotificationCenter
+    private let userNotificationCenter: UNUserNotificationCenter
+    private let habitManager: HabitManager
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
+    private var currentDay: Int?
     
-    let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
-    var defaultSort: Sort = .dateCreated
+    private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+    private var defaultSort: Sort = .dateCreated
     
-    let searchController = UISearchController()
-    var filteredHabits = [Habit]()
+    private let searchController = UISearchController()
+    private var filteredHabits = [Habit]()
         
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter, notifCenter: NotificationCenter) {
-        self.persistenceManager = persistenceManager
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter, notifCenter: NotificationCenter, habitManager: HabitManager) {
+        self.persistence = persistenceManager
         self.defaults = defaults
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
+        self.habitManager = habitManager
         if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
         self.currentDay = CalUtility.getCurrentDay()
+        
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
@@ -125,7 +128,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func updateHabits() {
-        self.habits = persistenceManager.fetch(Habit.self)
+        self.habits = persistence.fetch(Habit.self)
         if habits.isEmpty {
             self.showEmptyStateView()
             return
@@ -135,8 +138,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func deleteHabit(_ habit: Habit) {
-        persistenceManager.delete(habit)
-        self.habits = persistenceManager.fetch(Habit.self)
+        persistence.delete(habit)
+        self.habits = persistence.fetch(Habit.self)
         updateData(on: self.habits)
         
         if habits.isEmpty { self.showEmptyStateView() }
@@ -171,7 +174,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter, habitManager: self.habitManager)
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
@@ -205,7 +208,7 @@ extension HomeCollectionViewController: SaveHabitDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter, habitManager: self.habitManager)
         newHabitVC.habit = habit
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
@@ -213,10 +216,10 @@ extension HomeCollectionViewController: HabitCellDelegate {
         DispatchQueue.main.async { self.present(navController, animated: true) }
     }
     
-    func saveToPersistence(habit: Habit) {
-        self.persistenceManager.save()
-        habit.statuses.forEach { print($0.rawValue, terminator: " ") }
-        print()
+    func checkboxPressed(fromHabit habit: Habit, withOldStatus oldStatus: Status, toNewStatus newStatus: Status) {
+        self.habitManager.performCheckboxPressed(withArchive: &habit.archive, andStatuses: habit.statuses, andOldStatus: oldStatus, toNewStatus: newStatus)
+        self.persistence.save()
+        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func presentAlertController(with alert: UIAlertController) {
