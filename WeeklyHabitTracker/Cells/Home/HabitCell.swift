@@ -9,7 +9,7 @@
 import UIKit
 
 class HabitCell: UICollectionViewCell {
-    private var habit: Habit?
+    private var habit: Habit!
     private var delegate: HabitCellDelegate?
     private var currentDay = CalUtility.getCurrentDay()
     private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -196,13 +196,9 @@ class HabitCell: UICollectionViewCell {
         return longGesture
     }
     
-    func changeStatus(forIndex index: Int, andStatus status: Status) {
-        if let habit = self.habit {
-            let oldStatus = habit.statuses[index]
-            habit.statuses[index] = status
-            self.habit?.statuses = habit.statuses
-            self.delegate?.checkboxPressed(fromHabit: self.habit!, withOldStatus: oldStatus, toNewStatus: status)
-        }
+    func updateHabit(forIndex index: Int, andStatus status: Status, forState state: Bool? = nil) {
+        let oldStatus = self.habit.statuses[index]
+        self.delegate?.checkboxPressed(atIndex: index, forHabit: self.habit, fromStatus: oldStatus, toStatus: status, forState: state)
     }
     
     func replace(withCheckbox checkbox: UIButton, atIndex index: Int, withState state: Bool = false) {
@@ -219,20 +215,20 @@ class HabitCell: UICollectionViewCell {
     func createAlertActions(checkbox: UIButton) {
         alertController?.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
-            if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
-            self.changeStatus(forIndex: checkbox.tag, andStatus: .completed)
+            if checkbox.tag == self.currentDay { self.updateHabit(forIndex: checkbox.tag, andStatus: .completed, forState: true) }
+            else { self.updateHabit(forIndex: checkbox.tag, andStatus: .completed) }
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
         }))
         alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
             guard let self = self else { return }
-            if checkbox.tag == self.currentDay { self.habit?.buttonState = true }
-            self.changeStatus(forIndex: checkbox.tag, andStatus: .failed)
+            if checkbox.tag == self.currentDay { self.updateHabit(forIndex: checkbox.tag, andStatus: .failed, forState: true) }
+            else { self.updateHabit(forIndex: checkbox.tag, andStatus: .failed) }
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: true)
         }))
         alertController?.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
-            if checkbox.tag == self.currentDay { self.habit?.buttonState = false }
-            self.changeStatus(forIndex: checkbox.tag, andStatus: .incomplete)
+            if checkbox.tag == self.currentDay { self.updateHabit(forIndex: checkbox.tag, andStatus: .incomplete, forState: false) }
+            else { self.updateHabit(forIndex: checkbox.tag, andStatus: .incomplete) }
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: false)
         }))
         alertController?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -249,20 +245,18 @@ class HabitCell: UICollectionViewCell {
         DispatchQueue.main.async { self.selectionGenerator.selectionChanged() }
         if sender.isSelected == true {
             sender.isSelected = false
-            self.habit?.buttonState = sender.isSelected
             sender.imageView?.tintColor = .label
-            changeStatus(forIndex: sender.tag, andStatus: .incomplete)
+            updateHabit(forIndex: sender.tag, andStatus: .incomplete, forState: sender.isSelected)
         } else {
             sender.isSelected = true
-            self.habit?.buttonState = sender.isSelected
             if sender.image(for: .selected) == UIImage(named: "xmark.square.fill", in: nil, with: blackConfig) {
                 sender.setImage(UIImage(named: "xmark.square.fill", in: nil, with: blackConfig), for: .selected)
                 sender.imageView?.tintColor = .systemRed
-                changeStatus(forIndex: sender.tag, andStatus: .failed)
+                updateHabit(forIndex: sender.tag, andStatus: .failed, forState: sender.isSelected)
             } else {
                 sender.setImage(UIImage(named: "checkmark.square.fill", in: nil, with: blackConfig), for: .selected)
                 sender.imageView?.tintColor = .systemGreen
-                changeStatus(forIndex: sender.tag, andStatus: .completed)
+                updateHabit(forIndex: sender.tag, andStatus: .completed, forState: sender.isSelected)
             }
         }
     }
@@ -289,6 +283,6 @@ class HabitCell: UICollectionViewCell {
 // MARK: - Protocols
 protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
-    func checkboxPressed(fromHabit habit: Habit, withOldStatus oldStatus: Status, toNewStatus newStatus: Status)
+    func checkboxPressed(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
 }

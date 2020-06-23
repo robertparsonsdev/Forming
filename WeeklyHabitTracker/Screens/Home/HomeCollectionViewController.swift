@@ -66,7 +66,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         configureSortAlertController()
         
         configureDataSource()
-        updateHabits()
+        fetchHabits()
     }
         
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -118,7 +118,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     // MARK: - Functions
-    func updateData(on habits: [Habit]) {
+    func updateDataSource(on habits: [Habit]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Habit>()
         snapshot.appendSections([.main])
         snapshot.appendItems(habits)
@@ -127,7 +127,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
-    func updateHabits() {
+    func fetchHabits() {
         self.habits = persistence.fetch(Habit.self)
         if habits.isEmpty {
             self.showEmptyStateView()
@@ -140,7 +140,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func deleteHabit(_ habit: Habit) {
         persistence.delete(habit)
         self.habits = persistence.fetch(Habit.self)
-        updateData(on: self.habits)
+        updateDataSource(on: self.habits)
         
         if habits.isEmpty { self.showEmptyStateView() }
         else { sortHabits() }
@@ -169,7 +169,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             return reminder1.compare(reminder2) == .orderedAscending
             }
         }
-        updateData(on: self.habits)
+        updateDataSource(on: self.habits)
     }
     
     // MARK: - Selectors
@@ -186,7 +186,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func reloadHabits() {
-        updateHabits()
+        fetchHabits()
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
@@ -195,7 +195,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 // MARK: - Delegates
 extension HomeCollectionViewController: SaveHabitDelegate {
     func saveHabit() {
-        self.updateHabits()
+        self.fetchHabits()
         collectionView.reloadData()
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
@@ -216,8 +216,8 @@ extension HomeCollectionViewController: HabitCellDelegate {
         DispatchQueue.main.async { self.present(navController, animated: true) }
     }
     
-    func checkboxPressed(fromHabit habit: Habit, withOldStatus oldStatus: Status, toNewStatus newStatus: Status) {
-        self.habitManager.performCheckboxPressed(withArchive: &habit.archive, andStatuses: habit.statuses, andOldStatus: oldStatus, toNewStatus: newStatus)
+    func checkboxPressed(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
+        habit.updateStatus(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
         self.persistence.save()
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
@@ -232,13 +232,13 @@ extension HomeCollectionViewController: HabitCellDelegate {
 extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let filter = searchController.searchBar.text else { return }
-        if filter.isEmpty { updateData(on: self.habits); return }
+        if filter.isEmpty { updateDataSource(on: self.habits); return }
         
         filteredHabits = self.habits.filter { ($0.title?.lowercased().contains(filter.lowercased()))! }
-        updateData(on: filteredHabits)
+        updateDataSource(on: filteredHabits)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        updateData(on: self.habits)
+        updateDataSource(on: self.habits)
     }
 }
