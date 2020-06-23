@@ -11,8 +11,9 @@ import UserNotifications
 
 class HabitDetailViewController: UIViewController {
     var habitDelegate: SaveHabitDelegate?
-    let persistenceManager: PersistenceService
-    let center: UNUserNotificationCenter
+    private let persistenceManager: PersistenceService
+    private let center: UNUserNotificationCenter
+    
     var editMode = false
     var habit: Habit? {
         didSet {
@@ -223,14 +224,11 @@ class HabitDetailViewController: UIViewController {
             initialArchive.completedTotal = 0
             initialArchive.failedTotal = 0
             initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
-            initialHabit.archive = initialArchive
             
             let archivedHabit = ArchivedHabit(context: persistenceManager.context)
-            archivedHabit.archive = initialArchive
-            archivedHabit.statuses = initialHabit.statuses
-            archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
-            archivedHabit.endDate = CalUtility.getLastDateOfWeek()
-            initialArchive.insertIntoArchivedHabits(archivedHabit, at: 0)
+            initialArchive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: initialHabit.statuses)
+            
+            initialHabit.archive = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
                 for (index, day) in initialHabit.days.enumerated() {
@@ -272,16 +270,13 @@ class HabitDetailViewController: UIViewController {
                     } else { dayStatuses.append(.empty) }
                 }
                 
-                if let habitToUpdate = habit {
-                    for (i, j) in zip(habitToUpdate.statuses, dayStatuses) {
-                        HabitManager.updateStats(fromStatus: i, toStatus: j, fromHabit: habitToUpdate)
-                    }
+                for (oldStatus, newStatus) in zip(habit!.statuses, self.dayStatuses) {
+                    self.habit?.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
                 }
                 
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
-                
-                if let udpatedHabit = habit { HabitManager.updateArchivedHabit(fromHabit: udpatedHabit, notifaction: true) }
+                habit?.archive.updateCurrentArchivedHabit(withStatuses: dayStatuses)
             }
             habit?.priority = self.priority
             habit?.reminder = self.reminder
