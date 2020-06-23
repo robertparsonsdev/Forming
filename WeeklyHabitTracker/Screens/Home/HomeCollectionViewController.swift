@@ -216,8 +216,8 @@ extension HomeCollectionViewController: HabitCellDelegate {
         DispatchQueue.main.async { self.present(navController, animated: true) }
     }
     
-    func checkboxPressed(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
-        habit.updateStatus(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
+    func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
+        habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
         self.persistence.save()
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }

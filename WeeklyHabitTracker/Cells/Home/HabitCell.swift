@@ -198,7 +198,7 @@ class HabitCell: UICollectionViewCell {
     
     func updateHabit(forIndex index: Int, andStatus status: Status, forState state: Bool? = nil) {
         let oldStatus = self.habit.statuses[index]
-        self.delegate?.checkboxPressed(atIndex: index, forHabit: self.habit, fromStatus: oldStatus, toStatus: status, forState: state)
+        self.delegate?.checkboxSelectionChanged(atIndex: index, forHabit: self.habit, fromStatus: oldStatus, toStatus: status, forState: state)
     }
     
     func replace(withCheckbox checkbox: UIButton, atIndex index: Int, withState state: Bool = false) {
@@ -283,6 +283,6 @@ class HabitCell: UICollectionViewCell {
 // MARK: - Protocols
 protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
-    func checkboxPressed(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
+    func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
 }
