@@ -20,7 +20,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let userNotificationCenter: UNUserNotificationCenter
-    private let habitManager: HabitManager
     private var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
     private var currentDay: Int?
     
@@ -31,12 +30,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private var filteredHabits = [Habit]()
         
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter, notifCenter: NotificationCenter, habitManager: HabitManager) {
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter, notifCenter: NotificationCenter) {
         self.persistence = persistenceManager
         self.defaults = defaults
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
-        self.habitManager = habitManager
         if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
         self.currentDay = CalUtility.getCurrentDay()
         
@@ -174,7 +172,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter, habitManager: self.habitManager)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter)
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
@@ -208,7 +206,7 @@ extension HomeCollectionViewController: SaveHabitDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter, habitManager: self.habitManager)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter)
         newHabitVC.habit = habit
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)

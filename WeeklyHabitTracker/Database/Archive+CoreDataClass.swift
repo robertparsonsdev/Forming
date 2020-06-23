@@ -18,11 +18,17 @@ public class Archive: NSManagedObject {
         }
     }
     
+    func updateCurrentArchivedHabit(withStatuses statuses: [Status]) {
+        if let archivedHabit = self.archivedHabits?.lastObject as? ArchivedHabit {
+            archivedHabit.updateStatuses(toStatuses: statuses)
+        }
+    }
+    
     func updateStats(fromStatus oldStatus: Status, toStatus newStatus: Status) {
         switch oldStatus {
         case .completed:
             switch newStatus {
-            case .completed: self.completedTotal += 1
+            case .completed: ()
             case .failed: self.completedTotal -= 1; self.failedTotal += 1
             case .incomplete: self.completedTotal -= 1; self.incompleteTotal += 1
             case .empty: self.completedTotal -= 1
@@ -30,7 +36,7 @@ public class Archive: NSManagedObject {
         case .failed:
             switch newStatus {
             case .completed: self.failedTotal -= 1; self.completedTotal += 1
-            case .failed: self.failedTotal += 1
+            case .failed: ()
             case .incomplete: self.failedTotal -= 1; self.incompleteTotal += 1
             case .empty: self.failedTotal -= 1
             }
@@ -38,7 +44,7 @@ public class Archive: NSManagedObject {
             switch newStatus {
             case .completed: self.incompleteTotal -= 1; self.completedTotal += 1
             case .failed: self.incompleteTotal -= 1; self.failedTotal += 1
-            case .incomplete: self.incompleteTotal += 1
+            case .incomplete: ()
             case .empty: self.incompleteTotal -= 1
             }
         case .empty:

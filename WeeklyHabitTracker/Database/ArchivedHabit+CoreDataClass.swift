@@ -15,4 +15,8 @@ public class ArchivedHabit: NSManagedObject {
     func updateStatus(toStatus status: Status, atIndex index: Int) {
         self.statuses[index] = status
     }
+    
+    func updateStatuses(toStatuses statuses: [Status]) {
+        self.statuses = statuses
+    }
 }

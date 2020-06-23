@@ -13,7 +13,6 @@ class HabitDetailViewController: UIViewController {
     var habitDelegate: SaveHabitDelegate?
     private let persistenceManager: PersistenceService
     private let center: UNUserNotificationCenter
-    private let habitManager: HabitManager
     
     var editMode = false
     var habit: Habit? {
@@ -57,10 +56,9 @@ class HabitDetailViewController: UIViewController {
     let haptics = UISelectionFeedbackGenerator()
     
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter, habitManager: HabitManager) {
+    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter) {
         self.persistenceManager = persistenceManager
         self.center = notificationCenter
-        self.habitManager = habitManager
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -226,14 +224,11 @@ class HabitDetailViewController: UIViewController {
             initialArchive.completedTotal = 0
             initialArchive.failedTotal = 0
             initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
-            initialHabit.archive = initialArchive
             
             let archivedHabit = ArchivedHabit(context: persistenceManager.context)
-            archivedHabit.archive = initialArchive
-            archivedHabit.statuses = initialHabit.statuses
-            archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
-            archivedHabit.endDate = CalUtility.getLastDateOfWeek()
-            initialArchive.insertIntoArchivedHabits(archivedHabit, at: 0)
+            initialArchive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: initialHabit.statuses)
+            
+            initialHabit.archive = initialArchive
             
             if let reminder = initialHabit.reminder, let title = initialHabit.title {
                 for (index, day) in initialHabit.days.enumerated() {
@@ -275,20 +270,13 @@ class HabitDetailViewController: UIViewController {
                     } else { dayStatuses.append(.empty) }
                 }
                 
-                if let habitToUpdate = habit {
-                    for (i, j) in zip(habitToUpdate.statuses, dayStatuses) {
-//                        HabitManager.updateStats(fromStatus: i, toStatus: j, fromHabit: habitToUpdate)
-                        self.habitManager.updateStats(fromStatus: i, toStatus: j, forArchive: &habitToUpdate.archive)
-                    }
+                for (oldStatus, newStatus) in zip(habit!.statuses, self.dayStatuses) {
+                    self.habit?.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
                 }
                 
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
-                
-//                if let udpatedHabit = habit { HabitManager.updateArchivedHabit(fromHabit: udpatedHabit, notifaction: true) }
-                if var currentArchivedHabit = habit?.archive.archivedHabits?.lastObject as? ArchivedHabit {
-                    self.habitManager.updateCurrentArchivedHabit(forArchivedHabit: &currentArchivedHabit, withStatuses: habit!.statuses)
-                }
+                habit?.archive.updateCurrentArchivedHabit(withStatuses: dayStatuses)
             }
             habit?.priority = self.priority
             habit?.reminder = self.reminder

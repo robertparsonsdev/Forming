@@ -18,12 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let persistenceService = PersistenceService.shared
     private let notificationCenter = NotificationCenter.default
     private let userNotificationCenter = UNUserNotificationCenter.current()
-    private var habitManager: HabitManager
-    
-    override init() {
-        self.habitManager = HabitManager(persistence: self.persistenceService)
-        super.init()
-    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -51,7 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func getPersistenceService() -> PersistenceService { return self.persistenceService }
     func getNotificationCenter() -> NotificationCenter { return self.notificationCenter }
     func getUserNotificationCenter() -> UNUserNotificationCenter { return self.userNotificationCenter }
-    func getHabitManager() -> HabitManager { return self.habitManager }
     
     func scheduleLocalNotification(withTitle title: String) {
         let content = UNMutableNotificationContent()

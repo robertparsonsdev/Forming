@@ -27,8 +27,7 @@ class MainTabBarController: UITabBarController {
                                                                                                persistenceManager: self.appDelegate.getPersistenceService(),
                                                                                                defaults: self.appDelegate.getUserDefaults(),
                                                                                                userNotifCenter: self.appDelegate.getUserNotificationCenter(),
-                                                                                               notifCenter: self.appDelegate.getNotificationCenter(),
-                                                                                               habitManager: self.appDelegate.getHabitManager()))
+                                                                                               notifCenter: self.appDelegate.getNotificationCenter()))
         
         let historyNavController = buildTabBarControllers(withTitle: "History",
                                                           andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!,

@@ -43,7 +43,7 @@ public class Habit: NSManagedObject {
         for (index, status) in self.statuses.enumerated() {
             if status != .empty {
                 updateStatus(toStatus: .incomplete, atIndex: index)
-                self.archive.updateStats(fromStatus: .incomplete, toStatus: .incomplete)
+                self.archive.updateStats(fromStatus: .empty, toStatus: .incomplete)
             }
         }
         
