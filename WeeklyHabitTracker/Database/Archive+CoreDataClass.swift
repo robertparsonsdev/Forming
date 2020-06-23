@@ -22,7 +22,7 @@ public class Archive: NSManagedObject {
         switch oldStatus {
         case .completed:
             switch newStatus {
-            case .completed: ()
+            case .completed: self.completedTotal += 1
             case .failed: self.completedTotal -= 1; self.failedTotal += 1
             case .incomplete: self.completedTotal -= 1; self.incompleteTotal += 1
             case .empty: self.completedTotal -= 1
@@ -30,7 +30,7 @@ public class Archive: NSManagedObject {
         case .failed:
             switch newStatus {
             case .completed: self.failedTotal -= 1; self.completedTotal += 1
-            case .failed: ()
+            case .failed: self.failedTotal += 1
             case .incomplete: self.failedTotal -= 1; self.incompleteTotal += 1
             case .empty: self.failedTotal -= 1
             }
@@ -38,7 +38,7 @@ public class Archive: NSManagedObject {
             switch newStatus {
             case .completed: self.incompleteTotal -= 1; self.completedTotal += 1
             case .failed: self.incompleteTotal -= 1; self.failedTotal += 1
-            case .incomplete: ()
+            case .incomplete: self.incompleteTotal += 1
             case .empty: self.incompleteTotal -= 1
             }
         case .empty:
@@ -53,5 +53,13 @@ public class Archive: NSManagedObject {
         let total = Double(self.completedTotal + self.failedTotal)
         if total != 0 { self.successRate = Double(self.completedTotal) / total * 100 }
         else { self.successRate = 100.0 }
+    }
+    
+    func createNewArchivedHabit(fromArchivedHabit archivedHabit: ArchivedHabit, withStatuses statuses: [Status]) {
+        archivedHabit.archive = self
+        archivedHabit.statuses = statuses
+        archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
+        archivedHabit.endDate = CalUtility.getLastDateOfWeek()
+        insertIntoArchivedHabits(archivedHabit, at: 0)
     }
 }

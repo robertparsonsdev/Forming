@@ -15,13 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var currentDate: Date?
     private var key = "date"
     private let defaults = UserDefaults.standard
-    private let persistence = PersistenceService.shared
+    private let persistenceService = PersistenceService.shared
     private let notificationCenter = NotificationCenter.default
     private let userNotificationCenter = UNUserNotificationCenter.current()
     private var habitManager: HabitManager
     
     override init() {
-        self.habitManager = HabitManager(persistence: self.persistence)
+        self.habitManager = HabitManager(persistence: self.persistenceService)
         super.init()
     }
 
@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func getUserDefaults() -> UserDefaults { return self.defaults }
-    func getPersistenceService() -> PersistenceService { return self.persistence }
+    func getPersistenceService() -> PersistenceService { return self.persistenceService }
     func getNotificationCenter() -> NotificationCenter { return self.notificationCenter }
     func getUserNotificationCenter() -> UNUserNotificationCenter { return self.userNotificationCenter }
     func getHabitManager() -> HabitManager { return self.habitManager }
@@ -83,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         self.scheduleAppRefresh()
-        self.persistence.save()
+        self.persistenceService.save()
     }
     
     func scheduleAppRefresh() {
@@ -123,8 +123,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func dayChanged() {
         self.currentDate = CalUtility.getCurrentDate()
         self.defaults.set(self.currentDate, forKey: self.key)
-        self.habitManager.performDayChange()
-        self.persistence.save()
+        let newDay = CalUtility.getCurrentDay()
+        
+        let habits = self.persistenceService.fetch(Habit.self)
+        switch newDay {
+        case 0:
+            for habit in habits {
+                let newArchivedHabit = ArchivedHabit(context: self.persistenceService.context)
+                habit.weekChanged(withNewArchivedHabit: newArchivedHabit)
+            }
+        default:
+            for habit in habits { habit.dayChanged(toDay: newDay) }
+        }
+        
+        self.persistenceService.save()
         self.notificationCenter.post(name: NSNotification.Name("newDay"), object: nil)
     }
 }
