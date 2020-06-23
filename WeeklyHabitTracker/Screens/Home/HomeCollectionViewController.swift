@@ -13,6 +13,7 @@ import UserNotifications
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
 private var currentSort: Sort?
+// test commit
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var habits = [Habit]()
