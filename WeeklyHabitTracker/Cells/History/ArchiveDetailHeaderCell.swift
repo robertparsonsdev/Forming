@@ -11,6 +11,7 @@ import UIKit
 class ArchiveDetailHeaderCell: UICollectionViewCell {
     let percentLabel = UILabel()
     let percentSublabel = UILabel()
+    let progressView = FormingProgressView()
     let completedView = FormingStatView(title: "Completed", color: .systemGreen)
     let failedView = FormingStatView(title: "Failed", color: .systemRed)
     let incompleteView = FormingStatView(title: "Incomplete", color: .lightGray)
@@ -25,6 +26,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         configurePercentLabel()
         configurePercentSublabel()
         configureSubStackViews()
+        progressView.setGradientBackground()
         configureConstraints()
     }
     
@@ -72,5 +74,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         percentLabel.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 40)
         addSubview(percentSublabel)
         percentSublabel.anchor(top: percentLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
+        addSubview(progressView)
+        progressView.anchor(top: statsStackView.bottomAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 15, paddingRight: 20, width: 0, height: 0)
     }
 }
