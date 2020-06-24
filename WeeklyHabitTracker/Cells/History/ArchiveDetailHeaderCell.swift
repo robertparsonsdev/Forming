@@ -21,13 +21,16 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+//        backgroundColor = .systemBackground
+//        setGradientBackground()
         
         configurePercentLabel()
         configurePercentSublabel()
         configureSubStackViews()
-        progressView.setGradientBackground()
         configureConstraints()
+        print(progressView.bounds)
+        progressView.setGradientBackground()
+        progressView.setBluredBackground()
     }
     
     required init?(coder: NSCoder) {
@@ -75,6 +78,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         addSubview(percentSublabel)
         percentSublabel.anchor(top: percentLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
         addSubview(progressView)
-        progressView.anchor(top: statsStackView.bottomAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 15, paddingRight: 20, width: 0, height: 0)
+        progressView.anchor(top: statsStackView.bottomAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 15, paddingRight: 15, width: 0, height: 0)
+        progressView.bounds = CGRect(x: 0.0, y: 0.0, width: frame.width - 130 - 25, height: frame.height - 65 - 15 - 10)
     }
 }
