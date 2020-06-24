@@ -54,8 +54,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped)),
-                                              UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))]
+        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
+        let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        navigationItem.rightBarButtonItems = [newButton, sortButton]
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)

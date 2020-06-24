@@ -151,10 +151,12 @@ class HabitCell: UICollectionViewCell {
     }
     
     func createTodayCheckbox(withTag tag: Int, withState state: Bool, andStatuses statuses: [Status]) -> UIButton {
+//        let contextMenu = UIContextMenuInteraction(delegate: self)
         let button = UIButton()
         button.isSelected = state
         button.tag = tag
         button.addTarget(self, action: #selector(todayCheckboxTapped), for: .touchUpInside)
+//        button.addInteraction(contextMenu)
         button.addGestureRecognizer(createLongGesture())
         button.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
         switch statuses[tag] {
@@ -171,9 +173,11 @@ class HabitCell: UICollectionViewCell {
     }
     
     func createCheckbox(withTag tag: Int, andStatuses statuses: [Status]) -> UIButton {
+//        let contextMenu = UIContextMenuInteraction(delegate: self)
         let button = UIButton()
         button.tag = tag
         button.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
+//        button.addInteraction(contextMenu)
         button.addGestureRecognizer(createLongGesture())
         switch statuses[tag] {
         case .incomplete:
@@ -285,4 +289,28 @@ protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
+}
+
+// MARK: - Delegates
+extension HabitCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (actions) -> UIMenu? in
+            let completed = UIAction(title: "Completed") { (action) in
+                print("completed")
+            }
+            completed.image = UIImage(named: "checkmark.square")
+            
+            let failed = UIAction(title: "Failed") { (action) in
+                print("failed")
+            }
+            failed.image = UIImage(named: "xmark.square")
+            
+            let incomplete = UIAction(title: "Incomplete") { (action) in
+                print("incomplete")
+            }
+            incomplete.image = UIImage(named: "square")
+            
+            return UIMenu(title: "", image: nil, identifier: nil, options: .destructive, children: [completed, failed, incomplete])
+        }
+    }
 }
