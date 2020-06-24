@@ -12,8 +12,7 @@ class FormingProgressView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        setGradientBackground(locationOne: 0.0, locationTwo: 1.0)
-//        backgroundColor = .white
+        
         clipsToBounds = true
         layer.cornerRadius = 7
     }
