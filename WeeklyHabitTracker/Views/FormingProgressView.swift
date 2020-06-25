@@ -10,19 +10,28 @@ import UIKit
 
 class FormingProgressView: UIView {
     let label = UILabel()
+    let greenView = UIView()
+    let redView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = true
         layer.cornerRadius = 7
-//        backgroundColor = .systemTeal
-        
-        configureLabel()
-        configureConstraints()
+        backgroundColor = .systemTeal
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func set(bounds: CGRect) {
+        self.bounds = bounds
+        
+        greenView.backgroundColor = .systemGreen
+        redView.backgroundColor = .systemRed
+        
+        configureLabel()
+        configureConstraints()
     }
     
     func configureLabel() {
@@ -33,8 +42,13 @@ class FormingProgressView: UIView {
     }
     
     func configureConstraints() {
+        addSubview(redView)
+        redView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: frame.width / 2, height: 0)
+        addSubview(greenView)
+        greenView.anchor(top: topAnchor, left: nil, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: frame.width / 2, height: 0)
         addSubview(label)
         label.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        addBlurredView(belowView: label)
     }
 }
 
@@ -50,10 +64,11 @@ extension UIView {
         layer.insertSublayer(gradientLayer, at: 0)
     }
     
-    func setBluredBackground() {
-        let blurEffect = UIBlurEffect(style: .light )
+    func addBlurredView(belowView view: UIView) {
+        let blurEffect = UIBlurEffect(style: .light)
         let blurredEffectView = UIVisualEffectView(effect: blurEffect)
         blurredEffectView.frame = self.bounds
-        insertSubview(blurredEffectView, at: 0)
+        insertSubview(blurredEffectView, belowSubview: view)
+        print(subviews.count)
     }
 }

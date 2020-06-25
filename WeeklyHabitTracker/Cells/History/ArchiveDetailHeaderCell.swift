@@ -27,10 +27,8 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         configurePercentLabel()
         configurePercentSublabel()
         configureSubStackViews()
+        configureProgressView()
         configureConstraints()
-        print(progressView.bounds)
-        progressView.setGradientBackground()
-        progressView.setBluredBackground()
     }
     
     required init?(coder: NSCoder) {
@@ -60,6 +58,12 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         percentSublabel.textColor = .secondaryLabel
     }
     
+    func configureProgressView() {
+        let progressViewBounds = CGRect(x: 0.0, y: 0.0, width: frame.width - 130 - 25, height: frame.height - 65 - 15 - 10)
+        progressView.set(bounds: progressViewBounds)
+//        progressView.setBluredBackground()
+    }
+    
     func configureSubStackViews() {
         statsStackView.axis = .horizontal
         statsStackView.alignment = .fill
@@ -79,6 +83,5 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         percentSublabel.anchor(top: percentLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
         addSubview(progressView)
         progressView.anchor(top: statsStackView.bottomAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 15, paddingRight: 15, width: 0, height: 0)
-        progressView.bounds = CGRect(x: 0.0, y: 0.0, width: frame.width - 130 - 25, height: frame.height - 65 - 15 - 10)
     }
 }
