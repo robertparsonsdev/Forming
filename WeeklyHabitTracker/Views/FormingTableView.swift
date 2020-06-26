@@ -15,6 +15,9 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     var tableDelegate: FormingTableViewDelegate?
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
+    private let exclamationAttachment = NSTextAttachment()
+    private let noAttachment = NSTextAttachment()
+    private let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .default)
     
     let stepper = UIStepper()
     let flagSwitch = UISwitch()
@@ -24,6 +27,10 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         self.priority = priority
         self.flag = flag
         self.reminder = reminder
+        self.exclamationAttachment.image = UIImage(named: "exclamationmark", in: nil, with: regularConfig)
+        self.exclamationAttachment.image = exclamationAttachment.image?.withTintColor(.white)
+        self.noAttachment.image = UIImage(named: "nosign", in: nil, with: regularConfig)
+        self.noAttachment.image = noAttachment.image?.withTintColor(.white)
         super.init(frame: .zero, style: .plain)
         
         delegate = self
@@ -55,7 +62,12 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Priority"
-            cell.detailTextLabel?.text = exclamation(index: Int(self.priority))
+            cell.detailTextLabel?.lineBreakMode = .byWordWrapping
+            cell.detailTextLabel?.backgroundColor = .systemRed
+            cell.layoutIfNeeded()
+//            cell.detailTextLabel?.sizeToFit()
+//            cell.detailTextLabel?.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            cell.detailTextLabel?.attributedText = createExclamation(fromPriority: self.priority)
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
@@ -102,7 +114,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
-        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text = exclamation(index: Int(sender.value))
+        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.attributedText = createExclamation(fromPriority: Int64(sender.value))
         tableDelegate?.savePriority(priority: Int64(sender.value))
     }
     
@@ -111,13 +123,24 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         tableDelegate?.saveFlag(flag: sender.isOn)
     }
     
-    func exclamation(index: Int) -> String {
-        switch index {
-        case 1: return "!"
-        case 2: return "!!"
-        case 3: return "!!!"
-        default: return "None"
+    func createExclamation(fromPriority num: Int64) -> NSAttributedString {
+        let attrString = NSMutableAttributedString()
+        attrString.append(NSAttributedString(string: "          "))
+        switch num {
+        case 1:
+            attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+        case 2:
+            attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+            attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+        case 3:
+            attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+            attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+            attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+        default:
+            attrString.append(NSAttributedString(string: "None"))
         }
+        
+        return attrString
     }
 }
 
