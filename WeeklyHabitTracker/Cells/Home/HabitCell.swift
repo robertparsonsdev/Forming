@@ -15,6 +15,7 @@ class HabitCell: UICollectionViewCell {
     private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     private let titleButton = UIButton()
+    private let titleLabel = UILabel()
     private let checkboxStackView = UIStackView()
     private let reminderLabel = UILabel()
     private let flagLabel = UILabel()
@@ -37,6 +38,7 @@ class HabitCell: UICollectionViewCell {
         
         configureCell()
         configureTitleButton()
+        configureTitleLabel()
         configureReminderLabel()
         configureFlagLabel()
         configurePriorityLabel()
@@ -56,10 +58,15 @@ class HabitCell: UICollectionViewCell {
     }
     
     func configureTitleButton() {
-        titleButton.contentHorizontalAlignment = .left
-        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-        titleButton.titleLabel?.textColor = .white
         titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+    }
+    
+    func configureTitleLabel() {
+        titleLabel.textAlignment = .left
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        titleLabel.textColor = .white
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.isUserInteractionEnabled = false
     }
     
     func configureReminderLabel() {
@@ -102,6 +109,8 @@ class HabitCell: UICollectionViewCell {
         priorityLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: reminderLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
         addSubview(flagLabel)
         flagLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: priorityLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
+        addSubview(titleLabel)
+        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: flagLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
         addSubview(checkboxStackView)
         checkboxStackView.anchor(top: titleButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
@@ -124,7 +133,7 @@ class HabitCell: UICollectionViewCell {
             symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
             let attributedTitle = NSMutableAttributedString(string: "  \(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
             attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
-            titleButton.setAttributedTitle(attributedTitle, for: .normal)
+            titleLabel.attributedText = attributedTitle
         }
         titleButton.backgroundColor = FormingColors.getColor(fromValue: habit.color)
         let priorityText = NSMutableAttributedString()
@@ -151,12 +160,10 @@ class HabitCell: UICollectionViewCell {
     }
     
     func createTodayCheckbox(withTag tag: Int, withState state: Bool, andStatuses statuses: [Status]) -> UIButton {
-//        let contextMenu = UIContextMenuInteraction(delegate: self)
         let button = UIButton()
         button.isSelected = state
         button.tag = tag
         button.addTarget(self, action: #selector(todayCheckboxTapped), for: .touchUpInside)
-//        button.addInteraction(contextMenu)
         button.addGestureRecognizer(createLongGesture())
         button.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
         switch statuses[tag] {
@@ -173,11 +180,9 @@ class HabitCell: UICollectionViewCell {
     }
     
     func createCheckbox(withTag tag: Int, andStatuses statuses: [Status]) -> UIButton {
-//        let contextMenu = UIContextMenuInteraction(delegate: self)
         let button = UIButton()
         button.tag = tag
         button.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
-//        button.addInteraction(contextMenu)
         button.addGestureRecognizer(createLongGesture())
         switch statuses[tag] {
         case .incomplete:
@@ -289,28 +294,4 @@ protocol HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit)
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
-}
-
-// MARK: - Delegates
-extension HabitCell: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (actions) -> UIMenu? in
-            let completed = UIAction(title: "Completed") { (action) in
-                print("completed")
-            }
-            completed.image = UIImage(named: "checkmark.square")
-            
-            let failed = UIAction(title: "Failed") { (action) in
-                print("failed")
-            }
-            failed.image = UIImage(named: "xmark.square")
-            
-            let incomplete = UIAction(title: "Incomplete") { (action) in
-                print("incomplete")
-            }
-            incomplete.image = UIImage(named: "square")
-            
-            return UIMenu(title: "", image: nil, identifier: nil, options: .destructive, children: [completed, failed, incomplete])
-        }
-    }
 }
