@@ -58,7 +58,7 @@ class ReminderViewController: UIViewController {
     }
     
     func configureDefaultLabel() {
-        defaultLabel.text = "The default reminder is a grouped notification at 9:00 AM for all habits ocurring that day. \n\nSetting a custom reminder will send a notification only for this habit at the set time."
+        defaultLabel.text = "Set a time to be reminded at on days this habit is supposed to be completed."
         defaultLabel.numberOfLines = 0
         defaultLabel.sizeToFit()
         defaultLabel.textAlignment = .center
