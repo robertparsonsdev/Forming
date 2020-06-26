@@ -17,7 +17,9 @@ class FormingProgressView: UIView {
         super.init(frame: frame)
         clipsToBounds = true
         layer.cornerRadius = 7
-        backgroundColor = .systemTeal
+        
+        configureLabel()
+        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -27,15 +29,12 @@ class FormingProgressView: UIView {
     func set(bounds: CGRect) {
         self.bounds = bounds
         
-        greenView.backgroundColor = .systemGreen
-        redView.backgroundColor = .systemRed
-        
-        configureLabel()
-        configureConstraints()
+//        greenView.backgroundColor = .systemGreen
+//        redView.backgroundColor = .systemRed
     }
     
     func configureLabel() {
-        label.text = "Test"
+        label.text = "Coming Soon 🤔"
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         label.textColor = .white
@@ -69,6 +68,5 @@ extension UIView {
         let blurredEffectView = UIVisualEffectView(effect: blurEffect)
         blurredEffectView.frame = self.bounds
         insertSubview(blurredEffectView, belowSubview: view)
-        print(subviews.count)
     }
 }

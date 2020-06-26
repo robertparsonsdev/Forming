@@ -59,8 +59,8 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     }
     
     func configureProgressView() {
-        let progressViewBounds = CGRect(x: 0.0, y: 0.0, width: frame.width - 130 - 25, height: frame.height - 65 - 15 - 10)
-        progressView.set(bounds: progressViewBounds)
+//        let progressViewBounds = CGRect(x: 0.0, y: 0.0, width: frame.width - 130 - 25, height: frame.height - 65 - 15 - 10)
+//        progressView.set(bounds: progressViewBounds)
 //        progressView.setBluredBackground()
     }
     
