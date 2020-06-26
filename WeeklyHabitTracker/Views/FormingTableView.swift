@@ -125,7 +125,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     func createExclamation(fromPriority num: Int64) -> NSAttributedString {
         let attrString = NSMutableAttributedString()
-        attrString.append(NSAttributedString(string: "          "))
+        attrString.append(NSAttributedString(string: "         "))
         switch num {
         case 1:
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
