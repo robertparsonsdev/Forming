@@ -16,7 +16,6 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
     private let exclamationAttachment = NSTextAttachment()
-    private let noAttachment = NSTextAttachment()
     private let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .default)
     
     let stepper = UIStepper()
@@ -28,9 +27,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         self.flag = flag
         self.reminder = reminder
         self.exclamationAttachment.image = UIImage(named: "exclamationmark", in: nil, with: regularConfig)
-        self.exclamationAttachment.image = exclamationAttachment.image?.withTintColor(.white)
-        self.noAttachment.image = UIImage(named: "nosign", in: nil, with: regularConfig)
-        self.noAttachment.image = noAttachment.image?.withTintColor(.white)
+        self.exclamationAttachment.image = exclamationAttachment.image?.withTintColor(.secondaryLabel)
         super.init(frame: .zero, style: .plain)
         
         delegate = self
@@ -62,11 +59,6 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Priority"
-            cell.detailTextLabel?.lineBreakMode = .byWordWrapping
-            cell.detailTextLabel?.backgroundColor = .systemRed
-            cell.layoutIfNeeded()
-//            cell.detailTextLabel?.sizeToFit()
-//            cell.detailTextLabel?.widthAnchor.constraint(equalToConstant: 40).isActive = true
             cell.detailTextLabel?.attributedText = createExclamation(fromPriority: self.priority)
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
@@ -125,21 +117,22 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     func createExclamation(fromPriority num: Int64) -> NSAttributedString {
         let attrString = NSMutableAttributedString()
-        attrString.append(NSAttributedString(string: "         "))
         switch num {
         case 1:
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+            attrString.append(NSAttributedString(string: "           "))
         case 2:
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+            attrString.append(NSAttributedString(string: "           "))
         case 3:
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
             attrString.append(NSAttributedString(attachment: self.exclamationAttachment))
+            attrString.append(NSAttributedString(string: "           "))
         default:
             attrString.append(NSAttributedString(string: "None"))
         }
-        
         return attrString
     }
 }
