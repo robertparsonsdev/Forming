@@ -27,6 +27,7 @@ class HabitDetailViewController: UIViewController {
             if let priority = habit?.priority { self.priority = priority }
             if let flag = habit?.flag { self.flag = flag }
             if let reminder = habit?.reminder { self.reminder = reminder } else { self.reminder = nil }
+            if let dateCreated = habit?.dateCreated { self.dateCreated = dateCreated }
         }
     }
     
@@ -47,11 +48,14 @@ class HabitDetailViewController: UIViewController {
     var dayFlags = [false, false, false, false, false, false, false]
     let daysStackView = UIStackView()
     var dayStatuses = [Status]()
+    var dateCreated = CalUtility.getCurrentDate()
         
     var formingTableView: FormingTableView?
     var priority: Int64 = 0
     var flag: Bool = false
     var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
+    
+    let dateCreatedLabel = UILabel()
     
     let haptics = UISelectionFeedbackGenerator()
     
@@ -79,6 +83,7 @@ class HabitDetailViewController: UIViewController {
         configureStackView(topColorsStackView, withArray: topColors)
         configureStackView(bottomColorsStackView, withArray: bottomColors)
         configureStackView(daysStackView, withArray: days)
+        configureDateCreatedLabel()
         configureConstraints()
         
         if !editMode {
@@ -135,6 +140,13 @@ class HabitDetailViewController: UIViewController {
         }
     }
     
+    func configureDateCreatedLabel() {
+        self.dateCreatedLabel.text = "Date Created: \(CalUtility.getDateAsString(date: self.dateCreated))"
+        dateCreatedLabel.textAlignment = .center
+        dateCreatedLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        dateCreatedLabel.textColor = .secondaryLabel
+    }
+    
     func configureConstraints() {
         view.addSubview(scrollView)
         scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
@@ -164,6 +176,9 @@ class HabitDetailViewController: UIViewController {
             scrollView.addSubview(tableView)
             tableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: scrollView.bottomAnchor, right: right, paddingTop: outterPad * 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 132)
         }
+        
+        view.addSubview(self.dateCreatedLabel)
+        dateCreatedLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: 25)
     }
     
     // MARK: - Functions
