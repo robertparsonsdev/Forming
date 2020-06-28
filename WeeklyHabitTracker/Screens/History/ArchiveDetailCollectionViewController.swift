@@ -54,7 +54,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 
     // MARK: CollectionView Functions
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 30, height: 85)
+        return CGSize(width: view.frame.width - 30, height: 90)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
