@@ -16,6 +16,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private var activeArchives: [Archive] = []
     private var deletedArchives: [Archive] = []
     private let persistenceManager: PersistenceService
+    private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>!
     
@@ -24,8 +25,9 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private var isSearching = false
     
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, notifCenter: NotificationCenter) {
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, notifCenter: NotificationCenter) {
         self.persistenceManager = persistenceManager
+        self.defaults = defaults
         self.notificationCenter = notifCenter
         super.init(collectionViewLayout: layout)
         
@@ -90,7 +92,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let archive = self.dataSource.itemIdentifier(for: indexPath) else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, notifCenter: self.notificationCenter)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, defaults: self.defaults, notifCenter: self.notificationCenter)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     

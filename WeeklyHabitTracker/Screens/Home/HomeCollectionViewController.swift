@@ -12,7 +12,7 @@ import UserNotifications
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
-private var currentSort: Sort?
+private var currentSort: HomeSort?
 // test commit again
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
@@ -22,10 +22,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private let notificationCenter: NotificationCenter
     private let userNotificationCenter: UNUserNotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
-    private var currentDay: Int?
     
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
-    private var defaultSort: Sort = .dateCreated
+    private let sortKey = "homeSort"
+    private var defaultSort: HomeSort = .dateCreated
     
     private let searchController = UISearchController()
     private var filteredHabits = [Habit]()
@@ -36,8 +36,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.defaults = defaults
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
-        if let sort = defaults.object(forKey: "sort") { self.defaultSort = Sort(rawValue: sort as! String)! }
-        self.currentDay = CalUtility.getCurrentDay()
         
         super.init(collectionViewLayout: layout)
         
@@ -57,6 +55,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
         let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         navigationItem.rightBarButtonItems = [newButton, sortButton]
+        if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
@@ -64,8 +63,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         
         configureSearchController()
         configureSortAlertController()
-        
         configureDataSource()
+        
         fetchHabits()
     }
         
@@ -97,7 +96,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func configureSortAlertController() {
         sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
         sortAC.view.tintColor = .systemGreen
-        Sort.allCases.forEach { (sort) in
+        HomeSort.allCases.forEach { (sort) in
             sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: sortAlertTapped))
         }
         sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -148,10 +147,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     func sortAlertTapped(sender: UIAlertAction) {
         if let sortTitle = sender.title {
-            self.defaultSort = Sort(rawValue: sortTitle)!
-            defaults.set(self.defaultSort.rawValue, forKey: "sort")
-            sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-            self.sortHabits()
+            self.defaultSort = HomeSort(rawValue: sortTitle)!
+            self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
+            self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
+            sortHabits()
         }
     }
     
@@ -160,7 +159,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
         case .color: self.habits.sort { (hab1, hab2) -> Bool in hab1.color < hab2.color }
         case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
-        case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.statuses[self.currentDay!] < hab2.statuses[self.currentDay!] }
+        case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.statuses[CalUtility.getCurrentDay()] < hab2.statuses[CalUtility.getCurrentDay()] }
         case .flag: self.habits.sort { (hab1, hab2) -> Bool in hab1.flag && !hab2.flag}
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }
         case .reminderTime: self.habits.sort { (hab1, hab2) -> Bool in
@@ -195,7 +194,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 // MARK: - Delegates
 extension HomeCollectionViewController: SaveHabitDelegate {
     func saveHabit() {
-        self.fetchHabits()
+        fetchHabits()
         collectionView.reloadData()
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Sort: String, CaseIterable {
+enum HomeSort: String, CaseIterable {
     case alphabetical = "Alphabetical"
     case color = "Color"
     case dateCreated = "Date Created"
@@ -16,4 +16,9 @@ enum Sort: String, CaseIterable {
     case flag = "Flag"
     case priority = "Priority"
     case reminderTime = "Reminder Time"
+}
+
+enum ArchiveDetailSort: String, CaseIterable {
+    case dateAscending = "Date Ascending"
+    case dateDescending = "Date Descending"
 }

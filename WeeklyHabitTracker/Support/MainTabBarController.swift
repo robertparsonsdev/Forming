@@ -33,6 +33,7 @@ class MainTabBarController: UITabBarController {
                                                           andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!,
                                                           andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(),
                                                                                                      persistenceManager: self.appDelegate.getPersistenceService(),
+                                                                                                     defaults: self.appDelegate.getUserDefaults(),
                                                                                                      notifCenter: self.appDelegate.getNotificationCenter()))
         
         let settingsNavController = buildTabBarControllers(withTitle: "Settings", andImage: UIImage(named: "gear", in: nil, with: boldConfig)!, andRootVC: SettingsViewController())

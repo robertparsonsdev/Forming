@@ -22,7 +22,7 @@
 		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
 		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
 		EE911087246242660021190C /* HistoryTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* HistoryTitleCell.swift */; };
-		EE9A71512458AFEA0082D135 /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sort.swift */; };
+		EE9A71512458AFEA0082D135 /* Sorts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sorts.swift */; };
 		EEA64ECC24476346008202D0 /* HabitDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */; };
 		EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */; };
 		EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA64ECF2447B349008202D0 /* FormingTextField.swift */; };
@@ -72,7 +72,7 @@
 		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE911086246242660021190C /* HistoryTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTitleCell.swift; sourceTree = "<group>"; };
-		EE9A71502458AFEA0082D135 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
+		EE9A71502458AFEA0082D135 /* Sorts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sorts.swift; sourceTree = "<group>"; };
 		EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailViewController.swift; sourceTree = "<group>"; };
 		EEA64ECD2447AD4A008202D0 /* FormingTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTitleLabel.swift; sourceTree = "<group>"; };
 		EEA64ECF2447B349008202D0 /* FormingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTextField.swift; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 				EEA64EDA244A17D4008202D0 /* FormingColors.swift */,
 				EEAD7EDB244BA3BF002225F8 /* Status.swift */,
 				EECBF3DE2457CBBE0050DFB8 /* Section.swift */,
-				EE9A71502458AFEA0082D135 /* Sort.swift */,
+				EE9A71502458AFEA0082D135 /* Sorts.swift */,
 				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 				EE91108424623F730021190C /* UIHelper.swift */,
 				EE3A59F12495C720009E5D25 /* HistorySection.swift */,
@@ -363,7 +363,7 @@
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE91108524623F730021190C /* UIHelper.swift in Sources */,
-				EE9A71512458AFEA0082D135 /* Sort.swift in Sources */,
+				EE9A71512458AFEA0082D135 /* Sorts.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EEEB97E3249452FB006DE24D /* Archive+CoreDataProperties.swift in Sources */,
 				EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */,
