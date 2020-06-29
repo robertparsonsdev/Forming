@@ -309,7 +309,9 @@ class HabitDetailViewController: UIViewController {
     
     @objc func deleteButtonTapped() {
         DispatchQueue.main.async {
-            let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?", message: nil, preferredStyle: .actionSheet)
+            let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?",
+                                             message: "Deleting a habit removes it from the \"Active Habits\" list in History, but can still be viewed in the \"Deleted Habits\" section in History.",
+                                             preferredStyle: .actionSheet)
             deleteVC.view.tintColor = .systemGreen
             deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default) { [weak self] _ in
                 guard let self = self else { return }

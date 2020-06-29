@@ -23,12 +23,15 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private var defaultSort: ArchiveDetailSort = .dateDescending
     private let menuAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
     
+    private let confirmDeleteAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    private let confirmResetAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    
     // MARK: - Initializers
     init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive, defaults: UserDefaults, notifCenter: NotificationCenter) {
         self.archive = archive
         self.defaults = defaults
         self.notificationCenter = notifCenter
-//        if let array = archive.archivedHabits?.array as? [ArchivedHabit] { self.archivedHabits = array }
         
         super.init(collectionViewLayout: layout)
         
@@ -57,7 +60,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
-        configureAlertControllers()
+        configureSortAlertController()
+        configureMenuAlertController()
+        configureConfirmationAlertControllers()
         configureDataSource()
         
         fetchArchivedHabits()
@@ -81,18 +86,41 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
 
     // MARK: - Configuration Functions
-    func configureAlertControllers() {
+    func configureSortAlertController() {
         sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
         sortAC.view.tintColor = .systemGreen
         ArchiveDetailSort.allCases.forEach { (sort) in
             sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: sortAlertTapped))
         }
         sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
+    }
+    
+    func configureMenuAlertController() {
         menuAC.view.tintColor = .systemGreen
-        menuAC.addAction(UIAlertAction(title: "Delete Archive", style: .default, handler: nil))
-        if !self.archive.active { menuAC.addAction(UIAlertAction(title: "Restore Habit", style: .default, handler: nil)) }
+        menuAC.addAction(UIAlertAction(title: "Delete Archive", style: .default, handler: showDeleteConfirmation))
+        if self.archive.active { menuAC.addAction(UIAlertAction(title: "Reset Archive", style: .default, handler: showResetConfirmation)) }
+        else { menuAC.addAction(UIAlertAction(title: "Restore Archive", style: .default, handler: showRestoreConfirmation)) }
         menuAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    }
+    
+    func configureConfirmationAlertControllers() {
+        confirmDeleteAC.view.tintColor = .systemGreen
+        confirmDeleteAC.title = "Are you sure you want to delete this archive?"
+        confirmDeleteAC.message = "Deleting an archive permanently deletes all habit history, statistics, and the current habit. This action can't be undone."
+        confirmDeleteAC.addAction(UIAlertAction(title: "Delete Archive", style: .default, handler: deleteArchive))
+        confirmDeleteAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        confirmResetAC.view.tintColor = .systemGreen
+        confirmResetAC.title = "Are you sure you want to reset this archive?"
+        confirmResetAC.message = "Resetting an archive clears all habit history, statistics, and resets the current habit, allowing for a fresh start."
+        confirmResetAC.addAction(UIAlertAction(title: "Reset Archive", style: .default, handler: resetArchive))
+        confirmResetAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        confirmRestoreAC.view.tintColor = .systemGreen
+        confirmRestoreAC.title = "Are you sure you want to restore this archive?"
+        confirmRestoreAC.message = "Restoring an archive restores habit history, statistics, and creates a new habit in Habits, allowing the habit to be tracked again."
+        confirmRestoreAC.addAction(UIAlertAction(title: "Restore Archive", style: .default, handler: restoreArchive))
+        confirmRestoreAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
     func configureDataSource() {
@@ -155,6 +183,30 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     
     @objc func menuButtonPressed() {
         present(menuAC, animated: true)
+    }
+    
+    @objc func showDeleteConfirmation(sender: UIAlertAction) {
+        present(self.confirmDeleteAC, animated: true)
+    }
+    
+    @objc func showResetConfirmation(sender: UIAlertAction) {
+        present(self.confirmResetAC, animated: true)
+    }
+    
+    @objc func showRestoreConfirmation(sender: UIAlertAction) {
+        present(self.confirmRestoreAC, animated: true)
+    }
+    
+    @objc func deleteArchive(sender: UIAlertAction) {
+        print("deleted")
+    }
+    
+    @objc func resetArchive(sender: UIAlertAction) {
+        print("reset")
+    }
+    
+    @objc func restoreArchive(sender: UIAlertAction) {
+        print("restored")
     }
 }
 
