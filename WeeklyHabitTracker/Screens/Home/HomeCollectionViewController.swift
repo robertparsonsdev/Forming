@@ -176,6 +176,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func reloadHabits() {
+        fetchHabits()
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
@@ -194,25 +195,19 @@ extension HomeCollectionViewController: HabitDetailDelegate {
     func update(habit: Habit) {
         self.persistenceManager.save()
         var snapshot = self.dataSource.snapshot()
-        // potential bugs: update self.habits
         DispatchQueue.main.async {
             snapshot.reloadItems([habit])
             self.dataSource.apply(snapshot, animatingDifferences: true)
-            self.sortHabits()
         }
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func delete(habit: Habit) {
+        habit.archive.updateActive(toState: false)
         self.persistenceManager.delete(habit)
         if let index = self.habits.firstIndex(of: habit) {
             self.habits.remove(at: index)
-        }
-        var snapshot = self.dataSource.snapshot()
-        DispatchQueue.main.async {
-            snapshot.deleteItems([habit])
-            self.dataSource.apply(snapshot, animatingDifferences: true)
-            self.sortHabits()
+            updateDataSource(on: self.habits)
         }
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }

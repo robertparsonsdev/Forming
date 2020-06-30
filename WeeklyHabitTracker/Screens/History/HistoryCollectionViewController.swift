@@ -124,6 +124,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     // MARK: - Selectors
     @objc func reloadArchives() {
+        fetchArchives()
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
 }
@@ -150,8 +151,8 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
         self.persistenceManager.delete(archive)
         if let index = self.archives.firstIndex(of: archive) {
             self.archives.remove(at: index)
+            updateDataSource(on: self.archives)
         }
-        updateDataSource(on: self.archives)
         self.notificationCenter.post(name: NSNotification.Name("newDay"), object: nil)
     }
 }

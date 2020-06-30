@@ -24,6 +24,10 @@ public class Archive: NSManagedObject {
         }
     }
     
+    func updateActive(toState state: Bool) {
+        self.active = state
+    }
+    
     func updateStats(fromStatus oldStatus: Status, toStatus newStatus: Status) {
         switch oldStatus {
         case .completed:
