@@ -18,7 +18,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private let persistenceManager: PersistenceService
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
-    private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>!
+    private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>?
     
     private let searchController = UISearchController()
     private var filteredArchives: [Archive] = []
@@ -70,19 +70,19 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<HistorySection, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HistoryTitleCell
-            cell.setPercentLabelText(String(format: "%.1f%%", archive.successRate))
-            cell.setTitleLabelText(archive.title)
-            cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HistoryTitleCell
+            cell?.setPercentLabelText(String(format: "%.1f%%", archive.successRate))
+            cell?.setTitleLabelText(archive.title)
+            cell?.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
             return cell
         })
         
-        self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as! HistorySectionHeader
+        self.dataSource?.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as? HistorySectionHeader
             switch indexPath.section {
-            case 0: header.set(title: "Active Habits")
-            case 1: header.set(title: self.deletedArchives.count > 0 ? "Deleted Habits" : "")
-            default: header.set(title: "Error")
+            case 0: header?.set(title: "Active Habits")
+            case 1: header?.set(title: self.deletedArchives.count > 0 ? "Deleted Habits" : "")
+            default: header?.set(title: "Error")
             }
             
             return header
@@ -91,7 +91,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
 
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let archive = self.dataSource.itemIdentifier(for: indexPath) else { print("selection error"); return }
+        guard let archive = self.dataSource?.itemIdentifier(for: indexPath) else { print("selection error"); return }
         let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, delegate: self, defaults: self.defaults, notifCenter: self.notificationCenter)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
@@ -108,7 +108,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         snapshot.appendItems(self.activeArchives, toSection: .activeHabits)
         snapshot.appendItems(self.deletedArchives, toSection: .deletedHabits)
         DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: true)
+            self.dataSource?.apply(snapshot, animatingDifferences: true)
         }
     }
     
@@ -124,7 +124,6 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     // MARK: - Selectors
     @objc func reloadArchives() {
-        fetchArchives()
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
 }

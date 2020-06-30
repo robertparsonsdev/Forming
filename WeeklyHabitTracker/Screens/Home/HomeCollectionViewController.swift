@@ -176,7 +176,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func reloadHabits() {
-        fetchHabits()
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
