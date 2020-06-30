@@ -56,7 +56,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         
         configureSearchController()
         configureDataSource()
-        updateArchives()
+        fetchArchives()
     }
     
     // MARK: - Configuration Functions
@@ -92,12 +92,12 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let archive = self.dataSource.itemIdentifier(for: indexPath) else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, defaults: self.defaults, notifCenter: self.notificationCenter)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, delegate: self, defaults: self.defaults, notifCenter: self.notificationCenter)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
     // MARK: - Functions
-    func updateData(on archives: [Archive]) {
+    func updateDataSource(on archives: [Archive]) {
         self.activeArchives = archives.filter( { $0.active == true } )
         self.deletedArchives = archives.filter( { $0.active == false } )
         self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
@@ -112,19 +112,19 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         }
     }
     
-    func updateArchives() {
+    func fetchArchives() {
         self.archives = persistenceManager.fetch(Archive.self)
-        guard !self.archives.isEmpty else {
-            self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")
-            return
-        }
-        self.removeEmptyStateView()
-        updateData(on: self.archives)
+//        guard !self.archives.isEmpty else {
+//            showEmptyStateView(withText: "To start recording habit history, create a new habit.", andTag: self.emptyTag)
+//            return
+//        }
+//        self.removeEmptyStateView(fromTag: self.emptyTag)
+        updateDataSource(on: self.archives)
     }
     
     // MARK: - Selectors
     @objc func reloadArchives() {
-        updateArchives()
+        fetchArchives()
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
 }
@@ -133,15 +133,26 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
 extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let filter = searchController.searchBar.text else { return }
-        if filter.isEmpty { updateData(on: self.archives); isSearching = false; return }
+        if filter.isEmpty { updateDataSource(on: self.archives); isSearching = false; return }
         self.isSearching = true
         
         self.filteredArchives = self.archives.filter { ($0.title.lowercased().contains(filter.lowercased())) }
-        updateData(on: self.filteredArchives)
+        updateDataSource(on: self.filteredArchives)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.isSearching = false
-        updateData(on: self.archives)
+        updateDataSource(on: self.archives)
+    }
+}
+
+extension HistoryCollectionViewController: ArchiveDetailDelegate {
+    func delete(archive: Archive) {
+        self.persistenceManager.delete(archive)
+        if let index = self.archives.firstIndex(of: archive) {
+            self.archives.remove(at: index)
+        }
+        updateDataSource(on: self.archives)
+        self.notificationCenter.post(name: NSNotification.Name("newDay"), object: nil)
     }
 }

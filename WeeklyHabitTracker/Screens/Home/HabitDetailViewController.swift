@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 
 class HabitDetailViewController: UIViewController {
-    var habitDelegate: SaveHabitDelegate?
+    var habitDelegate: HabitDetailDelegate?
     private let persistenceManager: PersistenceService
     private let center: UNUserNotificationCenter
     
@@ -252,6 +252,8 @@ class HabitDetailViewController: UIViewController {
                     }
                 }
             }
+            
+            habitDelegate?.add(habit: initialHabit)
         } else {
             habit?.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
             if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
@@ -301,10 +303,9 @@ class HabitDetailViewController: UIViewController {
                 habit?.archive.color = updatedHabit.color
                 habit?.archive.habit = updatedHabit
             }
+            
+            habitDelegate?.update(habit: self.habit!)
         }
-        
-        persistenceManager.save()
-        habitDelegate?.saveHabit()
     }
     
     @objc func deleteButtonTapped() {
@@ -392,7 +393,8 @@ extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDeleg
 }
 
 // MARK: - Protocols
-protocol SaveHabitDelegate  {
-    func saveHabit()
+protocol HabitDetailDelegate  {
+    func add(habit: Habit)
+    func update(habit: Habit)
     func delete(habit: Habit)
 }

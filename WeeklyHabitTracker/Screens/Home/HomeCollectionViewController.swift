@@ -17,7 +17,7 @@ private var currentSort: HomeSort?
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var habits = [Habit]()
-    private let persistence: PersistenceService
+    private let persistenceManager: PersistenceService
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let userNotificationCenter: UNUserNotificationCenter
@@ -32,7 +32,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         
     // MARK: - Initializers
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter, notifCenter: NotificationCenter) {
-        self.persistence = persistenceManager
+        self.persistenceManager = persistenceManager
         self.defaults = defaults
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
@@ -127,22 +127,13 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func fetchHabits() {
-        self.habits = persistence.fetch(Habit.self)
-        if habits.isEmpty {
-            self.showEmptyStateView()
-            return
-        } else { self.removeEmptyStateView() }
+        self.habits = persistenceManager.fetch(Habit.self)
+//        if self.habits.isEmpty {
+//            self.showEmptyStateView(andTag: self.emptyTag)
+//            return
+//        } else { self.removeEmptyStateView(fromTag: self.emptyTag) }
         
         sortHabits()
-    }
-    
-    func deleteHabit(_ habit: Habit) {
-        persistence.delete(habit)
-        self.habits = persistence.fetch(Habit.self)
-        updateDataSource(on: self.habits)
-        
-        if habits.isEmpty { self.showEmptyStateView() }
-        else { sortHabits() }
     }
     
     func sortAlertTapped(sender: UIAlertAction) {
@@ -173,7 +164,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
@@ -192,22 +183,45 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 }
 
 // MARK: - Delegates
-extension HomeCollectionViewController: SaveHabitDelegate {
-    func saveHabit() {
-        fetchHabits()
-        collectionView.reloadData()
+extension HomeCollectionViewController: HabitDetailDelegate {
+    func add(habit: Habit) {
+        self.persistenceManager.save()
+        self.habits.append(habit)
+//        removeEmptyStateView(fromTag: self.emptyTag)
+        sortHabits()
+        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
+    }
+    
+    func update(habit: Habit) {
+        self.persistenceManager.save()
+        var snapshot = self.dataSource.snapshot()
+        // potential bugs: update self.habits
+        DispatchQueue.main.async {
+            snapshot.reloadItems([habit])
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+            self.sortHabits()
+        }
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func delete(habit: Habit) {
-        self.deleteHabit(habit)
+        self.persistenceManager.delete(habit)
+        if let index = self.habits.firstIndex(of: habit) {
+            self.habits.remove(at: index)
+        }
+        var snapshot = self.dataSource.snapshot()
+        DispatchQueue.main.async {
+            snapshot.deleteItems([habit])
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+            self.sortHabits()
+        }
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
 }
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistence, notificationCenter: self.userNotificationCenter)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter)
         newHabitVC.habit = habit
         newHabitVC.habitDelegate = self
         let navController = UINavigationController(rootViewController: newHabitVC)
@@ -217,7 +231,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
     
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
         habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
-        self.persistence.save()
+        self.persistenceManager.save()
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     

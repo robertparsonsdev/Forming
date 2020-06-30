@@ -14,6 +14,7 @@ private let headerReuseIdentifier = "Archived Detail Header"
 class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private let archive: Archive
     private var archivedHabits = [ArchivedHabit]()
+    private var delegate: ArchiveDetailDelegate
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
@@ -28,8 +29,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
     
     // MARK: - Initializers
-    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive, defaults: UserDefaults, notifCenter: NotificationCenter) {
+    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults, notifCenter: NotificationCenter) {
         self.archive = archive
+        self.delegate = delegate
         self.defaults = defaults
         self.notificationCenter = notifCenter
         
@@ -198,7 +200,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
     
     @objc func deleteArchive(sender: UIAlertAction) {
-        print("deleted")
+        self.delegate.delete(archive: self.archive)
+        navigationController?.popViewController(animated: true)
     }
     
     @objc func resetArchive(sender: UIAlertAction) {
@@ -217,4 +220,9 @@ extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
         vc.set(archivedHabit: archivedHabit)
         navigationController?.pushViewController(vc, animated: true)
     }
+}
+
+// MARK: - Protocols
+protocol ArchiveDetailDelegate {
+    func delete(archive: Archive)
 }
