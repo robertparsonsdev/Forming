@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
-//        notificationCenter.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
         notificationCenter.addObserver(self, selector: #selector(enteredBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         return true

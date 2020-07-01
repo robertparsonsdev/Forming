@@ -72,4 +72,20 @@ public class Archive: NSManagedObject {
         archivedHabit.endDate = CalUtility.getLastDateOfWeek()
         insertIntoArchivedHabits(archivedHabit, at: 0)
     }
+    
+    func reset() {
+        self.completedTotal = 0
+        self.failedTotal = 0
+        self.incompleteTotal = 0
+        
+        self.habit.resetStatuses()
+        self.habit.updateButtonState(toState: false)
+        
+        if let array = self.archivedHabits?.array as? [ArchivedHabit] {
+            for archivedHabit in array {
+                PersistenceService.shared.delete(archivedHabit)
+            }
+        }
+        createNewArchivedHabit(fromArchivedHabit: ArchivedHabit(context: PersistenceService.shared.context), withStatuses: self.habit.statuses)
+    }
 }

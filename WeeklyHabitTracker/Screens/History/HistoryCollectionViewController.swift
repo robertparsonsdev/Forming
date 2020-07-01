@@ -33,6 +33,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("newDay"), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("reload"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("reset"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -93,11 +94,16 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let archive = self.dataSource?.itemIdentifier(for: indexPath) else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(archive: archive, delegate: self, defaults: self.defaults, notifCenter: self.notificationCenter)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, archive: archive, delegate: self, defaults: self.defaults, notifCenter: self.notificationCenter)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
     // MARK: - Functions
+    func fetchArchives() {
+        self.archives = persistenceManager.fetch(Archive.self)
+        updateDataSource(on: self.archives)
+    }
+    
     func updateDataSource(on archives: [Archive]) {
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         if !self.archives.isEmpty {
@@ -120,11 +126,6 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
                 self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")
             }
         }
-    }
-    
-    func fetchArchives() {
-        self.archives = persistenceManager.fetch(Archive.self)
-        updateDataSource(on: self.archives)
     }
     
     // MARK: - Selectors

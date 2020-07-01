@@ -40,16 +40,20 @@ public class Habit: NSManagedObject {
             self.archive.updateStats(fromStatus: .incomplete, toStatus: .failed)
         }
         
+        resetStatuses()
+        
+        updateButtonState(toState: false)
+        
+        self.archive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: self.statuses)
+    }
+    
+    func resetStatuses() {
         for (index, status) in self.statuses.enumerated() {
             if status != .empty {
                 updateStatus(toStatus: .incomplete, atIndex: index)
                 self.archive.updateStats(fromStatus: .empty, toStatus: .incomplete)
             }
         }
-        
-        updateButtonState(toState: false)
-        
-        self.archive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: self.statuses)
     }
     
     func updateStatus(toStatus status: Status, atIndex index: Int) {

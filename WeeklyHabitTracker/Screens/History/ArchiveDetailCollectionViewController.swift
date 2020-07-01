@@ -14,6 +14,7 @@ private let headerReuseIdentifier = "Archived Detail Header"
 class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private let archive: Archive
     private var archivedHabits = [ArchivedHabit]()
+    private let persistenceManager: PersistenceService
     private var delegate: ArchiveDetailDelegate
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
@@ -29,7 +30,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
     
     // MARK: - Initializers
-    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults, notifCenter: NotificationCenter) {
+    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), persistenceManager: PersistenceService, archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults, notifCenter: NotificationCenter) {
+        self.persistenceManager = persistenceManager
         self.archive = archive
         self.delegate = delegate
         self.defaults = defaults
@@ -39,6 +41,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("newDay"), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reload"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reset"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -205,7 +208,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
     
     @objc func resetArchive(sender: UIAlertAction) {
-        print("reset")
+        self.archive.reset()
+        self.persistenceManager.save()
+        self.notificationCenter.post(name: NSNotification.Name("reset"), object: nil)
     }
     
     @objc func restoreArchive(sender: UIAlertAction) {
