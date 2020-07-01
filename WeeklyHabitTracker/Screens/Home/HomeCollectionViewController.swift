@@ -12,8 +12,6 @@ import UserNotifications
 
 private let reuseIdentifier = "Habit Cell"
 private let headerReuseIdentifier = "Header Cell"
-private var currentSort: HomeSort?
-// test commit again
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var habits = [Habit]()
@@ -119,21 +117,29 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - Functions
     func updateDataSource(on habits: [Habit]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Habit>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(habits)
-        DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: true)
+        if !self.habits.isEmpty {
+            snapshot.appendSections([.main])
+            snapshot.appendItems(habits)
+            DispatchQueue.main.async {
+                self.dataSource.apply(snapshot, animatingDifferences: true)
+                self.removeEmptyStateView()
+            }
+        } else {
+            snapshot.deleteSections([.main])
+            DispatchQueue.main.async {
+                self.dataSource.apply(snapshot, animatingDifferences: false)
+                self.showEmptyStateView()
+            }
         }
     }
     
     func fetchHabits() {
         self.habits = persistenceManager.fetch(Habit.self)
-//        if self.habits.isEmpty {
-//            self.showEmptyStateView(andTag: self.emptyTag)
-//            return
-//        } else { self.removeEmptyStateView(fromTag: self.emptyTag) }
-        
-        sortHabits()
+        if !self.habits.isEmpty {
+            sortHabits()
+        } else {
+            updateDataSource(on: self.habits)
+        }
     }
     
     func sortAlertTapped(sender: UIAlertAction) {
@@ -141,6 +147,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             self.defaultSort = HomeSort(rawValue: sortTitle)!
             self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
             self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
+            guard !self.habits.isEmpty else { return }
             sortHabits()
         }
     }
@@ -187,7 +194,6 @@ extension HomeCollectionViewController: HabitDetailDelegate {
     func add(habit: Habit) {
         self.persistenceManager.save()
         self.habits.append(habit)
-//        removeEmptyStateView(fromTag: self.emptyTag)
         sortHabits()
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
@@ -198,6 +204,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         DispatchQueue.main.async {
             snapshot.reloadItems([habit])
             self.dataSource.apply(snapshot, animatingDifferences: true)
+            self.sortHabits()
         }
         self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }

@@ -10,23 +10,19 @@ import UIKit
 
 extension UICollectionViewController {
     func showEmptyStateView(withText text: String? = nil) {
-        let emptyStateView: EmptyStateView
-        if let message = text { emptyStateView = EmptyStateView(message: message) }
-        else { emptyStateView = EmptyStateView() }
-        emptyStateView.tag = 1000
-        collectionView.addSubview(emptyStateView)
-        emptyStateView.anchor(top: collectionView.safeAreaLayoutGuide.topAnchor, left: nil, bottom: collectionView.safeAreaLayoutGuide.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: collectionView.frame.width, height: 0)
-        navigationItem.searchController?.searchBar.isHidden = true
-        collectionView.alwaysBounceVertical = false
+        DispatchQueue.main.async {
+            let emptyStateView = EmptyStateView(message: text, frame: CGRect(x: 0, y: 0, width: self.collectionView.bounds.size.width, height: self.collectionView.bounds.size.height))
+            self.collectionView.backgroundView = emptyStateView
+            self.navigationItem.searchController?.searchBar.isHidden = true
+            self.collectionView.alwaysBounceVertical = false
+        }
     }
 
     func removeEmptyStateView() {
         DispatchQueue.main.async {
-            if let emptyStateView = self.collectionView.viewWithTag(1000) {
-                emptyStateView.removeFromSuperview()
-                self.navigationItem.searchController?.searchBar.isHidden = false
-                self.collectionView.alwaysBounceVertical = true
-            }
+            self.collectionView.backgroundView = nil
+            self.navigationItem.searchController?.searchBar.isHidden = false
+            self.collectionView.alwaysBounceVertical = true
         }
     }
 }

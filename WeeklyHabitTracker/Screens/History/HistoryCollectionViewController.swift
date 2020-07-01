@@ -56,6 +56,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         
         configureSearchController()
         configureDataSource()
+        
         fetchArchives()
     }
     
@@ -98,27 +99,31 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     // MARK: - Functions
     func updateDataSource(on archives: [Archive]) {
-        self.activeArchives = archives.filter( { $0.active == true } )
-        self.deletedArchives = archives.filter( { $0.active == false } )
-        self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
-        self.deletedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
-        
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
-        snapshot.appendSections([.activeHabits, .deletedHabits])
-        snapshot.appendItems(self.activeArchives, toSection: .activeHabits)
-        snapshot.appendItems(self.deletedArchives, toSection: .deletedHabits)
-        DispatchQueue.main.async {
-            self.dataSource?.apply(snapshot, animatingDifferences: true)
+        if !self.archives.isEmpty {
+            self.activeArchives = archives.filter( { $0.active == true } )
+            self.deletedArchives = archives.filter( { $0.active == false } )
+            self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+            self.deletedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+            
+            snapshot.appendSections([.activeHabits, .deletedHabits])
+            snapshot.appendItems(self.activeArchives, toSection: .activeHabits)
+            snapshot.appendItems(self.deletedArchives, toSection: .deletedHabits)
+            DispatchQueue.main.async {
+                self.dataSource?.apply(snapshot, animatingDifferences: true)
+                self.removeEmptyStateView()
+            }
+        } else {
+            snapshot.deleteSections([.activeHabits, .deletedHabits])
+            DispatchQueue.main.async {
+                self.dataSource?.apply(snapshot, animatingDifferences: false)
+                self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")
+            }
         }
     }
     
     func fetchArchives() {
         self.archives = persistenceManager.fetch(Archive.self)
-//        guard !self.archives.isEmpty else {
-//            showEmptyStateView(withText: "To start recording habit history, create a new habit.", andTag: self.emptyTag)
-//            return
-//        }
-//        self.removeEmptyStateView(fromTag: self.emptyTag)
         updateDataSource(on: self.archives)
     }
     

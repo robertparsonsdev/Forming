@@ -9,12 +9,11 @@
 import UIKit
 
 class EmptyStateView: UIView {
-    var label: UILabel?
+    var label = UILabel()
     
-    init(message: String? = nil) {
-        super.init(frame: .zero)
+    init(message: String? = nil, frame: CGRect) {
+        super.init(frame: frame)
         backgroundColor = .systemBackground
-        label = UILabel()
         
         if let text = message { configureLabel(withText: text) }
         else { configureLabel() }
@@ -27,10 +26,10 @@ class EmptyStateView: UIView {
     
     func configureLabel(withText message: String? = nil) {
         if let text = message {
-            label?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-            label?.textColor = .secondaryLabel
-            label?.numberOfLines = 0
-            label?.text = text
+            label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+            label.textColor = .secondaryLabel
+            label.numberOfLines = 0
+            label.text = text
         } else {
             let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .semibold), scale: .medium)
             let symbolAttachment = NSTextAttachment()
@@ -40,15 +39,15 @@ class EmptyStateView: UIView {
             let title = NSMutableAttributedString(string: "Press the ", attributes: attributes)
             title.append(NSAttributedString(attachment: symbolAttachment))
             title.append(NSAttributedString(string: " to add a new habit.", attributes: attributes))
-            label?.attributedText = title
+            label.attributedText = title
         }
 
-        label?.textAlignment = .center
-        label?.backgroundColor = .systemBackground
+        label.textAlignment = .center
+        label.backgroundColor = .systemBackground
     }
     
     func configureConstraints() {
-        addSubview(label ?? UILabel())
-        label?.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 200)
+        addSubview(label)
+        label.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 200, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 200)
     }
 }
