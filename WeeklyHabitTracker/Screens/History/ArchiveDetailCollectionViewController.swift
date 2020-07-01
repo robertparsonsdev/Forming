@@ -214,7 +214,10 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
     
     @objc func restoreArchive(sender: UIAlertAction) {
-        print("restored")
+        self.archive.restore()
+//        self.persistenceManager.save()
+        navigationController?.popViewController(animated: true)
+        self.notificationCenter.post(name: NSNotification.Name("reset"), object: nil)
     }
 }
 

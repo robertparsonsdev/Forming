@@ -38,6 +38,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("reset"), object: nil)
     }
     
     required init?(coder: NSCoder) {

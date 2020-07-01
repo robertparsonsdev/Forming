@@ -234,6 +234,9 @@ class HabitDetailViewController: UIViewController {
             initialArchive.title = initialHabit.title ?? "Error"
             initialArchive.color = initialHabit.color
             initialArchive.habit = initialHabit
+            initialArchive.flag = initialHabit.flag
+            initialArchive.priority = initialHabit.priority
+            initialArchive.reminder = initialHabit.reminder
             initialArchive.active = true
             initialArchive.successRate = 100.0
             initialArchive.completedTotal = 0

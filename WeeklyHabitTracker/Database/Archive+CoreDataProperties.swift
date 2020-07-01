@@ -26,6 +26,9 @@ extension Archive {
     @NSManaged public var completedTotal: Int64
     @NSManaged public var failedTotal: Int64
     @NSManaged public var incompleteTotal: Int64
+    @NSManaged public var flag: Bool
+    @NSManaged public var priority: Int64
+    @NSManaged public var reminder: Date?
 
 }
 

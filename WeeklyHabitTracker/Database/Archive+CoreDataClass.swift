@@ -88,4 +88,11 @@ public class Archive: NSManagedObject {
         }
         createNewArchivedHabit(fromArchivedHabit: ArchivedHabit(context: PersistenceService.shared.context), withStatuses: self.habit.statuses)
     }
+    
+    func restore() {
+        // set active to true
+        updateActive(toState: true)
+        // create new habit
+        // connect it to archive
+    }
 }
