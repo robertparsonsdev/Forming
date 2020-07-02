@@ -51,7 +51,7 @@ class ArchivedHabitCell: UICollectionViewCell {
         titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         titleButton.titleLabel?.textColor = .white
         titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
-        if let color = self.archivedHabit?.archive?.color {
+        if let color = self.archivedHabit?.archive.color {
             titleButton.backgroundColor = FormingColors.getColor(fromValue: color)
         }
         if let startDate = archivedHabit?.startDate, let endDate = archivedHabit?.endDate {

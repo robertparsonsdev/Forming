@@ -38,7 +38,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("reset"), object: nil)
+//        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("reset"), object: nil)
+//        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("delete"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -65,6 +66,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         configureDataSource()
         
         fetchHabits()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        reloadHabits()
     }
         
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

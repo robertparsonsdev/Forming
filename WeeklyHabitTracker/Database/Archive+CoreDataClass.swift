@@ -12,6 +12,27 @@ import CoreData
 
 @objc(Archive)
 public class Archive: NSManagedObject {
+    func reset() {
+        self.completedTotal = 0
+        self.failedTotal = 0
+        self.incompleteTotal = 0
+        
+        self.habit.resetStatuses()
+        self.habit.updateButtonState(toState: false)
+        
+        if let array = self.archivedHabits?.array as? [ArchivedHabit] {
+            for archivedHabit in array {
+                PersistenceService.shared.delete(archivedHabit)
+            }
+        }
+        createNewArchivedHabit(fromArchivedHabit: ArchivedHabit(context: PersistenceService.shared.context), withStatuses: self.habit.statuses)
+    }
+    
+    func restore() {
+        updateActive(toState: true)
+        self.habit = createNewHabit()
+    }
+    
     func updateCurrentArchivedHabit(toStatus status: Status, atIndex index: Int) {
         if let archivedHabit = self.archivedHabits?.lastObject as? ArchivedHabit {
             archivedHabit.updateStatus(toStatus: status, atIndex: index)
@@ -22,27 +43,6 @@ public class Archive: NSManagedObject {
         if let archivedHabit = self.archivedHabits?.lastObject as? ArchivedHabit {
             archivedHabit.updateStatuses(toStatuses: statuses)
         }
-    }
-    
-    private func getStatuses(from days: [Bool]) -> [Status] {
-        var statuses = [Status]()
-        for day in days {
-            if day { statuses.append(.incomplete) }
-            else { statuses.append(.empty) }
-        }
-        return statuses
-    }
-    
-    private func getDays() -> [Bool] {
-        if let archivedHabit = self.archivedHabits?.lastObject as? ArchivedHabit {
-            var days = [Bool]()
-            for status in archivedHabit.statuses {
-                if status != .empty { days.append(true) }
-                else { days.append(false) }
-            }
-            return days
-        }
-        return [false, false, false, false, false, false, false]
     }
     
     func updateActive(toState state: Bool) {
@@ -97,39 +97,40 @@ public class Archive: NSManagedObject {
     func createNewHabit() -> Habit {
         let newHabit = Habit(context: PersistenceService.shared.context)
         newHabit.title = self.title
-        newHabit.days = getDays()
-        newHabit.statuses = getStatuses(from: newHabit.days)
         newHabit.color = self.color
         newHabit.priority = self.priority
         newHabit.reminder = self.reminder
         newHabit.flag = self.flag
         newHabit.dateCreated = CalUtility.getCurrentDate()
-        newHabit.buttonState = false
         newHabit.uniqueID = UUID().uuidString
         newHabit.archive = self
-        return newHabit
-    }
-    
-    func reset() {
-        self.completedTotal = 0
-        self.failedTotal = 0
-        self.incompleteTotal = 0
         
-        self.habit.resetStatuses()
-        self.habit.updateButtonState(toState: false)
-        
-        if let array = self.archivedHabits?.array as? [ArchivedHabit] {
-            for archivedHabit in array {
-                PersistenceService.shared.delete(archivedHabit)
+        if let archivedHabit = self.archivedHabits?.lastObject as? ArchivedHabit {
+            var days = [Bool]()
+            var statuses = [Status]()
+            for status in archivedHabit.statuses {
+                if status != .empty { days.append(true) }
+                else { days.append(false) }
+            }
+            newHabit.days = days
+            if CalUtility.getCurrentDate() > archivedHabit.endDate {
+                for day in days {
+                    if day { statuses.append(.incomplete); updateStats(fromStatus: .empty, toStatus: .incomplete) }
+                    else { statuses.append(.empty) }
+                }
+                newHabit.statuses = statuses
+                newHabit.buttonState = false
+                createNewArchivedHabit(fromArchivedHabit: ArchivedHabit(context: PersistenceService.shared.context), withStatuses: statuses)
+            } else {
+                newHabit.statuses = archivedHabit.statuses
+                if newHabit.statuses[CalUtility.getCurrentDay()] == .completed || newHabit.statuses[CalUtility.getCurrentDay()] == .failed {
+                    newHabit.buttonState = true
+                } else {
+                    newHabit.buttonState = false
+                }
             }
         }
-        createNewArchivedHabit(fromArchivedHabit: ArchivedHabit(context: PersistenceService.shared.context), withStatuses: self.habit.statuses)
-    }
-    
-    func restore() {
-        updateActive(toState: true)
-        self.habit = createNewHabit()
-        // if restored in same week as being deleted, update stats and latest archived habit's statuses
-        // else also update stats
+        
+        return newHabit
     }
 }

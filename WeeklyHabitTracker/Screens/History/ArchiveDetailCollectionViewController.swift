@@ -39,9 +39,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         
         super.init(collectionViewLayout: layout)
         
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("newDay"), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reload"), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reset"), object: nil)
+//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("newDay"), object: nil)
+//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reload"), object: nil)
+//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reset"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -71,6 +71,10 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         configureDataSource()
         
         fetchArchivedHabits()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        reloadArchivedHabits()
     }
 
     // MARK: CollectionView Functions
@@ -170,8 +174,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     
     func sortArchivedHabits() {
         switch self.defaultSort {
-        case .dateAscending: self.archivedHabits.sort { (one, two) -> Bool in one.startDate?.compare(two.startDate!) == .orderedAscending }
-        case .dateDescending: self.archivedHabits.sort { (one, two) -> Bool in one.startDate?.compare(two.startDate!) == .orderedDescending }
+        case .dateAscending: self.archivedHabits.sort { (one, two) -> Bool in one.startDate.compare(two.startDate) == .orderedAscending }
+        case .dateDescending: self.archivedHabits.sort { (one, two) -> Bool in one.startDate.compare(two.startDate) == .orderedDescending }
         }
         updateDataSource(on: self.archivedHabits)
     }
@@ -210,7 +214,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     @objc func resetArchive(sender: UIAlertAction) {
         self.archive.reset()
         self.persistenceManager.save()
-        self.notificationCenter.post(name: NSNotification.Name("reset"), object: nil)
+        reloadArchivedHabits()
     }
     
     @objc func restoreArchive(sender: UIAlertAction) {
