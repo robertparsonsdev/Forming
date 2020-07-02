@@ -14,7 +14,7 @@ private let sectionReuseIdentifier = "History Section Header"
 class HistoryCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var archives: [Archive] = []
     private var activeArchives: [Archive] = []
-    private var deletedArchives: [Archive] = []
+    private var finishedArchives: [Archive] = []
     private let persistenceManager: PersistenceService
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
@@ -87,7 +87,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as? HistorySectionHeader
             switch indexPath.section {
             case 0: header?.set(title: "Active Habits")
-            case 1: header?.set(title: self.deletedArchives.count > 0 ? "Deleted Habits" : "")
+            case 1: header?.set(title: self.finishedArchives.count > 0 ? "Finished Habits" : "")
             default: header?.set(title: "Error")
             }
             
@@ -112,19 +112,19 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         if !self.archives.isEmpty {
             self.activeArchives = archives.filter( { $0.active == true } )
-            self.deletedArchives = archives.filter( { $0.active == false } )
+            self.finishedArchives = archives.filter( { $0.active == false } )
             self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
-            self.deletedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+            self.finishedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
             
-            snapshot.appendSections([.activeHabits, .deletedHabits])
+            snapshot.appendSections([.activeHabits, .finishedHabits])
             snapshot.appendItems(self.activeArchives, toSection: .activeHabits)
-            snapshot.appendItems(self.deletedArchives, toSection: .deletedHabits)
+            snapshot.appendItems(self.finishedArchives, toSection: .finishedHabits)
             DispatchQueue.main.async {
                 self.dataSource?.apply(snapshot, animatingDifferences: true)
                 self.removeEmptyStateView()
             }
         } else {
-            snapshot.deleteSections([.activeHabits, .deletedHabits])
+            snapshot.deleteSections([.activeHabits, .finishedHabits])
             DispatchQueue.main.async {
                 self.dataSource?.apply(snapshot, animatingDifferences: false)
                 self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")

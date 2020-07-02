@@ -31,7 +31,7 @@ class HistoryTitleCell: UICollectionViewCell {
         titleLabel.textAlignment = .left
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 0
-        titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.lineBreakMode = .byTruncatingTail
     }
     
     func configurePercentLabel() {

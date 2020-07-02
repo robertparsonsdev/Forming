@@ -55,6 +55,8 @@ class HabitDetailViewController: UIViewController {
     var flag: Bool = false
     var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
     
+    let finishButton = FormingFinishButton()
+    
     let dateCreatedLabel = UILabel()
     
     let haptics = UISelectionFeedbackGenerator()
@@ -74,7 +76,7 @@ class HabitDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        title = editMode ? "Edit Habit" : "New Habit"
+        title = editMode ? "Habit Details" : "New Habit"
         titleTextField.delegate = self
         formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
         formingTableView?.tableDelegate = self
@@ -83,19 +85,12 @@ class HabitDetailViewController: UIViewController {
         configureStackView(topColorsStackView, withArray: topColors)
         configureStackView(bottomColorsStackView, withArray: bottomColors)
         configureStackView(daysStackView, withArray: days)
+        self.finishButton.addTarget(self, action: #selector(finishButtonTapped), for: .touchUpInside)
         configureDateCreatedLabel()
         configureConstraints()
         
-        if !editMode {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
-        } else {
-            let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
-            let deleteButton = UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteButtonTapped))
-            deleteButton.tintColor = .systemRed
-            navigationItem.rightBarButtonItems = [saveButton, deleteButton]
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
-        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
     }
     
     // MARK: - Configuration Functions
@@ -174,9 +169,14 @@ class HabitDetailViewController: UIViewController {
         
         if let tableView = formingTableView {
             scrollView.addSubview(tableView)
-            tableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: scrollView.bottomAnchor, right: right, paddingTop: outterPad * 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 132)
+            tableView.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad * 2, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: viewWidth + 30, height: 132)
         }
         
+        if self.editMode {
+            scrollView.addSubview(finishButton)
+            finishButton.anchor(top: formingTableView?.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad * 2, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: 40)
+        }
+
         view.addSubview(self.dateCreatedLabel)
         dateCreatedLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: 25)
     }
@@ -314,13 +314,13 @@ class HabitDetailViewController: UIViewController {
         }
     }
     
-    @objc func deleteButtonTapped() {
+    @objc func finishButtonTapped() {
         DispatchQueue.main.async {
-            let deleteVC = UIAlertController(title: "Are you sure you want to delete this habit?",
-                                             message: "Deleting a habit removes it from the \"Active Habits\" list in History, but can still be viewed in the \"Deleted Habits\" section in History.",
-                                             preferredStyle: .actionSheet)
+            let deleteVC = UIAlertController(title: "Are you sure you want to finish this habit?",
+                                             message: "Finishing a habit removes it from Habits and archives it in History.",
+                                             preferredStyle: .alert)
             deleteVC.view.tintColor = .systemGreen
-            deleteVC.addAction(UIAlertAction(title: "Delete Habit", style: .default) { [weak self] _ in
+            deleteVC.addAction(UIAlertAction(title: "Finish Habit", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
                     self.deleteNotificationRequests(fromID: habitToDelete.uniqueID, andDays: habitToDelete.days)

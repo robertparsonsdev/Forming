@@ -25,9 +25,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private var defaultSort: ArchiveDetailSort = .dateDescending
     private let menuAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
     
-    private let confirmDeleteAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-    private let confirmResetAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-    private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    private let confirmDeleteAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+    private let confirmResetAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+    private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     
     // MARK: - Initializers
     init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), persistenceManager: PersistenceService, archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults, notifCenter: NotificationCenter) {

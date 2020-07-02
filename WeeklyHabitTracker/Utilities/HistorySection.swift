@@ -10,5 +10,5 @@ import Foundation
 
 enum HistorySection {
     case activeHabits
-    case deletedHabits
+    case finishedHabits
 }
