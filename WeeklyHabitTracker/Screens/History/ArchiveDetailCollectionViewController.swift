@@ -116,19 +116,19 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         confirmDeleteAC.view.tintColor = .systemGreen
         confirmDeleteAC.title = "Are you sure you want to delete this archive?"
         confirmDeleteAC.message = "Deleting an archive permanently deletes all habit history, statistics, and the current habit. This action can't be undone."
-        confirmDeleteAC.addAction(UIAlertAction(title: "Delete Archive", style: .default, handler: deleteArchive))
+        confirmDeleteAC.addAction(UIAlertAction(title: "Delete", style: .default, handler: deleteArchive))
         confirmDeleteAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         confirmResetAC.view.tintColor = .systemGreen
         confirmResetAC.title = "Are you sure you want to reset this archive?"
         confirmResetAC.message = "Resetting an archive clears all habit history, statistics, and resets the current habit, allowing for a fresh start."
-        confirmResetAC.addAction(UIAlertAction(title: "Reset Archive", style: .default, handler: resetArchive))
+        confirmResetAC.addAction(UIAlertAction(title: "Reset", style: .default, handler: resetArchive))
         confirmResetAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         confirmRestoreAC.view.tintColor = .systemGreen
         confirmRestoreAC.title = "Are you sure you want to restore this archive?"
         confirmRestoreAC.message = "Restoring an archive restores habit history, statistics, and creates a new habit in Habits, allowing the habit to be tracked again."
-        confirmRestoreAC.addAction(UIAlertAction(title: "Restore Archive", style: .default, handler: restoreArchive))
+        confirmRestoreAC.addAction(UIAlertAction(title: "Restore", style: .default, handler: restoreArchive))
         confirmRestoreAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
