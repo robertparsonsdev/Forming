@@ -68,15 +68,17 @@ class CalUtility {
     }
     
     static func getFutureDate() -> Date {
-        let date = Date()
-        let calendar = Calendar.current
-        return calendar.date(byAdding: .year, value: 100, to: date)!
+        guard let date = Calendar.current.date(byAdding: .year, value: 100, to: getCurrentDate()) else {
+            fatalError("Get future date error.")
+        }
+        return date
     }
     
     static func getCurrentDate() -> Date {
-        let date = Date()
-        let calendar = Calendar.current
-        return calendar.date(byAdding: .second, value: 0, to: date)!
+        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: Date())) else {
+            fatalError("Get current date error.")
+        }
+        return date
     }
     
     static func getReminderComps(time: Date, weekday: Int) -> DateComponents {
@@ -89,10 +91,16 @@ class CalUtility {
     }
     
     static func getFirstDateOfWeek() -> Date {
-        return Calendar.current.date(byAdding: .day, value: -(getCurrentDay()), to: Date())!
+        guard let date = Calendar.current.date(byAdding: .day, value: -(getCurrentDay()), to: getCurrentDate()) else {
+            fatalError("Get first date of week error.")
+        }
+        return date
     }
     
     static func getLastDateOfWeek() -> Date {
-        return Calendar.current.date(byAdding: .day, value: (6 - getCurrentDay()), to: Date())!
+        guard let date = Calendar.current.date(byAdding: .day, value: (6 - getCurrentDay()), to: getCurrentDate()) else {
+            fatalError("Get last date of week error.")
+        }
+        return date
     }
 }

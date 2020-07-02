@@ -113,6 +113,7 @@ public class Archive: NSManagedObject {
                 else { days.append(false) }
             }
             newHabit.days = days
+            
             if CalUtility.getCurrentDate() > archivedHabit.endDate {
                 for day in days {
                     if day { statuses.append(.incomplete); updateStats(fromStatus: .empty, toStatus: .incomplete) }
