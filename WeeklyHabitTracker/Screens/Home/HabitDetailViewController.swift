@@ -164,7 +164,6 @@ class HabitDetailViewController: UIViewController {
         self.colorFlags[Int(habit.color)] = true
         self.priority = habit.priority
         self.flag = habit.flag
-//        if let reminder = habit?.reminder { self.reminder = reminder } else { self.reminder = nil }
         self.reminder = habit.reminder
         self.dateCreated = habit.dateCreated
     }

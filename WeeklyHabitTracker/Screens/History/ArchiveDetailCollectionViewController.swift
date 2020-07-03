@@ -17,7 +17,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let persistenceManager: PersistenceService
     private var delegate: ArchiveDetailDelegate
     private let defaults: UserDefaults
-    private let notificationCenter: NotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
     
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
@@ -30,18 +29,13 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     
     // MARK: - Initializers
-    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), persistenceManager: PersistenceService, archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults, notifCenter: NotificationCenter) {
+    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), persistenceManager: PersistenceService, archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults) {
         self.persistenceManager = persistenceManager
         self.archive = archive
         self.delegate = delegate
         self.defaults = defaults
-        self.notificationCenter = notifCenter
         
         super.init(collectionViewLayout: layout)
-        
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("newDay"), object: nil)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reload"), object: nil)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name("reset"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -221,7 +215,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.archive.restore()
         self.persistenceManager.save()
         navigationController?.popViewController(animated: true)
-        self.notificationCenter.post(name: NSNotification.Name("reset"), object: nil)
     }
 }
 

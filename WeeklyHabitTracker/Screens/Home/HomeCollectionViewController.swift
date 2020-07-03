@@ -38,8 +38,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("reset"), object: nil)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("delete"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -200,7 +198,6 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         self.persistenceManager.save()
         self.habits.append(habit)
         sortHabits()
-        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func update(habit: Habit) {
@@ -211,7 +208,6 @@ extension HomeCollectionViewController: HabitDetailDelegate {
             self.dataSource.apply(snapshot, animatingDifferences: true)
             self.sortHabits()
         }
-        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func delete(habit: Habit) {
@@ -221,7 +217,6 @@ extension HomeCollectionViewController: HabitDetailDelegate {
             self.habits.remove(at: index)
             updateDataSource(on: self.habits)
         }
-        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
 }
 
@@ -237,7 +232,6 @@ extension HomeCollectionViewController: HabitCellDelegate {
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
         habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
         self.persistenceManager.save()
-        self.notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
     
     func presentAlertController(with alert: UIAlertController) {

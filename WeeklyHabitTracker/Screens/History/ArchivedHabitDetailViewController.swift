@@ -11,8 +11,9 @@ import UIKit
 class ArchivedHabitDetailViewController: UIViewController {
     private var archivedHabit: ArchivedHabit?
     
-    private var cell = ArchivedHabitCell()
-    private var notes = FormingTextField(placeholder: "  Notes", textAlignment: .left, returnKeyType: .done)
+    private let cell = ArchivedHabitCell()
+    private let scrollView = UIScrollView()
+    private let notes = FormingTextField(placeholder: "  Notes", textAlignment: .left, returnKeyType: .done)
     
     override func viewDidLoad() {
         super.viewDidLoad()

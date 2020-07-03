@@ -32,8 +32,6 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("newDay"), object: nil)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("reload"), object: nil)
-//        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("reset"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -98,7 +96,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let archive = self.dataSource?.itemIdentifier(for: indexPath) else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, archive: archive, delegate: self, defaults: self.defaults, notifCenter: self.notificationCenter)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, archive: archive, delegate: self, defaults: self.defaults)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
@@ -163,6 +161,5 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
             self.archives.remove(at: index)
             updateDataSource(on: self.archives)
         }
-        self.notificationCenter.post(name: NSNotification.Name("delete"), object: nil)
     }
 }
