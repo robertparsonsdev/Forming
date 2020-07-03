@@ -86,7 +86,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
             if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
-            tableDelegate?.pushViewController(view: reminderView)
+            tableDelegate?.push(view: reminderView)
         default: ()
         }
         deselectRow(at: indexPath, animated: true)
@@ -107,12 +107,12 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
         cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.attributedText = createExclamation(fromPriority: Int64(sender.value))
-        tableDelegate?.savePriority(priority: Int64(sender.value))
+        tableDelegate?.save(priority: Int64(sender.value))
     }
     
     @objc func flagSwitchTapped(sender: UISwitch) {
         haptics.selectionChanged()
-        tableDelegate?.saveFlag(flag: sender.isOn)
+        tableDelegate?.save(flag: sender.isOn)
     }
     
     func createExclamation(fromPriority num: Int64) -> NSAttributedString {
@@ -138,13 +138,13 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
 }
 
 protocol FormingTableViewDelegate {
-    func pushViewController(view: UIViewController)
-    func savePriority(priority: Int64)
-    func saveFlag(flag: Bool)
+    func push(view: UIViewController)
+    func save(priority: Int64)
+    func save(flag: Bool)
 }
 
 extension FormingTableView: UpdateReminderDelegate {
-    func updateReminder(reminder: Date?) {
+    func update(reminder: Date?) {
         let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
         if let unwrappedReminder = reminder {
             self.reminder = unwrappedReminder

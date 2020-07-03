@@ -10,60 +10,42 @@ import UIKit
 import UserNotifications
 
 class HabitDetailViewController: UIViewController {
-    var habitDelegate: HabitDetailDelegate?
     private let persistenceManager: PersistenceService
     private let center: UNUserNotificationCenter
+    private var habitDelegate: HabitDetailDelegate
+    private let haptics = UISelectionFeedbackGenerator()
     
-    var editMode = false
-    var habit: Habit? {
-        didSet {
-            editMode = true
-            if let title = habit?.title { titleTextField.text = title }
-            if let days = habit?.days { dayFlags = days }
-            if let color = habit?.color {
-                selectedColor = Int(color)
-                colorFlags[Int(color)] = true
-            }
-            if let priority = habit?.priority { self.priority = priority }
-            if let flag = habit?.flag { self.flag = flag }
-            if let reminder = habit?.reminder { self.reminder = reminder } else { self.reminder = nil }
-            if let dateCreated = habit?.dateCreated { self.dateCreated = dateCreated }
-        }
-    }
+    private var editMode = false
+    private var habit: Habit!
     
-    let scrollView = UIScrollView()
-    let titleTextField = FormingTextField(placeholder: "Habit Title" , returnKeyType: .done)
-    let daySelectionLabel = FormingSecondaryLabel(text: "Select at least one day.")
-    let colorSelectionLabel = FormingSecondaryLabel(text: "Select a color.")
+    private let scrollView = UIScrollView()
+    private let titleTextField = FormingTextField(placeholder: "Habit Title" , returnKeyType: .done)
+    private let daysStackView = UIStackView()
+    private let daySelectionLabel = FormingSecondaryLabel(text: "Select at least one day.")
+    private let topColorsStackView = UIStackView()
+    private let bottomColorsStackView = UIStackView()
+    private let colorSelectionLabel = FormingSecondaryLabel(text: "Select a color.")
+    private var formingTableView: FormingTableView?
+    private let finishButton = FormingFinishButton()
+    private var dateCreatedLabel: FormingSecondaryLabel!
     
-    let topColors = [FormingColors.getColor(fromValue: 0), FormingColors.getColor(fromValue: 1), FormingColors.getColor(fromValue: 2), FormingColors.getColor(fromValue: 3), FormingColors.getColor(fromValue: 4)]
-    let bottomColors = [FormingColors.getColor(fromValue: 5), FormingColors.getColor(fromValue: 6), FormingColors.getColor(fromValue: 7), FormingColors.getColor(fromValue: 8), FormingColors.getColor(fromValue: 9)]
-    let topColorsStackView = UIStackView()
-    let bottomColorsStackView = UIStackView()
-    var colorFlags = [false, false, false, false, false, false, false, false, false, false]
-    var selectedColor: Int? = nil
-    
-    let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
-    var dayFlags = [false, false, false, false, false, false, false]
-    let daysStackView = UIStackView()
-    var dayStatuses = [Status]()
-    var dateCreated = CalUtility.getCurrentDate()
+    private let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
+    private var dayFlags = [false, false, false, false, false, false, false]
+    private var dayStatuses = [Status]()
+    private let topColors = [FormingColors.getColor(fromValue: 0), FormingColors.getColor(fromValue: 1), FormingColors.getColor(fromValue: 2), FormingColors.getColor(fromValue: 3), FormingColors.getColor(fromValue: 4)]
+    private let bottomColors = [FormingColors.getColor(fromValue: 5), FormingColors.getColor(fromValue: 6), FormingColors.getColor(fromValue: 7), FormingColors.getColor(fromValue: 8), FormingColors.getColor(fromValue: 9)]
+    private var colorFlags = [false, false, false, false, false, false, false, false, false, false]
+    private var selectedColor: Int? = nil
+    private var priority: Int64 = 0
+    private var flag: Bool = false
+    private var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
+    private var dateCreated = CalUtility.getCurrentDate()
         
-    var formingTableView: FormingTableView?
-    var priority: Int64 = 0
-    var flag: Bool = false
-    var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
-    
-    let finishButton = FormingFinishButton()
-    
-    var dateCreatedLabel: FormingSecondaryLabel!
-    
-    let haptics = UISelectionFeedbackGenerator()
-    
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter) {
+    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter, delegate: HabitDetailDelegate) {
         self.persistenceManager = persistenceManager
         self.center = notificationCenter
+        self.habitDelegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -76,15 +58,15 @@ class HabitDetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = editMode ? "Habit Details" : "New Habit"
-        titleTextField.delegate = self
-        formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
-        formingTableView?.tableDelegate = self
-        if !editMode { titleTextField.becomeFirstResponder() }
         
         configureScrollView()
+        titleTextField.delegate = self
+        if !editMode { titleTextField.becomeFirstResponder() }
+        configureStackView(daysStackView, withArray: days)
         configureStackView(topColorsStackView, withArray: topColors)
         configureStackView(bottomColorsStackView, withArray: bottomColors)
-        configureStackView(daysStackView, withArray: days)
+        self.formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
+        self.formingTableView?.tableDelegate = self
         self.finishButton.addTarget(self, action: #selector(finishButtonTapped), for: .touchUpInside)
         self.dateCreatedLabel = FormingSecondaryLabel(text: "Date Created: \(CalUtility.getDateAsString(date: self.dateCreated))")
         configureConstraints()
@@ -95,8 +77,8 @@ class HabitDetailViewController: UIViewController {
     
     // MARK: - Configuration Functions
     func configureScrollView() {
-        scrollView.backgroundColor = .systemBackground
-        scrollView.alwaysBounceVertical = true
+        self.scrollView.backgroundColor = .systemBackground
+        self.scrollView.alwaysBounceVertical = true
     }
     
     func configureStackView(_ stackView : UIStackView, withArray items: [Any]) {
@@ -104,7 +86,7 @@ class HabitDetailViewController: UIViewController {
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
         
-        if items as? [String] == days {
+        if items as? [String] == self.days {
             stackView.spacing = (view.frame.width - 30 - 280) / 6
             let heavyAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .heavy)]
             let thinAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .thin)]
@@ -115,7 +97,7 @@ class HabitDetailViewController: UIViewController {
                 button.setAttributedTitle(NSAttributedString(string: day, attributes: heavyAttribute), for: .selected)
                 button.setBackgroundColor(color: .systemFill, forState: .selected)
                 button.addTarget(self, action: #selector(dayButtonTapped), for: .touchUpInside)
-                if dayFlags[index] { button.isSelected = true }
+                if self.dayFlags[index] { button.isSelected = true }
                 stackView.addArrangedSubview(button)
             }
         } else {
@@ -124,11 +106,11 @@ class HabitDetailViewController: UIViewController {
             let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .heavy))
             for (index, item) in items.enumerated() {
                 guard let color = item as? UIColor else { return }
-                if stackView == bottomColorsStackView && index == 0 { tagCounter = 5 }
+                if stackView == self.bottomColorsStackView && index == 0 { tagCounter = 5 }
                 let button = FormingColorButton(color: color, tag: tagCounter, width: 40)
                 button.setImage(UIImage(named: "checkmark", in: nil, with: config), for: .selected)
                 button.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
-                if let color = selectedColor { if tagCounter == color { button.isSelected = true } }
+                if let color = self.selectedColor { if tagCounter == color { button.isSelected = true } }
                 stackView.addArrangedSubview(button)
                 tagCounter += 1
             }
@@ -173,6 +155,20 @@ class HabitDetailViewController: UIViewController {
     }
     
     // MARK: - Functions
+    func set(habit: Habit) {
+        self.habit = habit
+        self.editMode = true
+        self.titleTextField.text = habit.title
+        self.dayFlags = habit.days
+        self.selectedColor = Int(habit.color)
+        self.colorFlags[Int(habit.color)] = true
+        self.priority = habit.priority
+        self.flag = habit.flag
+//        if let reminder = habit?.reminder { self.reminder = reminder } else { self.reminder = nil }
+        self.reminder = habit.reminder
+        self.dateCreated = habit.dateCreated
+    }
+    
     func createNotificationRequest(withTitle title: String, andTime time: Date, andIndex index: Int, andID id: String) -> UNNotificationRequest{
         let content = UNMutableNotificationContent()
         content.title = "Habit Reminder: \(title)"
@@ -195,7 +191,7 @@ class HabitDetailViewController: UIViewController {
     
     // MARK: - Selectors
     @objc func saveButtonTapped() {
-        if !dayFlags.contains(true) || !colorFlags.contains(true) {
+        if !self.dayFlags.contains(true) || !self.colorFlags.contains(true) {
             let alert = UIAlertController(title: "Incomplete Habit", message: "Please ensure that you have a color and at least one day selected.", preferredStyle: .alert)
             alert.view.tintColor = .systemGreen
             alert.addAction(UIAlertAction(title: "Okay", style: .default))
@@ -205,16 +201,16 @@ class HabitDetailViewController: UIViewController {
         
         DispatchQueue.main.async { self.dismiss(animated: true) }
         
-        if !editMode {
-            let initialHabit = Habit(context: persistenceManager.context)
-            initialHabit.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
-            initialHabit.days = dayFlags
-            if let color = colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
-            dayFlags.forEach {
-                if $0 { dayStatuses.append(.incomplete) }
-                else { dayStatuses.append(.empty) }
+        if !self.editMode {
+            let initialHabit = Habit(context: self.persistenceManager.context)
+            initialHabit.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
+            initialHabit.days = self.dayFlags
+            if let color = self.colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
+            self.dayFlags.forEach {
+                if $0 { self.dayStatuses.append(.incomplete) }
+                else { self.dayStatuses.append(.empty) }
             }
-            initialHabit.statuses = dayStatuses
+            initialHabit.statuses = self.dayStatuses
             initialHabit.priority = self.priority
             initialHabit.reminder = self.reminder
             initialHabit.flag = self.flag
@@ -222,7 +218,7 @@ class HabitDetailViewController: UIViewController {
             initialHabit.buttonState = false
             initialHabit.uniqueID = UUID().uuidString
             
-            let initialArchive = Archive(context: persistenceManager.context)
+            let initialArchive = Archive(context: self.persistenceManager.context)
             initialArchive.title = initialHabit.title ?? "Error"
             initialArchive.color = initialHabit.color
             initialArchive.habit = initialHabit
@@ -235,7 +231,7 @@ class HabitDetailViewController: UIViewController {
             initialArchive.failedTotal = 0
             initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
             
-            let archivedHabit = ArchivedHabit(context: persistenceManager.context)
+            let archivedHabit = ArchivedHabit(context: self.persistenceManager.context)
             initialArchive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: initialHabit.statuses)
             
             initialHabit.archive = initialArchive
@@ -248,18 +244,18 @@ class HabitDetailViewController: UIViewController {
                 }
             }
             
-            habitDelegate?.add(habit: initialHabit)
+            self.habitDelegate.add(habit: initialHabit)
         } else {
-            habit?.title = titleTextField.text?.trimmingCharacters(in: .whitespaces)
-            if let color = colorFlags.firstIndex(of: true) { habit?.color = Int64(color) }
-            if self.dayFlags[CalUtility.getCurrentDay()] != habit?.days[CalUtility.getCurrentDay()] {
-                if self.dayFlags[CalUtility.getCurrentDay()] { habit?.buttonState = false }
+            self.habit?.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
+            if let color = self.colorFlags.firstIndex(of: true) { self.habit?.color = Int64(color) }
+            if self.dayFlags[CalUtility.getCurrentDay()] != self.habit?.days[CalUtility.getCurrentDay()] {
+                if self.dayFlags[CalUtility.getCurrentDay()] { self.habit?.buttonState = false }
             }
             
             if self.reminder == nil {
-                if let id = habit?.uniqueID, let days = habit?.days { deleteNotificationRequests(fromID: id, andDays: days) }
-            } else if (self.reminder != habit?.reminder) || (self.dayFlags != habit?.days ) {
-                if let reminder = self.reminder, let title = habit?.title, let id = habit?.uniqueID, let days = habit?.days {
+                if let id = self.habit?.uniqueID, let days = self.habit?.days { deleteNotificationRequests(fromID: id, andDays: days) }
+            } else if (self.reminder != self.habit?.reminder) || (self.dayFlags != self.habit?.days ) {
+                if let reminder = self.reminder, let title = self.habit?.title, let id = self.habit?.uniqueID, let days = self.habit?.days {
                     deleteNotificationRequests(fromID: id, andDays: days)
                     for (index, day) in self.dayFlags.enumerated() {
                         if day {
@@ -269,40 +265,39 @@ class HabitDetailViewController: UIViewController {
                 }
             }
             
-            if habit?.days != dayFlags {
-                for (index, day) in dayFlags.enumerated() {
+            if self.habit?.days != self.dayFlags {
+                for (index, day) in self.dayFlags.enumerated() {
                     if day {
-                        switch habit?.statuses[index] {
-                        case .completed: dayStatuses.append(.completed)
-                        case .failed: dayStatuses.append(.failed)
-                        case .incomplete: dayStatuses.append(.incomplete)
-                        case .empty: dayStatuses.append(.incomplete)
+                        switch self.habit?.statuses[index] {
+                        case .completed: self.dayStatuses.append(.completed)
+                        case .failed: self.dayStatuses.append(.failed)
+                        case .incomplete: self.dayStatuses.append(.incomplete)
+                        case .empty: self.dayStatuses.append(.incomplete)
                         default: ()
                         }
-                    } else { dayStatuses.append(.empty) }
+                    } else { self.dayStatuses.append(.empty) }
                 }
                 
-                for (oldStatus, newStatus) in zip(habit!.statuses, self.dayStatuses) {
+                for (oldStatus, newStatus) in zip(self.habit.statuses, self.dayStatuses) {
                     self.habit?.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
                 }
                 
-                habit?.days = dayFlags
-                habit?.statuses = dayStatuses
-                habit?.archive.updateCurrentArchivedHabit(withStatuses: dayStatuses)
+                self.habit?.days = self.dayFlags
+                self.habit?.statuses = self.dayStatuses
+                self.habit?.archive.updateCurrentArchivedHabit(withStatuses: dayStatuses)
             }
-            habit?.priority = self.priority
-            habit?.reminder = self.reminder
-            habit?.flag = self.flag
-            if let updatedHabit = habit {
-                habit?.archive.title = updatedHabit.title ?? "Title Error"
-                habit?.archive.color = updatedHabit.color
-                habit?.archive.flag = updatedHabit.flag
-                habit?.archive.priority = updatedHabit.priority
-                habit?.archive.reminder = updatedHabit.reminder
-                habit?.archive.habit = updatedHabit
-            }
+            self.habit?.priority = self.priority
+            self.habit?.reminder = self.reminder
+            self.habit?.flag = self.flag
             
-            habitDelegate?.update(habit: self.habit!)
+            self.habit?.archive.title = self.habit.title ?? "Title Error"
+            self.habit?.archive.color = self.habit.color
+            self.habit?.archive.flag = self.habit.flag
+            self.habit?.archive.priority = self.habit.priority
+            self.habit?.archive.reminder = self.habit.reminder
+            self.habit?.archive.habit = self.habit
+            
+            self.habitDelegate.update(habit: self.habit)
         }
     }
     
@@ -312,11 +307,11 @@ class HabitDetailViewController: UIViewController {
                                              message: "Finishing a habit removes it from Habits and archives it in History.",
                                              preferredStyle: .alert)
             deleteVC.view.tintColor = .systemGreen
-            deleteVC.addAction(UIAlertAction(title: "Finish Habit", style: .default) { [weak self] _ in
+            deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
                     self.deleteNotificationRequests(fromID: habitToDelete.uniqueID, andDays: habitToDelete.days)
-                    self.habitDelegate?.delete(habit: habitToDelete)
+                    self.habitDelegate.delete(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }
             })
@@ -333,33 +328,33 @@ class HabitDetailViewController: UIViewController {
         let tag = sender.tag
         if sender.isSelected == true { sender.isSelected = false }
         else {
-            if colorFlags.contains(true) {
-                if let index = colorFlags.firstIndex(of: true) {
+            if self.colorFlags.contains(true) {
+                if let index = self.colorFlags.firstIndex(of: true) {
                     if index < 5 {
-                        let button = topColorsStackView.arrangedSubviews[index] as? UIButton
+                        let button = self.topColorsStackView.arrangedSubviews[index] as? UIButton
                         button?.isSelected = false
                     } else {
-                        let button = bottomColorsStackView.arrangedSubviews[index - 5] as? UIButton
+                        let button = self.bottomColorsStackView.arrangedSubviews[index - 5] as? UIButton
                         button?.isSelected = false
                     }
-                    colorFlags[index] = false
+                    self.colorFlags[index] = false
                 }
             }
-            colorFlags[tag] = true
-            haptics.selectionChanged()
+            self.colorFlags[tag] = true
+            DispatchQueue.main.async { self.haptics.selectionChanged() }
             sender.isSelected = true
         }
     }
     
     @objc func dayButtonTapped(sender: UIButton) {
-        haptics.selectionChanged()
+        DispatchQueue.main.async { self.haptics.selectionChanged() }
         let tag = sender.tag
         if sender.isSelected == true {
             sender.isSelected = false
-            dayFlags[tag] = false
+            self.dayFlags[tag] = false
         } else {
             sender.isSelected = true
-            dayFlags[tag] = true
+            self.dayFlags[tag] = true
         }
     }
 }
@@ -372,19 +367,19 @@ extension HabitDetailViewController: UITextFieldDelegate {
 }
 
 extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDelegate {
-    func pushViewController(view: UIViewController) {
+    func push(view: UIViewController) {
         navigationController?.pushViewController(view, animated: true)
     }
     
-    func savePriority(priority: Int64) {
+    func save(priority: Int64) {
         self.priority = priority
     }
     
-    func saveFlag(flag: Bool) {
+    func save(flag: Bool) {
         self.flag = flag
     }
     
-    func saveReminder(reminder: Date?) {
+    func save(reminder: Date?) {
         self.reminder = reminder
     }
 }

@@ -46,8 +46,8 @@ class ReminderViewController: UIViewController {
         if parent == nil {
             if toggle.isOn { self.reminderDate = picker.date }
             else { self.reminderDate = nil }
-            updateDelegate?.updateReminder(reminder: self.reminderDate)
-            saveDelegate?.saveReminder(reminder: self.reminderDate)
+            updateDelegate?.update(reminder: self.reminderDate)
+            saveDelegate?.save(reminder: self.reminderDate)
         }
     }
     
@@ -106,9 +106,9 @@ class ReminderViewController: UIViewController {
 }
 
 protocol UpdateReminderDelegate {
-    func updateReminder(reminder: Date?)
+    func update(reminder: Date?)
 }
 
 protocol SaveReminderDelegate {
-    func saveReminder(reminder: Date?)
+    func save(reminder: Date?)
 }
