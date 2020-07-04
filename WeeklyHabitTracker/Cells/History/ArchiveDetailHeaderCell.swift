@@ -26,8 +26,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     }
     
     func set(percentage: String) {
-        percentLabel.text = String(format: "%.1f", percentage)
-        percentLabel.text = percentLabel.text! + "%"
+        percentLabel.text = percentage
     }
     
     func configurePercentLabel() {

@@ -27,8 +27,7 @@ class HistoryTitleCell: UICollectionViewCell {
     }
     
     func configureTitleLabel() {
-//        titleLabel.backgroundColor = .systemPink
-        titleLabel.font = UIFont.systemFont(ofSize: 17)
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         titleLabel.textAlignment = .left
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 0
@@ -36,12 +35,10 @@ class HistoryTitleCell: UICollectionViewCell {
     }
     
     func configurePercentLabel() {
-//        percentLabel.backgroundColor = .black
         percentLabel.font = UIFont.systemFont(ofSize: 28, weight: .heavy)
         percentLabel.textAlignment = .left
         percentLabel.textColor = .white
         percentLabel.numberOfLines = 0
-        percentLabel.text = "100%"
     }
     
     func configureConstraints() {

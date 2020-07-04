@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02E51E244FBD410039B015 /* FormingTableView.swift */; };
-		EE0BCEF6249841EA0004FCF2 /* HabitOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0BCEF5249841EA0004FCF2 /* HabitOperations.swift */; };
+		EE0BCEF6249841EA0004FCF2 /* HabitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0BCEF5249841EA0004FCF2 /* HabitManager.swift */; };
 		EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */; };
 		EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369E2450A14700AFFBEB /* RepeatViewController.swift */; };
 		EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */; };
@@ -56,7 +56,7 @@
 
 /* Begin PBXFileReference section */
 		EE02E51E244FBD410039B015 /* FormingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTableView.swift; sourceTree = "<group>"; };
-		EE0BCEF5249841EA0004FCF2 /* HabitOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitOperations.swift; sourceTree = "<group>"; };
+		EE0BCEF5249841EA0004FCF2 /* HabitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitManager.swift; sourceTree = "<group>"; };
 		EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
 		EE10369E2450A14700AFFBEB /* RepeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatViewController.swift; sourceTree = "<group>"; };
 		EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingPickerLabel.swift; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 				EE91108424623F730021190C /* UIHelper.swift */,
 				EE3A59F12495C720009E5D25 /* HistorySection.swift */,
-				EE0BCEF5249841EA0004FCF2 /* HabitOperations.swift */,
+				EE0BCEF5249841EA0004FCF2 /* HabitManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -356,7 +356,7 @@
 				EEC0FE882446498A00FC618F /* HomeCollectionViewController.swift in Sources */,
 				EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */,
 				EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */,
-				EE0BCEF6249841EA0004FCF2 /* HabitOperations.swift in Sources */,
+				EE0BCEF6249841EA0004FCF2 /* HabitManager.swift in Sources */,
 				EEEB97E6249452FB006DE24D /* Habit+CoreDataClass.swift in Sources */,
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,

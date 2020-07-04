@@ -71,7 +71,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         
         self.dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
-            header.set(percentage: String(self.archive.successRate))
+            header.set(percentage: String(format: "%.1f%%", self.archive.successRate))
             return header
         }
     }

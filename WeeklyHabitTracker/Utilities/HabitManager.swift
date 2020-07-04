@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class HabitOperations {
+class HabitManager {
     static func performDayChange(withPersistence persistence: PersistenceService) {
         var habits = persistence.fetch(Habit.self)
         let context = persistence.context
@@ -19,19 +19,10 @@ class HabitOperations {
         switch currentDay {
         case 0:
             for (index, habit) in habits.enumerated() {
-                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed }
+                if habit.statuses[6] == .incomplete { habit.statuses[6] = .failed; updateStats(fromStatus: .incomplete, toStatus: .failed, fromHabit: habit) }
                 if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
                     habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
                 }
-                
-                switch habit.statuses[currentDay - 1] {
-                case .completed: habit.archive.completedTotal += 1
-                case .failed: habit.archive.failedTotal += 1
-                case .incomplete: habit.archive.incompleteTotal += 1
-                default: ()
-                }
-                let total = habit.archive.completedTotal + habit.archive.failedTotal
-                if total != 0 { habit.archive.successRate = Double(habit.archive.completedTotal / total) }
                 
                 for (statusIndex, status) in habit.statuses.enumerated() {
                     if status != .empty { habit.statuses[statusIndex] = .incomplete }
@@ -41,22 +32,12 @@ class HabitOperations {
             }
         default:
             for (index, habit) in habits.enumerated() {
-                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed }
+                if habit.statuses[currentDay - 1] == .incomplete { habit.statuses[currentDay - 1] = .failed; updateStats(fromStatus: .incomplete, toStatus: .failed, fromHabit: habit) }
                 if habit.statuses[currentDay] == .completed || habit.statuses[currentDay] == .failed { habit.buttonState = true }
                 else if habit.statuses[currentDay] == .incomplete { habit.buttonState = false }
                 if let archivedHabit = habit.archive.archivedHabits?.lastObject as? ArchivedHabit {
                     habit.archive.replaceArchivedHabits(at: 0, with: updateArchivedHabit(fromArchivedHabit: archivedHabit, andHabit: habit))
                 }
-                
-                switch habit.statuses[currentDay - 1] {
-                case .completed: habit.archive.completedTotal += 1
-                case .failed: habit.archive.failedTotal += 1
-                case .incomplete: habit.archive.incompleteTotal += 1
-                default: ()
-                }
-                let total = habit.archive.completedTotal + habit.archive.failedTotal
-                if total != 0 { habit.archive.successRate = Double(habit.archive.completedTotal / total) }
-                print(habit.archive.successRate)
                 
                 habits[index] = habit
             }
@@ -79,5 +60,46 @@ class HabitOperations {
         archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
         archivedHabit.endDate = CalUtility.getLastDateOfWeek()
         return archivedHabit
+    }
+    
+    static func updateStats(fromStatus oldStatus: Status, toStatus newStatus: Status, fromHabit habit: Habit) {
+        let notificationCenter = NotificationCenter.default
+
+        switch oldStatus {
+        case .completed:
+            switch newStatus {
+            case .completed: ()
+            case .failed: habit.archive.completedTotal -= 1; habit.archive.failedTotal += 1
+            case .incomplete: habit.archive.completedTotal -= 1; habit.archive.incompleteTotal += 1
+            case .empty: habit.archive.completedTotal -= 1
+            }
+        case .failed:
+            switch newStatus {
+            case .completed: habit.archive.failedTotal -= 1; habit.archive.completedTotal += 1
+            case .failed: ()
+            case .incomplete: habit.archive.failedTotal -= 1; habit.archive.incompleteTotal += 1
+            case .empty: habit.archive.failedTotal -= 1
+            }
+        case .incomplete:
+            switch newStatus {
+            case .completed: habit.archive.incompleteTotal -= 1; habit.archive.completedTotal += 1
+            case .failed: habit.archive.incompleteTotal -= 1; habit.archive.failedTotal += 1
+            case .incomplete: ()
+            case .empty: habit.archive.incompleteTotal -= 1
+            }
+        case .empty:
+            switch newStatus {
+            case .completed: habit.archive.completedTotal += 1
+            case .failed: habit.archive.failedTotal += 1
+            case .incomplete: habit.archive.incompleteTotal += 1
+            case .empty: ()
+            }
+        }
+        
+        let total = Double(habit.archive.completedTotal + habit.archive.failedTotal)
+        if total != 0 { habit.archive.successRate = Double(habit.archive.completedTotal) / total * 100 }
+        else { habit.archive.successRate = 100.0 }
+        
+        notificationCenter.post(name: NSNotification.Name("reload"), object: nil)
     }
 }

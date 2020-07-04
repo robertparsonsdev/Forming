@@ -217,10 +217,10 @@ class HabitDetailViewController: UIViewController {
             initialArchive.color = initialHabit.color
             initialArchive.habit = initialHabit
             initialArchive.active = true
-            initialArchive.successRate = 0.0
+            initialArchive.successRate = 100.0
             initialArchive.completedTotal = 0
             initialArchive.failedTotal = 0
-            initialArchive.incompleteTotal = 0
+            initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
             initialHabit.archive = initialArchive
             
             let archivedHabit = ArchivedHabit(context: persistenceManager.context)
@@ -269,6 +269,13 @@ class HabitDetailViewController: UIViewController {
                         }
                     } else { dayStatuses.append(.empty) }
                 }
+                
+                if let habitToUpdate = habit {
+                    for (i, j) in zip(habitToUpdate.statuses, dayStatuses) {
+                        HabitManager.updateStats(fromStatus: i, toStatus: j, fromHabit: habitToUpdate)
+                    }
+                }
+                
                 habit?.days = dayFlags
                 habit?.statuses = dayStatuses
             }

@@ -74,6 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
+        self.scheduleAppRefresh()
         self.persistence.save()
     }
     
@@ -114,6 +115,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func dayChanged() {
         self.currentDate = CalUtility.getCurrentDate()
         self.defaults.set(self.currentDate, forKey: self.key)
-        HabitOperations.performDayChange(withPersistence: self.persistence)
+        HabitManager.performDayChange(withPersistence: self.persistence)
     }
 }

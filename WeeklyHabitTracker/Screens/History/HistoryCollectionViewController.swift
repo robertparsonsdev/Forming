@@ -69,6 +69,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<HistorySection, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HistoryTitleCell
+            cell.setPercentLabelText(String(format: "%.1f%%", archive.successRate))
             cell.setTitleLabelText(archive.title)
             cell.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
             return cell

@@ -198,6 +198,7 @@ class HabitCell: UICollectionViewCell {
     
     func changeStatus(forIndex index: Int, andStatus status: Status) {
         if let habit = self.habit {
+            HabitManager.updateStats(fromStatus: habit.statuses[index], toStatus: status, fromHabit: habit)
             habit.statuses[index] = status
             self.habit?.statuses = habit.statuses
         }
