@@ -223,6 +223,7 @@ extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
     func pushViewController(with archivedHabit: ArchivedHabit) {
         let vc = ArchivedHabitDetailViewController()
         vc.set(archivedHabit: archivedHabit)
+        vc.title = archivedHabit.archive.title
         navigationController?.pushViewController(vc, animated: true)
     }
 }

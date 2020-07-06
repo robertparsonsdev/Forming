@@ -55,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     @objc func enteredBackground() {
+        self.persistenceService.save()
         self.scheduleAppRefresh()
     }
 
@@ -73,7 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        self.scheduleAppRefresh()
         self.persistenceService.save()
     }
     
