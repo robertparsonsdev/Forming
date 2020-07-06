@@ -34,7 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         notificationCenter.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(enteredBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         return true
     }
@@ -52,11 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         self.userNotificationCenter.add(request)
-    }
-    
-    @objc func enteredBackground() {
-        self.persistenceService.save()
-        self.scheduleAppRefresh()
     }
 
     // MARK: UISceneSession Lifecycle

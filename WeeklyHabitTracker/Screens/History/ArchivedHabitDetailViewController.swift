@@ -10,6 +10,7 @@ import UIKit
 
 class ArchivedHabitDetailViewController: UIViewController {
     private var archivedHabit: ArchivedHabit?
+    private let persistenceManager: PersistenceService
     private var containerHeight = 300
     
     private let scrollView = UIScrollView()
@@ -21,6 +22,17 @@ class ArchivedHabitDetailViewController: UIViewController {
     private var toolBar: UIToolbar!
     private var tap: UITapGestureRecognizer!
     
+    // MARK: - Initializers
+    init(persistenceManager: PersistenceService) {
+        self.persistenceManager = persistenceManager
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - UIViewControllerFunctions
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -37,10 +49,13 @@ class ArchivedHabitDetailViewController: UIViewController {
         configureConstraints()
     }
     
+    // MARK: - Setters
     func set(archivedHabit: ArchivedHabit) {
         self.archivedHabit = archivedHabit
         cell.set(archivedHabit: archivedHabit)
     }
+    
+    // MARK: - Configuration Functions
     func configureScrollView() {
         scrollView.alwaysBounceVertical = true
         scrollView.keyboardDismissMode = .onDrag
@@ -71,6 +86,8 @@ class ArchivedHabitDetailViewController: UIViewController {
     }
     
     func configureNotesTextView() {
+        notesTextView.delegate = self
+        notesTextView.text = self.archivedHabit?.notes
         notesTextView.backgroundColor = .clear
         notesTextView.font = UIFont.systemFont(ofSize: 17)
         notesTextView.inputAccessoryView = self.toolBar
@@ -91,6 +108,7 @@ class ArchivedHabitDetailViewController: UIViewController {
         notesTextView.anchor(top: notesLabel.bottomAnchor, left: container.leftAnchor, bottom: container.bottomAnchor, right: container.rightAnchor, paddingTop: 0, paddingLeft: 5, paddingBottom: 0, paddingRight: 5, width: 0, height: 0)
     }
     
+    // MARK: - Functions
     func adjustContainerHeight(newConstraint: CGFloat) {
         DispatchQueue.main.async {
             for constraint in self.container.constraints {
@@ -107,6 +125,7 @@ class ArchivedHabitDetailViewController: UIViewController {
         }
     }
     
+    // MARK: - Selectors
     @objc func saveButtonTapped() {
         self.view.endEditing(true)
     }
@@ -124,14 +143,14 @@ class ArchivedHabitDetailViewController: UIViewController {
     }
     
     @objc func keyboardWillDisappear() {
-        self.archivedHabit?.notes = self.notesTextView.text
-        self.adjustContainerHeight(newConstraint: 270)
+        self.persistenceManager.save()
+        self.adjustContainerHeight(newConstraint: 300)
     }
 }
 
-extension UIViewController {
-    var topbarHeight: CGFloat {
-        return (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
-            (self.navigationController?.navigationBar.frame.height ?? 0.0)
+// MARK: - Delegates
+extension ArchivedHabitDetailViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        self.archivedHabit?.notes = textView.text
     }
 }

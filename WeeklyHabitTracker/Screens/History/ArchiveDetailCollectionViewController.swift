@@ -221,7 +221,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 // MARK: - Delegates
 extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
     func pushViewController(with archivedHabit: ArchivedHabit) {
-        let vc = ArchivedHabitDetailViewController()
+        let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager)
         vc.set(archivedHabit: archivedHabit)
         vc.title = archivedHabit.archive.title
         navigationController?.pushViewController(vc, animated: true)
