@@ -22,6 +22,7 @@ extension ArchivedHabit {
     @NSManaged public var notes: String?
     @NSManaged public var archive: Archive
     @NSManaged private var statusValues: Array<Int64>
+    @NSManaged public var weekNumber: Int64
 
     public var statuses: [Status] {
         get {

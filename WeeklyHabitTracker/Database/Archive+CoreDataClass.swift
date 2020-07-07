@@ -25,6 +25,7 @@ public class Archive: NSManagedObject {
                 PersistenceService.shared.delete(archivedHabit)
             }
         }
+        updateCurrentWeekNumber(to: 1)
         createNewArchivedHabit(fromArchivedHabit: ArchivedHabit(context: PersistenceService.shared.context), withStatuses: self.habit.statuses)
     }
     
@@ -47,6 +48,14 @@ public class Archive: NSManagedObject {
     
     func updateActive(toState state: Bool) {
         self.active = state
+    }
+    
+    func updateCurrentWeekNumber(to num: Int64? = nil) {
+        if let number = num {
+            self.currentWeekNumber = number
+        } else {
+            self.currentWeekNumber += 1
+        }
     }
     
     func updateStats(fromStatus oldStatus: Status, toStatus newStatus: Status) {
@@ -91,6 +100,7 @@ public class Archive: NSManagedObject {
         archivedHabit.statuses = statuses
         archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
         archivedHabit.endDate = CalUtility.getLastDateOfWeek()
+        archivedHabit.weekNumber = self.currentWeekNumber
         insertIntoArchivedHabits(archivedHabit, at: 0)
     }
     

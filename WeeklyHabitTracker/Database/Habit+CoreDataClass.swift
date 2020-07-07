@@ -44,6 +44,7 @@ public class Habit: NSManagedObject {
         
         updateButtonState(toState: false)
         
+        self.archive.updateCurrentWeekNumber()
         self.archive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: self.statuses)
     }
     
