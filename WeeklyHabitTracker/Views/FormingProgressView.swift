@@ -37,7 +37,7 @@ class FormingProgressView: UIView {
         label.text = "Coming Soon 🤔"
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        label.textColor = .white
+        label.textColor = .label
     }
     
     func configureConstraints() {

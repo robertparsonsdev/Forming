@@ -37,17 +37,31 @@ class HabitCell: UICollectionViewCell {
         super.init(frame: frame)
         
         configureCell()
-        configureTitleButton()
-        configureTitleLabel()
-        configureReminderLabel()
-        configureFlagLabel()
-        configurePriorityLabel()
-        configureStackView()
-        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setters
+    func set(delegate: HabitCellDelegate) {
+        self.delegate = delegate
+    }
+    
+    func set(habit: Habit) {
+        self.habit = habit
+        self.currentDay = CalUtility.getCurrentDay()
+        
+        configureTitleButton(withColor: FormingColors.getColor(fromValue: habit.color))
+        if let title = habit.title { configureTitleLabel(withTitle: title) }
+        configureTitleButton(withColor: FormingColors.getColor(fromValue: habit.color))
+        configureFlagLabel(withFlag: habit.flag)
+        configurePriorityLabel(withPriority: habit.priority)
+        configureReminderLabel(withReminder: habit.reminder)
+        
+        configureStackView()
+        setupCheckboxes(withDays: habit.days, withState: habit.buttonState, andStatuses: habit.statuses)
+        configureConstraints()
     }
     
     // MARK: - Configuration Functions
@@ -57,11 +71,13 @@ class HabitCell: UICollectionViewCell {
         clipsToBounds = true
     }
     
-    func configureTitleButton() {
+    func configureTitleButton(withColor color: UIColor) {
+        titleButton.backgroundColor = color
         titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
     }
     
-    func configureTitleLabel() {
+    func configureTitleLabel(withTitle title: String) {
+        titleLabel.attributedText = createAttributedText(withTitle: title)
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.textColor = .white
@@ -69,14 +85,12 @@ class HabitCell: UICollectionViewCell {
         titleLabel.isUserInteractionEnabled = false
     }
     
-    func configureReminderLabel() {
-        reminderLabel.font = UIFont.systemFont(ofSize: 15)
-        reminderLabel.textColor = .white
-        reminderLabel.textAlignment = .center
-        reminderLabel.isUserInteractionEnabled = false
-    }
-    
-    func configureFlagLabel() {
+    func configureFlagLabel(withFlag flag: Bool) {
+        if flag {
+            let flagText = NSMutableAttributedString()
+            flagText.append(NSAttributedString(attachment: flagAttachment))
+            flagLabel.attributedText = flagText
+        } else { flagLabel.attributedText = nil }
         flagLabel.font = UIFont.systemFont(ofSize: 15)
         flagLabel.textAlignment = .center
         flagLabel.textColor = .white
@@ -85,13 +99,28 @@ class HabitCell: UICollectionViewCell {
         flagAttachment.image = flagAttachment.image?.withTintColor(.white)
     }
     
-    func configurePriorityLabel() {
+    func configurePriorityLabel(withPriority priority: Int64) {
+        let priorityText = NSMutableAttributedString()
+        for _ in 0..<priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
+        priorityLabel.attributedText = priorityText
         priorityLabel.font = UIFont.systemFont(ofSize: 15)
         priorityLabel.textAlignment = .center
         priorityLabel.textColor = .white
         priorityLabel.isUserInteractionEnabled = false
         priorityAttachment.image = UIImage(named: "exclamationmark", in: nil, with: regularConfig)
         priorityAttachment.image = priorityAttachment.image?.withTintColor(.white)
+    }
+    
+    func configureReminderLabel(withReminder reminder: Date?) {
+        if let reminderToSet = reminder {
+            reminderLabel.text = "\(CalUtility.getTimeAsString(time: reminderToSet)) "
+        } else {
+            reminderLabel.text = ""
+        }
+        reminderLabel.font = UIFont.systemFont(ofSize: 15)
+        reminderLabel.textColor = .white
+        reminderLabel.textAlignment = .center
+        reminderLabel.isUserInteractionEnabled = false
     }
     
     func configureStackView() {
@@ -116,39 +145,6 @@ class HabitCell: UICollectionViewCell {
     }
     
     // MARK: - Functions
-    func set(delegate: HabitCellDelegate) {
-        self.delegate = delegate
-    }
-    
-    func set(currentDay: Int) {
-        self.currentDay = currentDay
-    }
-    
-    func set(habit: Habit) {
-        self.currentDay = CalUtility.getCurrentDay()
-        self.habit = habit
-        if let title = habit.title {
-            let symbolAttachment = NSTextAttachment()
-            symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: boldConfig)
-            symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
-            let attributedTitle = NSMutableAttributedString(string: "  \(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
-            attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
-            titleLabel.attributedText = attributedTitle
-        }
-        titleButton.backgroundColor = FormingColors.getColor(fromValue: habit.color)
-        let priorityText = NSMutableAttributedString()
-        for _ in 0..<habit.priority { priorityText.append(NSAttributedString(attachment: priorityAttachment)) }
-        priorityLabel.attributedText = priorityText
-        if let reminder = habit.reminder { reminderLabel.text = "\(CalUtility.getTimeAsString(time: reminder)) " } else { reminderLabel.text = "" }
-        if habit.flag {
-            let flagText = NSMutableAttributedString()
-            flagText.append(NSAttributedString(attachment: flagAttachment))
-            flagLabel.attributedText = flagText
-        } else { flagLabel.attributedText = nil }
-        
-        setupCheckboxes(withDays: habit.days, withState: habit.buttonState, andStatuses: habit.statuses)
-    }
-    
     func setupCheckboxes(withDays days: [Bool], withState state: Bool, andStatuses statuses: [Status]) {
         if !checkboxStackView.arrangedSubviews.isEmpty { for view in checkboxStackView.arrangedSubviews { view.removeFromSuperview() } }
         
@@ -241,6 +237,15 @@ class HabitCell: UICollectionViewCell {
             self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: false)
         }))
         alertController?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    }
+    
+    func createAttributedText(withTitle title: String) -> NSAttributedString {
+        let symbolAttachment = NSTextAttachment()
+        symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: self.boldConfig)
+        symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
+        let attributedTitle = NSMutableAttributedString(string: "  \(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+        attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
+        return attributedTitle
     }
     
     // MARK: - Selectors
