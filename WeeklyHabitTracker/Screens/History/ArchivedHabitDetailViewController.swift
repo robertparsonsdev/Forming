@@ -52,7 +52,7 @@ class ArchivedHabitDetailViewController: UIViewController {
     // MARK: - Setters
     func set(archivedHabit: ArchivedHabit) {
         self.archivedHabit = archivedHabit
-        cell.set(archivedHabit: archivedHabit)
+        cell.set(archivedHabit: archivedHabit, attributed: false)
     }
     
     // MARK: - Configuration Functions

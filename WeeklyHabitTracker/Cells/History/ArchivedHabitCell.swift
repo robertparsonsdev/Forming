@@ -17,7 +17,9 @@ class ArchivedHabitCell: UICollectionViewCell {
     
     private let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .regular), scale: .large)
     private let boldConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .bold), scale: .small)
+    private var attributed: Bool = true
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -26,8 +28,12 @@ class ArchivedHabitCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(archivedHabit: ArchivedHabit) {
+    // MARK: - Setters
+    
+    func set(archivedHabit: ArchivedHabit, attributed: Bool = true) {
         self.archivedHabit = archivedHabit
+        self.attributed = attributed
+        
         configureCell()
         configureTitleButton()
         configureStatusStackView(withStatuses: archivedHabit.statuses)
@@ -55,13 +61,19 @@ class ArchivedHabitCell: UICollectionViewCell {
             titleButton.backgroundColor = FormingColors.getColor(fromValue: color)
         }
         if let startDate = archivedHabit?.startDate, let endDate = archivedHabit?.endDate {
-            let symbolAttachment = NSTextAttachment()
-            symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: boldConfig)
-            symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
-            let dateTitle = "\(CalUtility.getDateAsString(date: startDate)) - \(CalUtility.getDateAsString(date: endDate))"
-            let attributedTitle = NSMutableAttributedString(string: "  \(dateTitle) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
-            attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
-            titleButton.setAttributedTitle(attributedTitle, for: .normal)
+            if self.attributed {
+                let symbolAttachment = NSTextAttachment()
+                symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: boldConfig)
+                symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
+                let dateTitle = "\(CalUtility.getDateAsString(date: startDate)) - \(CalUtility.getDateAsString(date: endDate))"
+                let attributedTitle = NSMutableAttributedString(string: "  \(dateTitle) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+                attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
+                titleButton.setAttributedTitle(attributedTitle, for: .normal)
+            } else {
+                let dateTitle = "\(CalUtility.getDateAsString(date: startDate)) - \(CalUtility.getDateAsString(date: endDate))"
+                let attributedTitle = NSMutableAttributedString(string: "  \(dateTitle) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+                titleButton.setAttributedTitle(attributedTitle, for: .normal)
+            }
         }
         
     }
