@@ -34,7 +34,8 @@ class MainTabBarController: UITabBarController {
                                                           andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(),
                                                                                                      persistenceManager: self.appDelegate.getPersistenceService(),
                                                                                                      defaults: self.appDelegate.getUserDefaults(),
-                                                                                                     notifCenter: self.appDelegate.getNotificationCenter()))
+                                                                                                     notifCenter: self.appDelegate.getNotificationCenter(),
+                                                                                                     userNotifCenter: self.appDelegate.getUserNotificationCenter()))
         
         let settingsNavController = buildTabBarControllers(withTitle: "Settings", andImage: UIImage(named: "gear", in: nil, with: boldConfig)!, andRootVC: SettingsViewController())
         

@@ -175,7 +175,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter, delegate: self)
+        let newHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, delegate: self)
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         present(navController, animated: true)
@@ -195,12 +195,15 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 // MARK: - Delegates
 extension HomeCollectionViewController: HabitDetailDelegate {
     func add(habit: Habit) {
+        self.userNotificationCenter.createNotificationRequest(forHabit: habit)
         self.persistenceManager.save()
         self.habits.append(habit)
         sortHabits()
     }
     
-    func update(habit: Habit) {
+    func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool) {
+        if deleteNotifications.0 { self.userNotificationCenter.deleteNotificationRequests(forDays: deleteNotifications.1, andUniqueID: habit.uniqueID) }
+        if updateNotifications { self.userNotificationCenter.createNotificationRequest(forHabit: habit) }
         self.persistenceManager.save()
         var snapshot = self.dataSource.snapshot()
         DispatchQueue.main.async {
@@ -211,6 +214,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
     }
     
     func delete(habit: Habit) {
+        self.userNotificationCenter.deleteNotificationRequests(forDays: habit.days, andUniqueID: habit.uniqueID)
         habit.archive.updateActive(toState: false)
         self.persistenceManager.delete(habit)
         if let index = self.habits.firstIndex(of: habit) {
@@ -222,7 +226,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let editHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, notificationCenter: self.userNotificationCenter, delegate: self)
+        let editHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, delegate: self)
         editHabitVC.set(habit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
         navController.navigationBar.tintColor = .systemGreen

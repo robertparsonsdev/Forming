@@ -29,7 +29,6 @@ class ArchivedHabitCell: UICollectionViewCell {
     }
     
     // MARK: - Setters
-    
     func set(archivedHabit: ArchivedHabit, attributed: Bool = true) {
         self.archivedHabit = archivedHabit
         self.attributed = attributed

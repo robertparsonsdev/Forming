@@ -13,7 +13,9 @@ import UserNotifications
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     private var currentDate: Date?
-    private var key = "date"
+    private let currentDateKey = "currentDateKey"
+    private var oldDate: Date?
+    private let oldDateKey = "oldDateKey"
     private let defaults = UserDefaults.standard
     private let persistenceService = PersistenceService.shared
     private let notificationCenter = NotificationCenter.default
@@ -25,15 +27,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             else { print("not granted") }
         }
         
-        if let date = defaults.object(forKey: self.key) as? Date { self.currentDate = date }
-        else { self.currentDate = CalUtility.getCurrentDate(); self.defaults.set(self.currentDate, forKey: self.key) }
-        if !Calendar.current.isDateInToday(self.currentDate!) { dayChanged() }
+        if let date = self.defaults.object(forKey: self.currentDateKey) as? Date { self.currentDate = date }
+        else { self.currentDate = CalUtility.getCurrentDate(); self.defaults.set(self.currentDate, forKey: self.currentDateKey) }
+        
+        if !Calendar.current.isDateInToday(self.currentDate!) {
+            if let date = self.defaults.object(forKey: self.oldDateKey) as? Date {
+                // loop from oldDate to currentDate and call changeDays()
+                self.currentDate = CalUtility.getCurrentDate()
+                self.defaults.set(self.currentDate, forKey: self.currentDateKey)
+
+                let daysElapsed = CalUtility.getDaysElapsed(fromOldDate: date, toCurrentDate: self.currentDate ?? CalUtility.getCurrentDate())
+                for day in daysElapsed {
+                    changeDays(to: day)
+                }
+            }
+        }
         
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
         }
         
-        notificationCenter.addObserver(self, selector: #selector(dayChanged), name: .NSCalendarDayChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(prepareForDayChange), name: .NSCalendarDayChanged, object: nil)
         
         return true
     }
@@ -68,6 +82,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
+        print("terminating")
+        self.oldDate = CalUtility.getCurrentDate()
+        self.defaults.set(self.oldDate, forKey: self.oldDateKey)
         self.persistenceService.save()
     }
     
@@ -95,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         } else {
             queue.addOperation {
-                self.dayChanged()
+                self.prepareForDayChange()
                 self.scheduleLocalNotification(withTitle: "Day Change Refresh")
             }
         }
@@ -111,10 +128,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    @objc func dayChanged() {
+    @objc func prepareForDayChange() {
         self.currentDate = CalUtility.getCurrentDate()
-        self.defaults.set(self.currentDate, forKey: self.key)
-        let newDay = CalUtility.getCurrentDay()
+        self.defaults.set(self.currentDate, forKey: self.currentDateKey)
+        changeDays(to: CalUtility.getCurrentDay())
+    }
+    
+    func changeDays(to newDay: Int) {
+//        self.currentDate = CalUtility.getCurrentDate()
+//        self.defaults.set(self.currentDate, forKey: self.key)
+//        let newDay = CalUtility.getCurrentDay()
         
         let habits = self.persistenceService.fetch(Habit.self)
         switch newDay {

@@ -18,6 +18,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private let persistenceManager: PersistenceService
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
+    private let userNotificationCenter: UNUserNotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>?
     
     private let searchController = UISearchController()
@@ -25,10 +26,11 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private var isSearching = false
     
     // MARK: - Initializers
-    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, notifCenter: NotificationCenter) {
+    init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, notifCenter: NotificationCenter, userNotifCenter: UNUserNotificationCenter) {
         self.persistenceManager = persistenceManager
         self.defaults = defaults
         self.notificationCenter = notifCenter
+        self.userNotificationCenter = userNotifCenter
         super.init(collectionViewLayout: layout)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("newDay"), object: nil)
@@ -156,6 +158,7 @@ extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarD
 
 extension HistoryCollectionViewController: ArchiveDetailDelegate {
     func delete(archive: Archive) {
+        self.userNotificationCenter.deleteNotificationRequests(forDays: archive.habit.days, andUniqueID: archive.habit.uniqueID)
         self.persistenceManager.delete(archive)
         if let index = self.archives.firstIndex(of: archive) {
             self.archives.remove(at: index)

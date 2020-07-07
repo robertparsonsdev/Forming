@@ -9,10 +9,15 @@
 import Foundation
 
 class CalUtility {
-    static func getCurrentDay() -> Int {
-        let date = Date()
-        let calendar = Calendar.current
-        return calendar.component(.weekday, from: date) - 1
+    static func getCurrentDay(fromDate date: Date? = nil) -> Int {
+//        let day = Date()
+//        let calendar = Calendar.current
+//        return calendar.component(.weekday, from: day) - 1
+        if let day = date {
+            return Calendar.current.component(.weekday, from: day) - 1
+        } else {
+            return Calendar.current.component(.weekday, from: Date()) - 1
+        }
     }
     
     static func getCurrentWeek() -> [String] {
@@ -102,5 +107,17 @@ class CalUtility {
             fatalError("Get last date of week error.")
         }
         return date
+    }
+    
+    static func getDaysElapsed(fromOldDate oldDate: Date, toCurrentDate currentDate: Date) -> [Int] {
+        var days = [Int]()
+        var fromDate = oldDate
+        
+        while fromDate < currentDate {
+            fromDate = Calendar.current.date(byAdding: .day, value: 1, to: fromDate)!
+            days.append(getCurrentDay(fromDate: fromDate))
+        }
+        
+        return days
     }
 }

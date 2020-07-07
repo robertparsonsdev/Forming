@@ -11,7 +11,6 @@ import UserNotifications
 
 class HabitDetailViewController: UIViewController {
     private let persistenceManager: PersistenceService
-    private let center: UNUserNotificationCenter
     private var habitDelegate: HabitDetailDelegate
     private let haptics = UISelectionFeedbackGenerator()
     
@@ -42,9 +41,8 @@ class HabitDetailViewController: UIViewController {
     private var dateCreated = CalUtility.getCurrentDate()
         
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService, notificationCenter: UNUserNotificationCenter, delegate: HabitDetailDelegate) {
+    init(persistenceManager: PersistenceService, delegate: HabitDetailDelegate) {
         self.persistenceManager = persistenceManager
-        self.center = notificationCenter
         self.habitDelegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
@@ -168,26 +166,6 @@ class HabitDetailViewController: UIViewController {
         self.dateCreated = habit.dateCreated
     }
     
-    func createNotificationRequest(withTitle title: String, andTime time: Date, andIndex index: Int, andID id: String) -> UNNotificationRequest{
-        let content = UNMutableNotificationContent()
-        content.title = "Habit Reminder: \(title)"
-        content.body = "You have a \(CalUtility.getTimeAsString(time: time)) daily reminder set for this habit."
-        content.sound = UNNotificationSound.default
-        content.categoryIdentifier = "alarm"
-        content.userInfo = ["customData": id]
-        let trigger = UNCalendarNotificationTrigger(dateMatching: CalUtility.getReminderComps(time: time, weekday: index + 1), repeats: true)
-        return UNNotificationRequest(identifier: "\(id)-\(String(index))", content: content, trigger: trigger)
-    }
-    
-    func deleteNotificationRequests(fromID id: String, andDays days: [Bool]) {
-        var identifiers = [String]()
-        for (index, day) in days.enumerated() {
-            if day { identifiers.append("\(id)-\(String(index))") }
-        }
-        self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
-        self.center.removeDeliveredNotifications(withIdentifiers: identifiers)
-    }
-    
     // MARK: - Selectors
     @objc func saveButtonTapped() {
         if !self.dayFlags.contains(true) || !self.colorFlags.contains(true) {
@@ -235,14 +213,6 @@ class HabitDetailViewController: UIViewController {
             
             initialHabit.archive = initialArchive
             
-            if let reminder = initialHabit.reminder, let title = initialHabit.title {
-                for (index, day) in initialHabit.days.enumerated() {
-                    if day {
-                        self.center.add(createNotificationRequest(withTitle: title, andTime: reminder, andIndex: index, andID: initialHabit.uniqueID))
-                    }
-                }
-            }
-            
             self.habitDelegate.add(habit: initialHabit)
         } else {
             self.habit?.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
@@ -251,17 +221,15 @@ class HabitDetailViewController: UIViewController {
                 if self.dayFlags[CalUtility.getCurrentDay()] { self.habit?.buttonState = false }
             }
             
+            var deleteNotifications: (Bool, [Bool]) = (false, [])
+            var updateNotifications = false
             if self.reminder == nil {
-                if let id = self.habit?.uniqueID, let days = self.habit?.days { deleteNotificationRequests(fromID: id, andDays: days) }
+                let days = self.habit.days
+                deleteNotifications = (true, days)
             } else if (self.reminder != self.habit?.reminder) || (self.dayFlags != self.habit?.days ) {
-                if let reminder = self.reminder, let title = self.habit?.title, let id = self.habit?.uniqueID, let days = self.habit?.days {
-                    deleteNotificationRequests(fromID: id, andDays: days)
-                    for (index, day) in self.dayFlags.enumerated() {
-                        if day {
-                            self.center.add(createNotificationRequest(withTitle: title, andTime: reminder, andIndex: index, andID: id))
-                        }
-                    }
-                }
+                let days = self.habit.days
+                deleteNotifications = (true, days)
+                updateNotifications = true
             }
             
             if self.habit?.days != self.dayFlags {
@@ -296,7 +264,7 @@ class HabitDetailViewController: UIViewController {
             self.habit?.archive.reminder = self.habit.reminder
             self.habit?.archive.habit = self.habit
             
-            self.habitDelegate.update(habit: self.habit)
+            self.habitDelegate.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
         }
     }
     
@@ -309,7 +277,6 @@ class HabitDetailViewController: UIViewController {
             deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
-                    self.deleteNotificationRequests(fromID: habitToDelete.uniqueID, andDays: habitToDelete.days)
                     self.habitDelegate.delete(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }
@@ -386,6 +353,6 @@ extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDeleg
 // MARK: - Protocols
 protocol HabitDetailDelegate  {
     func add(habit: Habit)
-    func update(habit: Habit)
+    func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
     func delete(habit: Habit)
 }
