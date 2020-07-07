@@ -231,8 +231,7 @@ class HabitDetailViewController: UIViewController {
             initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
             initialArchive.currentWeekNumber = 1
             
-            let archivedHabit = ArchivedHabit(context: self.persistenceManager.context)
-            initialArchive.createNewArchivedHabit(fromArchivedHabit: archivedHabit, withStatuses: initialHabit.statuses)
+            initialArchive.createNewArchivedHabit(withStatuses: initialHabit.statuses)
             
             initialHabit.archive = initialArchive
             

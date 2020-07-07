@@ -118,13 +118,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let habits = self.persistenceService.fetch(Habit.self)
         switch newDay {
-        case 0:
-            for habit in habits {
-                let newArchivedHabit = ArchivedHabit(context: self.persistenceService.context)
-                habit.weekChanged(withNewArchivedHabit: newArchivedHabit)
-            }
-        default:
-            for habit in habits { habit.dayChanged(toDay: newDay) }
+        case 0: for habit in habits { habit.weekChanged() }
+        default: for habit in habits { habit.dayChanged(toDay: newDay) }
         }
         
         self.persistenceService.save()
