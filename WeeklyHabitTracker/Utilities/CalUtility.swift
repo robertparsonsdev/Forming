@@ -95,29 +95,31 @@ class CalUtility {
         return components
     }
     
-    static func getFirstDateOfWeek() -> Date {
-        guard let date = Calendar.current.date(byAdding: .day, value: -(getCurrentDay()), to: getCurrentDate()) else {
+    static func getFirstDateOfWeek(fromDate: Date, andDay day: Int) -> Date {
+        guard let date = Calendar.current.date(byAdding: .day, value: -(day), to: fromDate) else {
             fatalError("Get first date of week error.")
         }
         return date
     }
     
-    static func getLastDateOfWeek() -> Date {
-        guard let date = Calendar.current.date(byAdding: .day, value: (6 - getCurrentDay()), to: getCurrentDate()) else {
+    static func getLastDateOfWeek(fromDate: Date, andDay day: Int) -> Date {
+        guard let date = Calendar.current.date(byAdding: .day, value: (6 - day), to: fromDate) else {
             fatalError("Get last date of week error.")
         }
         return date
     }
     
-    static func getDaysElapsed(fromOldDate oldDate: Date, toCurrentDate currentDate: Date) -> [Int] {
+    static func getDaysElapsed(fromOldDate oldDate: Date, toCurrentDate currentDate: Date) -> ([Int], [Date]) {
         var days = [Int]()
+        var dates = [Date]()
         var fromDate = oldDate
         
         while fromDate < currentDate {
             fromDate = Calendar.current.date(byAdding: .day, value: 1, to: fromDate)!
             days.append(getCurrentDay(fromDate: fromDate))
+            dates.append(fromDate)
         }
         
-        return days
+        return (days, dates)
     }
 }

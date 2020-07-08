@@ -33,7 +33,7 @@ public class Habit: NSManagedObject {
         }
     }
     
-    func weekChanged() {
+    func weekChanged(toDate date: Date, andDay day: Int) {
         if self.statuses[6] == .incomplete {
             updateStatus(toStatus: .failed, atIndex: 6)
             self.archive.updateCurrentArchivedHabit(toStatus: .failed, atIndex: 6)
@@ -45,7 +45,7 @@ public class Habit: NSManagedObject {
         updateButtonState(toState: false)
         
         self.archive.updateCurrentWeekNumber()
-        self.archive.createNewArchivedHabit(withStatuses: self.statuses)
+        self.archive.createNewArchivedHabit(withStatuses: self.statuses, andDate: date, andDay: day)
     }
     
     func resetStatuses() {

@@ -26,7 +26,7 @@ public class Archive: NSManagedObject {
             }
         }
         updateCurrentWeekNumber(to: 1)
-        createNewArchivedHabit(withStatuses: self.habit.statuses)
+        createNewArchivedHabit(withStatuses: self.habit.statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
     }
     
     func restore() {
@@ -95,12 +95,12 @@ public class Archive: NSManagedObject {
         else { self.successRate = 100.0 }
     }
     
-    func createNewArchivedHabit(withStatuses statuses: [Status]) {
+    func createNewArchivedHabit(withStatuses statuses: [Status], andDate date: Date, andDay day: Int) {
         let archivedHabit = ArchivedHabit(context: PersistenceService.shared.context)
         archivedHabit.archive = self
         archivedHabit.statuses = statuses
-        archivedHabit.startDate = CalUtility.getFirstDateOfWeek()
-        archivedHabit.endDate = CalUtility.getLastDateOfWeek()
+        archivedHabit.startDate = CalUtility.getFirstDateOfWeek(fromDate: date, andDay: day)
+        archivedHabit.endDate = CalUtility.getLastDateOfWeek(fromDate: date, andDay: day)
         archivedHabit.weekNumber = self.currentWeekNumber
         insertIntoArchivedHabits(archivedHabit, at: 0)
     }
@@ -132,7 +132,7 @@ public class Archive: NSManagedObject {
                 }
                 newHabit.statuses = statuses
                 newHabit.buttonState = false
-                createNewArchivedHabit(withStatuses: statuses)
+                createNewArchivedHabit(withStatuses: statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
             } else {
                 newHabit.statuses = archivedHabit.statuses
                 if newHabit.statuses[CalUtility.getCurrentDay()] == .completed || newHabit.statuses[CalUtility.getCurrentDay()] == .failed {

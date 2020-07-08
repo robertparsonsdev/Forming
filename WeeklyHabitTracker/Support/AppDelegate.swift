@@ -12,7 +12,7 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    private var currentDate: Date?
+    private var currentDate: Date!
     private let currentDateKey = "currentDateKey"
     private var oldDate: Date?
     private let oldDateKey = "oldDateKey"
@@ -30,15 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let date = self.defaults.object(forKey: self.currentDateKey) as? Date { self.currentDate = date }
         else { self.currentDate = CalUtility.getCurrentDate(); self.defaults.set(self.currentDate, forKey: self.currentDateKey) }
         
-        if !Calendar.current.isDateInToday(self.currentDate!) {
+        if !Calendar.current.isDateInToday(self.currentDate) {
             if let date = self.defaults.object(forKey: self.oldDateKey) as? Date {
-                // loop from oldDate to currentDate and call changeDays()
                 self.currentDate = CalUtility.getCurrentDate()
                 self.defaults.set(self.currentDate, forKey: self.currentDateKey)
 
-                let daysElapsed = CalUtility.getDaysElapsed(fromOldDate: date, toCurrentDate: self.currentDate ?? CalUtility.getCurrentDate())
-                for day in daysElapsed {
-                    changeDays(to: day)
+                let elapsed = CalUtility.getDaysElapsed(fromOldDate: date, toCurrentDate: self.currentDate ?? CalUtility.getCurrentDate())
+                for (elapsedDay, elapsedDate) in zip(elapsed.0, elapsed.1) {
+                    changeDays(toDay: elapsedDay, andDate: elapsedDate)
                 }
             }
         }
@@ -82,7 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        print("terminating")
         self.oldDate = CalUtility.getCurrentDate()
         self.defaults.set(self.oldDate, forKey: self.oldDateKey)
         self.persistenceService.save()
@@ -105,15 +103,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
-        if Calendar.current.isDateInToday(self.currentDate!) {
+        if Calendar.current.isDateInToday(self.currentDate) {
             queue.addOperation {
                 print("do nothing")
-                self.scheduleLocalNotification(withTitle: "Do Nothing Refresh")
             }
         } else {
             queue.addOperation {
                 self.prepareForDayChange()
-                self.scheduleLocalNotification(withTitle: "Day Change Refresh")
             }
         }
 
@@ -131,17 +127,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func prepareForDayChange() {
         self.currentDate = CalUtility.getCurrentDate()
         self.defaults.set(self.currentDate, forKey: self.currentDateKey)
-        changeDays(to: CalUtility.getCurrentDay())
+        changeDays(toDay: CalUtility.getCurrentDay(), andDate: self.currentDate)
     }
     
-    func changeDays(to newDay: Int) {
-//        self.currentDate = CalUtility.getCurrentDate()
-//        self.defaults.set(self.currentDate, forKey: self.key)
-//        let newDay = CalUtility.getCurrentDay()
-        
+    func changeDays(toDay newDay: Int, andDate newDate: Date) {
         let habits = self.persistenceService.fetch(Habit.self)
+        
         switch newDay {
-        case 0: for habit in habits { habit.weekChanged() }
+        case 0: for habit in habits { habit.weekChanged(toDate: newDate, andDay: newDay) }
         default: for habit in habits { habit.dayChanged(toDay: newDay) }
         }
         

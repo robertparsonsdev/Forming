@@ -209,7 +209,7 @@ class HabitDetailViewController: UIViewController {
             initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
             initialArchive.currentWeekNumber = 1
             
-            initialArchive.createNewArchivedHabit(withStatuses: initialHabit.statuses)
+            initialArchive.createNewArchivedHabit(withStatuses: initialHabit.statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
             
             initialHabit.archive = initialArchive
             
