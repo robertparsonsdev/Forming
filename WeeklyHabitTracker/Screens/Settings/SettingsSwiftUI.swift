@@ -11,21 +11,27 @@ import SwiftUI
 struct SettingsSwiftUI: View {
     var body: some View {
         NavigationView {
-            VStack(spacing: 10) {
-                TipButton(title: "$0.99 Tip",
-                          message: "Thank you so much for your support!",
-                          leftMemoji: Memoji(imageName: "thumbsup-left"),
-                          rightMemoji: Memoji(imageName: "thumbsup-right"))
-                TipButton(title: "$4.99 Tip",
-                          message: "You're awesome! Thank you so much!",
-                          leftMemoji: Memoji(imageName: "celebration-left"),
-                          rightMemoji: Memoji(imageName: "celebration-right"))
-                TipButton(title: "$9.99 Tip",
-                          message: "Wow! I really appreciate it! Thank you!",
-                          leftMemoji: Memoji(imageName: "explosion-left"),
-                          rightMemoji: Memoji(imageName: "explosion-right"))
-                SettingsList()
-            }.navigationBarTitle(Text("Settings"))
+            List {
+                Section(header:
+                    VStack(spacing: 15) {
+                        TipButton(title: "$0.99 Tip",
+                                  message: "Thank you so much for your support!",
+                                  leftMemoji: Memoji(imageName: "thumbsup-left"),
+                                  rightMemoji: Memoji(imageName: "thumbsup-right"))
+                        TipButton(title: "$4.99 Tip",
+                                  message: "You're awesome! Thank you so much!",
+                                  leftMemoji: Memoji(imageName: "celebration-left"),
+                                  rightMemoji: Memoji(imageName: "celebration-right"))
+                        TipButton(title: "$9.99 Tip",
+                                  message: "Wow! I really appreciate it! Thank you!",
+                                  leftMemoji: Memoji(imageName: "explosion-left"),
+                                  rightMemoji: Memoji(imageName: "explosion-right"))
+                }.frame(width: UIScreen.main.bounds.width, height: (3 * 90) + (3 * 15), alignment: .center)) {
+                    Text("Row")
+                }
+            }.listStyle(GroupedListStyle())
+                .environment(\.horizontalSizeClass, .regular)
+                .navigationBarTitle(Text("Settings"))
         }
     }
 }
@@ -58,6 +64,7 @@ struct TipButton: View {
                     Text(title)
                         .font(.system(size: 17, weight: .bold, design: .default))
                     Text(message)
+                        .font(.system(size: 17))
                         .multilineTextAlignment(.center)
                         .lineLimit(3)
                         .frame(width: 200, height: 50, alignment: .center)

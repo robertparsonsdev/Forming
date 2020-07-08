@@ -17,7 +17,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let persistenceManager: PersistenceService
     private var delegate: ArchiveDetailDelegate
     private let defaults: UserDefaults
-    private var dataSource: UICollectionViewDiffableDataSource<Section, ArchivedHabit>!
+    private var dataSource: UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>!
     
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     private let sortKey = "archivedHabitSort"
@@ -127,7 +127,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
     
     func configureDataSource() {
-        self.dataSource = UICollectionViewDiffableDataSource<Section, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
+        self.dataSource = UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
             cell?.set(archivedHabit: archivedHabit)
             cell?.set(delegate: self)
@@ -149,7 +149,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
     
     func updateDataSource(on archivedHabits: [ArchivedHabit]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ArchivedHabit>()
+        var snapshot = NSDiffableDataSourceSnapshot<CVSection, ArchivedHabit>()
         snapshot.appendSections([.main])
         snapshot.appendItems(archivedHabits)
         DispatchQueue.main.async {

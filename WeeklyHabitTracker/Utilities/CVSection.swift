@@ -8,6 +8,6 @@
 
 import Foundation
 
-enum Section {
+enum CVSection {
     case main
 }

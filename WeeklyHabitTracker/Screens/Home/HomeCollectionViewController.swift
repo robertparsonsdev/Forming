@@ -19,7 +19,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let userNotificationCenter: UNUserNotificationCenter
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Habit>!
+    private var dataSource: UICollectionViewDiffableDataSource<CVSection, Habit>!
     
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     private let sortKey = "homeSort"
@@ -114,7 +114,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     func configureDataSource() {
-        self.dataSource = UICollectionViewDiffableDataSource<Section, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
+        self.dataSource = UICollectionViewDiffableDataSource<CVSection, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
             cell.set(delegate: self)
             cell.set(habit: habit)
@@ -129,7 +129,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Functions
     func updateDataSource(on habits: [Habit]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Habit>()
+        var snapshot = NSDiffableDataSourceSnapshot<CVSection, Habit>()
         if !self.habits.isEmpty {
             snapshot.appendSections([.main])
             snapshot.appendItems(habits)

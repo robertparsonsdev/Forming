@@ -47,7 +47,7 @@
 		EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE952446578600FC618F /* UIViewExt.swift */; };
 		EEC0FE99244699BE00FC618F /* CalUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE98244699BE00FC618F /* CalUtility.swift */; };
 		EEC926C8249E767B009C960A /* FormingStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC926C7249E767B009C960A /* FormingStatView.swift */; };
-		EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* Section.swift */; };
+		EECBF3DF2457CBBE0050DFB8 /* CVSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */; };
 		EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */; };
 		EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */; };
@@ -104,7 +104,7 @@
 		EEC0FE952446578600FC618F /* UIViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExt.swift; sourceTree = "<group>"; };
 		EEC0FE98244699BE00FC618F /* CalUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalUtility.swift; sourceTree = "<group>"; };
 		EEC926C7249E767B009C960A /* FormingStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingStatView.swift; sourceTree = "<group>"; };
-		EECBF3DE2457CBBE0050DFB8 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
+		EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVSection.swift; sourceTree = "<group>"; };
 		EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNUserNotificationCenterExt.swift; sourceTree = "<group>"; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailCollectionViewController.swift; sourceTree = "<group>"; };
 		EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedHabitCell.swift; sourceTree = "<group>"; };
@@ -166,7 +166,7 @@
 			children = (
 				EEA64EDA244A17D4008202D0 /* FormingColors.swift */,
 				EEAD7EDB244BA3BF002225F8 /* Status.swift */,
-				EECBF3DE2457CBBE0050DFB8 /* Section.swift */,
+				EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */,
 				EE9A71502458AFEA0082D135 /* Sorts.swift */,
 				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 				EE91108424623F730021190C /* UIHelper.swift */,
@@ -388,7 +388,7 @@
 				EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */,
 				EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */,
 				EE1DC2EB24B56BFC0015F1A6 /* SettingsSwiftUI.swift in Sources */,
-				EECBF3DF2457CBBE0050DFB8 /* Section.swift in Sources */,
+				EECBF3DF2457CBBE0050DFB8 /* CVSection.swift in Sources */,
 				EEEB97E4249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift in Sources */,
 				EE33081C24A3005B006C8D0A /* FormingProgressView.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
