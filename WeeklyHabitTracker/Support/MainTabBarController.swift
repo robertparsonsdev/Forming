@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 import UserNotifications
 
 class MainTabBarController: UITabBarController {
@@ -37,9 +38,12 @@ class MainTabBarController: UITabBarController {
                                                                                                      notifCenter: self.appDelegate.getNotificationCenter(),
                                                                                                      userNotifCenter: self.appDelegate.getUserNotificationCenter()))
         
-        let settingsNavController = buildTabBarControllers(withTitle: "Settings", andImage: UIImage(named: "gear", in: nil, with: boldConfig)!, andRootVC: SettingsViewController())
+        let settingsHostController = SettingsViewController(rootView: SettingsSwiftUI())
+        settingsHostController.title = "Settings"
+        settingsHostController.tabBarItem.title = "Settings"
+        settingsHostController.tabBarItem.image = UIImage(named: "gear", in: nil, with: boldConfig)!
         
-        viewControllers = [homeNavController, historyNavController, settingsNavController]
+        viewControllers = [homeNavController, historyNavController, settingsHostController]
     }
         
     fileprivate func buildTabBarControllers(withTitle title: String, andImage image: UIImage, andRootVC vc: UIViewController = UIViewController()) -> UINavigationController {
