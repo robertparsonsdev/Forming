@@ -12,9 +12,18 @@ struct SettingsSwiftUI: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 10) {
-                TipButton(buttonNumber: 1)
-                TipButton(buttonNumber: 2)
-                TipButton(buttonNumber: 3)
+                TipButton(title: "$0.99 Tip",
+                          message: "Thank you so much for your support!",
+                          leftMemoji: Memoji(imageName: "thumbsup-left"),
+                          rightMemoji: Memoji(imageName: "thumbsup-right"))
+                TipButton(title: "$4.99 Tip",
+                          message: "You're awesome! Thank you so much!",
+                          leftMemoji: Memoji(imageName: "celebration-left"),
+                          rightMemoji: Memoji(imageName: "celebration-right"))
+                TipButton(title: "$9.99 Tip",
+                          message: "Wow! I really appreciate it! Thank you!",
+                          leftMemoji: Memoji(imageName: "explosion-left"),
+                          rightMemoji: Memoji(imageName: "explosion-right"))
                 SettingsList()
             }.navigationBarTitle(Text("Settings"))
         }
@@ -23,22 +32,52 @@ struct SettingsSwiftUI: View {
 
 struct SettingsSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsSwiftUI()
+        Group {
+           SettingsSwiftUI()
+              .environment(\.colorScheme, .dark)
+
+           SettingsSwiftUI()
+              .environment(\.colorScheme, .light)
+        }
     }
 }
 
 struct TipButton: View {
-    let buttonNumber: Int
+    let title: String
+    let message: String
+    let leftMemoji: Memoji
+    let rightMemoji: Memoji
+    
     var body: some View {
         Button(action: {
-            print(self.buttonNumber)
+            print(self.title)
         }) {
-            Text(String(buttonNumber))
-                .padding()
-                .padding()
-                .background(Color(.tertiarySystemFill))
-                .cornerRadius(14)
-        }
+            HStack(spacing: 0) {
+                leftMemoji
+                VStack {
+                    Text(title)
+                        .font(.system(size: 17, weight: .bold, design: .default))
+                    Text(message)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(3)
+                        .frame(width: 200, height: 50, alignment: .center)
+                }
+                rightMemoji
+            }
+        }.frame(width: UIScreen.main.bounds.width - 40, height: 90, alignment: .center)
+            .background(Color(.tertiarySystemFill))
+            .foregroundColor(Color(.label))
+            .cornerRadius(14)
+    }
+}
+
+struct Memoji: View {
+    let imageName: String
+    var body: some View {
+        Image(imageName)
+            .renderingMode(.original)
+            .resizable()
+            .frame(width: 65, height: 65, alignment: .center)
     }
 }
 
