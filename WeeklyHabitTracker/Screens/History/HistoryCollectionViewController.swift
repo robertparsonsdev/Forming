@@ -112,13 +112,21 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         updateDataSource(on: self.archives)
     }
     
-    func updateDataSource(on archives: [Archive]) {
+    func updateDataSource(on archives: [Archive], collapseActive: Bool = false, collapseFinished: Bool = false) {
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         if !self.archives.isEmpty {
-            self.activeArchives = archives.filter( { $0.active == true } )
-            self.finishedArchives = archives.filter( { $0.active == false } )
-            self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
-            self.finishedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+            if collapseActive {
+                self.activeArchives.removeAll()
+            } else {
+                self.activeArchives = archives.filter( { $0.active == true } )
+                self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+            }
+            if collapseFinished {
+                self.finishedArchives.removeAll()
+            } else {
+                self.finishedArchives = archives.filter( { $0.active == false } )
+                self.finishedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+            }
             
             snapshot.appendSections([.activeHabits, .finishedHabits])
             snapshot.appendItems(self.activeArchives, toSection: .activeHabits)
@@ -174,9 +182,12 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
 extension HistoryCollectionViewController: CollapsibleHeaderDelegate {
     func collapseOrExpand(action collapse: Bool, atSection section: HistorySection) {
         if collapse {
-            print("collapse section")
+            switch section {
+            case .activeHabits: updateDataSource(on: self.archives, collapseActive: true, collapseFinished: false)
+            case .finishedHabits: updateDataSource(on: self.archives, collapseActive: false, collapseFinished: true)
+            }
         } else {
-            print("expand section")
+            updateDataSource(on: self.archives)
         }
     }
 }
