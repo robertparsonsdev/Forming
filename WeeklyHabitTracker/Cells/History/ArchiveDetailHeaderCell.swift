@@ -21,7 +21,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        backgroundColor = .systemBackground
+        backgroundColor = .systemBackground
 //        setGradientBackground()
         
         configurePercentLabel()
@@ -76,12 +76,12 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     
     func configureConstraints() {
         addSubview(statsStackView)
-        statsStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 65)
+        statsStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 10, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 65)
         addSubview(percentLabel)
-        percentLabel.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 40)
+        percentLabel.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 40)
         addSubview(percentSublabel)
         percentSublabel.anchor(top: percentLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 130, height: 0)
         addSubview(progressView)
-        progressView.anchor(top: statsStackView.bottomAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 15, paddingRight: 15, width: 0, height: 0)
+        progressView.anchor(top: statsStackView.bottomAnchor, left: percentLabel.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 15, paddingRight: 15, width: 0, height: 0)
     }
 }

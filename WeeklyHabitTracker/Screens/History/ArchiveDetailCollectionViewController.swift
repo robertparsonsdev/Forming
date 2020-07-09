@@ -42,7 +42,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Lifecycle Functions
+    // MARK: - CollectionView Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = self.archive.title
@@ -54,6 +54,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         let menuButton = UIBarButtonItem(image: UIImage(named:"ellipsis.circle"), style: .plain, target: self, action: #selector(menuButtonPressed))
         navigationItem.rightBarButtonItems = [menuButton, sortButton]
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = ArchiveDetailSort(rawValue: sort as! String)! }
+        collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         // Register cell classes
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -71,21 +73,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         reloadArchivedHabits()
     }
 
-    // MARK: CollectionView Functions
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 30, height: 90)
-    }
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 150)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
 
     // MARK: - Configuration Functions
