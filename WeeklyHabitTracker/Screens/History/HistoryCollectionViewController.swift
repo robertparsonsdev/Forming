@@ -21,6 +21,11 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private let userNotificationCenter: UNUserNotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>?
     
+    private var isActiveCollapsed: Bool = false
+    private var isFinishedCollapsed: Bool = false
+    private let activeCollapsedKey = "isActiveCollapsed"
+    private let finishedCollapsedKey = "isFinishedCallapsed"
+    
     private let searchController = UISearchController()
     private var filteredArchives: [Archive] = []
     private var isSearching = false
@@ -53,6 +58,9 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         
         configureSearchController()
         configureDataSource()
+        
+        if let activeCollapsed = self.defaults.object(forKey: self.activeCollapsedKey) as? Bool { self.isActiveCollapsed = activeCollapsed }
+        if let finishedCollapsed = self.defaults.object(forKey: self.finishedCollapsedKey) as? Bool { self.isFinishedCollapsed = finishedCollapsed }
         
         fetchArchives()
     }
@@ -89,9 +97,11 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             case 0:
                 header?.set(title: "Active Habits")
                 header?.set(section: .activeHabits)
+                header?.set(buttonState: self.isActiveCollapsed)
             case 1:
                 header?.set(title: "Finished Habits")
                 header?.set(section: .finishedHabits)
+                header?.set(buttonState: self.isFinishedCollapsed)
             default: header?.set(title: "Error")
             }
             header?.set(delegate: self)
@@ -112,16 +122,16 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         updateDataSource(on: self.archives)
     }
     
-    func updateDataSource(on archives: [Archive], collapseActive: Bool = false, collapseFinished: Bool = false) {
+    func updateDataSource(on archives: [Archive]) {
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         if !self.archives.isEmpty {
-            if collapseActive {
+            if self.isActiveCollapsed {
                 self.activeArchives.removeAll()
             } else {
                 self.activeArchives = archives.filter( { $0.active == true } )
                 self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
             }
-            if collapseFinished {
+            if self.isFinishedCollapsed {
                 self.finishedArchives.removeAll()
             } else {
                 self.finishedArchives = archives.filter( { $0.active == false } )
@@ -183,10 +193,24 @@ extension HistoryCollectionViewController: CollapsibleHeaderDelegate {
     func collapseOrExpand(action collapse: Bool, atSection section: HistorySection) {
         if collapse {
             switch section {
-            case .activeHabits: updateDataSource(on: self.archives, collapseActive: true, collapseFinished: false)
-            case .finishedHabits: updateDataSource(on: self.archives, collapseActive: false, collapseFinished: true)
+            case .activeHabits:
+                self.isActiveCollapsed = true
+                self.defaults.set(self.isActiveCollapsed, forKey: self.activeCollapsedKey)
+                updateDataSource(on: self.archives)
+            case .finishedHabits:
+                self.isFinishedCollapsed = true
+                self.defaults.set(self.isFinishedCollapsed, forKey: self.finishedCollapsedKey)
+                updateDataSource(on: self.archives)
             }
         } else {
+            switch section {
+            case .activeHabits:
+                self.isActiveCollapsed = false
+                self.defaults.set(self.isActiveCollapsed, forKey: self.activeCollapsedKey)
+            case .finishedHabits:
+                self.isFinishedCollapsed = false
+                self.defaults.set(self.isFinishedCollapsed, forKey: self.finishedCollapsedKey)
+            }
             updateDataSource(on: self.archives)
         }
     }

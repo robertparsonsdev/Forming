@@ -40,6 +40,13 @@ class HistorySectionHeader: UICollectionViewCell {
         self.section = section
     }
     
+    func set(buttonState: Bool) {
+        self.collapseButton.isSelected = buttonState
+        if collapseButton.isSelected {
+            self.collapseButton.transform = CGAffineTransform(rotationAngle: -1.5708)
+        }
+    }
+    
     // MARK: - Configuration Functions
     func configureLabel() {
         label.textColor = .label
