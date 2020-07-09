@@ -55,6 +55,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.rightBarButtonItems = [newButton, sortButton]
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(notifications))
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
+        collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
@@ -67,32 +68,20 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         fetchHabits()
     }
     
+//    @objc func notifications() {
+//        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
+//            requests.forEach { (request) in
+//                print(request)
+//            }
+//        }
+//    }
+    
     override func viewWillAppear(_ animated: Bool) {
         reloadHabits()
-    }
-    
-    @objc func notifications() {
-        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
-            requests.forEach { (request) in
-                print(request)
-            }
-        }
-    }
-        
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 30, height: 90)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 80)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
     
     // MARK: - Configuration Functions

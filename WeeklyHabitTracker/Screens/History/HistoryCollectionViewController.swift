@@ -40,10 +40,6 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         fatalError("init(coder:) has not been implemented")
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 30)
-    }
-    
     // MARK: - CollectionView Functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +59,10 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     override func viewWillAppear(_ animated: Bool) {
         reloadArchives()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: view.frame.width, height: 30)
     }
     
     // MARK: - Configuration Functions
