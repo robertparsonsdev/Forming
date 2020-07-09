@@ -99,7 +99,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     func configureSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search for Habit"
+        searchController.searchBar.placeholder = "Search habits"
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
     }

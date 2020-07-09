@@ -69,7 +69,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     func configureSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search for Archived Habit"
+        searchController.searchBar.placeholder = "Search archives"
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
