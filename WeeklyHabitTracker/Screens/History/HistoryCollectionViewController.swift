@@ -86,11 +86,15 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         self.dataSource?.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as? HistorySectionHeader
             switch indexPath.section {
-            case 0: header?.set(title: "Active Habits")
-            case 1: header?.set(title: self.finishedArchives.count > 0 ? "Finished Habits" : "")
+            case 0:
+                header?.set(title: "Active Habits")
+                header?.set(section: .activeHabits)
+            case 1:
+                header?.set(title: "Finished Habits")
+                header?.set(section: .finishedHabits)
             default: header?.set(title: "Error")
             }
-            
+            header?.set(delegate: self)
             return header
         }
     }
@@ -163,6 +167,16 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
         if let index = self.archives.firstIndex(of: archive) {
             self.archives.remove(at: index)
             updateDataSource(on: self.archives)
+        }
+    }
+}
+
+extension HistoryCollectionViewController: CollapsibleHeaderDelegate {
+    func collapseOrExpand(action collapse: Bool, atSection section: HistorySection) {
+        if collapse {
+            print("collapse section")
+        } else {
+            print("expand section")
         }
     }
 }
