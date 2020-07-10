@@ -28,7 +28,8 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     private let searchController = UISearchController()
     private var filteredArchives: [Archive] = []
-    private var isSearching = false
+    private var firstSearchCancelled = false
+    private var secondSearchCancelled = false
     
     // MARK: - Initializers
     init(collectionViewLayout layout: UICollectionViewLayout, persistenceManager: PersistenceService, defaults: UserDefaults, notifCenter: NotificationCenter, userNotifCenter: UNUserNotificationCenter) {
@@ -36,7 +37,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         self.defaults = defaults
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
-        
+
         super.init(collectionViewLayout: layout)
     }
     
@@ -104,6 +105,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             default: header?.set(title: "Error")
             }
             header?.set(delegate: self)
+            header?.set(notificationCenter: self.notificationCenter)
             return header
         }
     }
@@ -118,19 +120,19 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: - Functions
     func fetchArchives() {
         self.archives = persistenceManager.fetch(Archive.self)
-        updateDataSource(on: self.archives)
+        updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
     }
     
-    func updateDataSource(on archives: [Archive]) {
+    func updateDataSource(on archives: [Archive], isActiveCollapsed: Bool, isFinishedCollapsed: Bool) {
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         if !self.archives.isEmpty {
-            if self.isActiveCollapsed {
+            if isActiveCollapsed {
                 self.activeArchives.removeAll()
             } else {
                 self.activeArchives = archives.filter( { $0.active == true } )
                 self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
             }
-            if self.isFinishedCollapsed {
+            if isFinishedCollapsed {
                 self.finishedArchives.removeAll()
             } else {
                 self.finishedArchives = archives.filter( { $0.active == false } )
@@ -168,7 +170,7 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
         self.notificationCenter.reload(habits: true)
         if let index = self.archives.firstIndex(of: archive) {
             self.archives.remove(at: index)
-            updateDataSource(on: self.archives)
+            updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
         }
     }
 }
@@ -180,11 +182,11 @@ extension HistoryCollectionViewController: CollapsibleHeaderDelegate {
             case .activeHabits:
                 self.isActiveCollapsed = true
                 self.defaults.set(self.isActiveCollapsed, forKey: self.activeCollapsedKey)
-                updateDataSource(on: self.archives)
+                updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
             case .finishedHabits:
                 self.isFinishedCollapsed = true
                 self.defaults.set(self.isFinishedCollapsed, forKey: self.finishedCollapsedKey)
-                updateDataSource(on: self.archives)
+                updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
             }
         } else {
             switch section {
@@ -195,22 +197,37 @@ extension HistoryCollectionViewController: CollapsibleHeaderDelegate {
                 self.isFinishedCollapsed = false
                 self.defaults.set(self.isFinishedCollapsed, forKey: self.finishedCollapsedKey)
             }
-            updateDataSource(on: self.archives)
+            updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
         }
     }
 }
+
 extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
+        guard !self.secondSearchCancelled else {
+            self.firstSearchCancelled = false; self.secondSearchCancelled = false
+            self.notificationCenter.post(name: NSNotification.Name(NotificationName.historyStoppedSearching.rawValue), object: nil)
+            return
+        }
+        
         guard let filter = searchController.searchBar.text else { return }
-        if filter.isEmpty { updateDataSource(on: self.archives); isSearching = false; return }
-        self.isSearching = true
+        self.notificationCenter.post(name: NSNotification.Name(NotificationName.historyStartedSearching.rawValue), object: nil)
+        if filter.isEmpty {
+            if self.firstSearchCancelled {
+                updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
+                self.secondSearchCancelled = true
+            } else {
+                updateDataSource(on: self.archives, isActiveCollapsed: false, isFinishedCollapsed: false)
+            }
+            return
+        }
         
         self.filteredArchives = self.archives.filter { ($0.title.lowercased().contains(filter.lowercased())) }
-        updateDataSource(on: self.filteredArchives)
+        updateDataSource(on: self.filteredArchives, isActiveCollapsed: false, isFinishedCollapsed: false)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.isSearching = false
-        updateDataSource(on: self.archives)
+        self.firstSearchCancelled = true
+        updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
     }
 }

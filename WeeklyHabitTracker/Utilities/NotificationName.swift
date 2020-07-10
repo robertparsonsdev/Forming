@@ -14,4 +14,6 @@ enum NotificationName: String {
     case history = "history"
     case archiveDetail = "archiveDetail"
     case archivedHabitDetail = "archivedHabitDetail"
+    case historyStartedSearching = "historyStartedSearching"
+    case historyStoppedSearching = "historyStoppedSearching"
 }

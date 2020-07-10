@@ -13,7 +13,9 @@ class HistorySectionHeader: UICollectionViewCell {
     private let collapseButton = UIButton()
     private var delegate: CollapsibleHeaderDelegate!
     private var section: HistorySection!
-    
+    private var notificationCenter: NotificationCenter!
+    private let selectionGenerator = UISelectionFeedbackGenerator()
+
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,6 +49,12 @@ class HistorySectionHeader: UICollectionViewCell {
         }
     }
     
+    func set(notificationCenter: NotificationCenter) {
+        self.notificationCenter = notificationCenter
+        self.notificationCenter.addObserver(self, selector: #selector(isSearching), name: NSNotification.Name(NotificationName.historyStartedSearching.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(stoppedSearching), name: NSNotification.Name(NotificationName.historyStoppedSearching.rawValue), object: nil)
+    }
+    
     // MARK: - Configuration Functions
     func configureLabel() {
         label.textColor = .label
@@ -69,6 +77,7 @@ class HistorySectionHeader: UICollectionViewCell {
     
     // MARK: - Selectors
     @objc func collapseButtonTapped(sender: UIButton) {
+        self.selectionGenerator.selectionChanged()
         if sender.isSelected {
             sender.isSelected = false
             UIView.animate(withDuration: 0.25) {
@@ -82,6 +91,16 @@ class HistorySectionHeader: UICollectionViewCell {
             }
             self.delegate.collapseOrExpand(action: sender.isSelected, atSection: self.section)
         }
+    }
+    
+    @objc func isSearching() {
+        self.collapseButton.isEnabled = false
+        collapseButton.imageView?.tintColor = .systemBackground
+    }
+    
+    @objc func stoppedSearching() {
+        self.collapseButton.isEnabled = true
+        collapseButton.imageView?.tintColor = .label
     }
 }
 
