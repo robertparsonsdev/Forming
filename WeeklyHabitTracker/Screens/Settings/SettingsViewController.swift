@@ -22,15 +22,18 @@ struct SettingsSwiftUI: View {
                         TipButton(title: "$0.99 Tip",
                                   message: "Thank you so much for your support!",
                                   leftMemoji: Memoji(imageName: "thumbsup-left"),
-                                  rightMemoji: Memoji(imageName: "thumbsup-right"))
+                                  rightMemoji: Memoji(imageName: "thumbsup-right"),
+                                  backgroundColor: .systemGreen)
                         TipButton(title: "$4.99 Tip",
                                   message: "You're awesome! Thank you so much!",
                                   leftMemoji: Memoji(imageName: "celebration-left"),
-                                  rightMemoji: Memoji(imageName: "celebration-right"))
+                                  rightMemoji: Memoji(imageName: "celebration-right"),
+                                  backgroundColor: .systemTeal)
                         TipButton(title: "$9.99 Tip",
                                   message: "Wow! I really appreciate it! Thank you!",
                                   leftMemoji: Memoji(imageName: "explosion-left"),
-                                  rightMemoji: Memoji(imageName: "explosion-right"))
+                                  rightMemoji: Memoji(imageName: "explosion-right"),
+                                  backgroundColor: .systemOrange)
                     }.frame(width: UIScreen.main.bounds.width, height: (3 * 90) + (3 * 15), alignment: .top)) {
                         ListCell(image: Image("clock"), title: Text("Default Reminder Time"))
                         ListCell(image: Image("app.badge"), title: Text("Due Today Icon Badge"))
@@ -48,26 +51,29 @@ struct TipButton: View {
     let message: String
     let leftMemoji: Memoji
     let rightMemoji: Memoji
+    let backgroundColor: UIColor
     
     var body: some View {
         Button(action: {
             print(self.title)
         }) {
-            HStack(spacing: 0) {
+            HStack(spacing: 10) {
                 leftMemoji
                 VStack {
                     Text(title)
-                        .font(.system(size: 17, weight: .bold, design: .default))
+                        .font(.system(size: 20, weight: .bold, design: .default))
+                        .foregroundColor(.white)
                     Text(message)
-                        .font(.system(size: 17))
+                        .font(.system(size: 15, weight: .semibold, design: .default))
+                        .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .lineLimit(3)
-                        .frame(width: 200, height: 50, alignment: .center)
+                        .frame(width: 175, height: 50, alignment: .center)
                 }
                 rightMemoji
             }
         }.frame(width: UIScreen.main.bounds.width - 40, height: 90, alignment: .center)
-            .background(Color(.tertiarySystemFill))
+            .background(Color(backgroundColor))
             .foregroundColor(Color(.label))
             .cornerRadius(14)
     }
