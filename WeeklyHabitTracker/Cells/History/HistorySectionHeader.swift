@@ -42,11 +42,9 @@ class HistorySectionHeader: UICollectionViewCell {
         self.section = section
     }
     
-    func set(buttonState: Bool) {
-        self.collapseButton.isSelected = buttonState
-        if collapseButton.isSelected {
-            self.collapseButton.transform = CGAffineTransform(rotationAngle: -1.5708)
-        }
+    func set(buttonState collapse: Bool) {
+        self.collapseButton.isSelected = collapse
+        transform(collapse: collapse)
     }
     
     func set(notificationCenter: NotificationCenter) {
@@ -75,19 +73,28 @@ class HistorySectionHeader: UICollectionViewCell {
         collapseButton.anchor(top: nil, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 35, height: 35)
     }
     
+    // MARK: - Functions
+    func transform(collapse: Bool) {
+        if collapse {
+            self.collapseButton.transform = CGAffineTransform(rotationAngle: -1.5708)
+        } else {
+            self.collapseButton.transform = CGAffineTransform(rotationAngle: 0)
+        }
+    }
+    
     // MARK: - Selectors
     @objc func collapseButtonTapped(sender: UIButton) {
         self.selectionGenerator.selectionChanged()
         if sender.isSelected {
             sender.isSelected = false
             UIView.animate(withDuration: 0.25) {
-                sender.transform = CGAffineTransform(rotationAngle: 0)
+                self.transform(collapse: false)
             }
             self.delegate.collapseOrExpand(action: sender.isSelected, atSection: self.section)
         } else {
             sender.isSelected = true
             UIView.animate(withDuration: 0.25) {
-                sender.transform = CGAffineTransform(rotationAngle: -1.5708)
+                self.transform(collapse: true)
             }
             self.delegate.collapseOrExpand(action: sender.isSelected, atSection: self.section)
         }
