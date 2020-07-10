@@ -36,9 +36,8 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         self.defaults = defaults
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
-        super.init(collectionViewLayout: layout)
         
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name("newDay"), object: nil)
+        super.init(collectionViewLayout: layout)
     }
     
     required init?(coder: NSCoder) {
@@ -63,10 +62,10 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         if let finishedCollapsed = self.defaults.object(forKey: self.finishedCollapsedKey) as? Bool { self.isFinishedCollapsed = finishedCollapsed }
         
         fetchArchives()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        reloadArchives()
+        
+        // Notification oberservers
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(NotificationName.history.rawValue), object: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -112,7 +111,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     // MARK: CollectionView Functions
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let archive = self.dataSource?.itemIdentifier(for: indexPath) else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, archive: archive, delegate: self, defaults: self.defaults)
+        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, notifCenter: self.notificationCenter, archive: archive, delegate: self)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
@@ -162,26 +161,11 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
 }
 
 // MARK: - Delegates
-extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let filter = searchController.searchBar.text else { return }
-        if filter.isEmpty { updateDataSource(on: self.archives); isSearching = false; return }
-        self.isSearching = true
-        
-        self.filteredArchives = self.archives.filter { ($0.title.lowercased().contains(filter.lowercased())) }
-        updateDataSource(on: self.filteredArchives)
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.isSearching = false
-        updateDataSource(on: self.archives)
-    }
-}
-
 extension HistoryCollectionViewController: ArchiveDetailDelegate {
     func delete(archive: Archive) {
         self.userNotificationCenter.deleteNotificationRequests(forDays: archive.habit.days, andUniqueID: archive.habit.uniqueID)
         self.persistenceManager.delete(archive)
+        self.notificationCenter.reload(habits: true)
         if let index = self.archives.firstIndex(of: archive) {
             self.archives.remove(at: index)
             updateDataSource(on: self.archives)
@@ -213,5 +197,20 @@ extension HistoryCollectionViewController: CollapsibleHeaderDelegate {
             }
             updateDataSource(on: self.archives)
         }
+    }
+}
+extension HistoryCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let filter = searchController.searchBar.text else { return }
+        if filter.isEmpty { updateDataSource(on: self.archives); isSearching = false; return }
+        self.isSearching = true
+        
+        self.filteredArchives = self.archives.filter { ($0.title.lowercased().contains(filter.lowercased())) }
+        updateDataSource(on: self.filteredArchives)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.isSearching = false
+        updateDataSource(on: self.archives)
     }
 }

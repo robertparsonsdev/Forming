@@ -36,8 +36,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.userNotificationCenter = userNotifCenter
         
         super.init(collectionViewLayout: layout)
-        
-        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name("newDay"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -66,6 +64,10 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         configureDataSource()
         
         fetchHabits()
+        
+        // Notifications observers
+        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
     }
     
 //    @objc func notifications() {
@@ -75,10 +77,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 //            }
 //        }
 //    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        reloadHabits()
-    }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 80)
@@ -195,6 +193,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
     func add(habit: Habit) {
         self.userNotificationCenter.createNotificationRequest(forHabit: habit)
         self.persistenceManager.save()
+        self.notificationCenter.reload(history: true)
         self.habits.append(habit)
         sortHabits()
     }
@@ -203,6 +202,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         if deleteNotifications.0 { self.userNotificationCenter.deleteNotificationRequests(forDays: deleteNotifications.1, andUniqueID: habit.uniqueID) }
         if updateNotifications { self.userNotificationCenter.createNotificationRequest(forHabit: habit) }
         self.persistenceManager.save()
+        self.notificationCenter.reload(history: true, archiveDetail: true, archivedHabitDetail: true)
         var snapshot = self.dataSource.snapshot()
         DispatchQueue.main.async {
             snapshot.reloadItems([habit])
@@ -211,10 +211,11 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         }
     }
     
-    func delete(habit: Habit) {
+    func finish(habit: Habit) {
         self.userNotificationCenter.deleteNotificationRequests(forDays: habit.days, andUniqueID: habit.uniqueID)
         habit.archive.updateActive(toState: false)
         self.persistenceManager.delete(habit)
+        self.notificationCenter.reload(history: true)
         if let index = self.habits.firstIndex(of: habit) {
             self.habits.remove(at: index)
             updateDataSource(on: self.habits)
@@ -234,6 +235,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
         habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
         self.persistenceManager.save()
+        self.notificationCenter.reload(history: true, archiveDetail: true, archivedHabitDetail: true)
     }
     
     func presentAlertController(with alert: UIAlertController) {

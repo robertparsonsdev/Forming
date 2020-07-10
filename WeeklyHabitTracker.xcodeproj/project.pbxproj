@@ -11,6 +11,7 @@
 		EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */; };
 		EE10369F2450A14700AFFBEB /* RepeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10369E2450A14700AFFBEB /* RepeatViewController.swift */; };
 		EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */; };
+		EE19344E24B7B8720005AE8E /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19344D24B7B8720005AE8E /* NotificationName.swift */; };
 		EE2DF00E2458F60800FEA015 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00D2458F60800FEA015 /* EmptyStateView.swift */; };
 		EE2DF0102458F67400FEA015 /* CollectionViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */; };
 		EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3126B4244E82BE001EE83A /* SettingsViewController.swift */; };
@@ -23,6 +24,7 @@
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
 		EE79D83724B3EF5600B46008 /* ViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */; };
 		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
+		EE8CD26924B7D8880042FA46 /* NotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */; };
 		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
 		EE911087246242660021190C /* HistoryTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* HistoryTitleCell.swift */; };
 		EE9A71512458AFEA0082D135 /* Sorts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A71502458AFEA0082D135 /* Sorts.swift */; };
@@ -64,6 +66,7 @@
 		EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
 		EE10369E2450A14700AFFBEB /* RepeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatViewController.swift; sourceTree = "<group>"; };
 		EE1036A0245122DF00AFFBEB /* FormingPickerLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingPickerLabel.swift; sourceTree = "<group>"; };
+		EE19344D24B7B8720005AE8E /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
 		EE2DF00D2458F60800FEA015 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewControllerExt.swift; sourceTree = "<group>"; };
 		EE3126B4244E82BE001EE83A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -77,6 +80,7 @@
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExt.swift; sourceTree = "<group>"; };
 		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
+		EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterExt.swift; sourceTree = "<group>"; };
 		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE911086246242660021190C /* HistoryTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTitleCell.swift; sourceTree = "<group>"; };
 		EE9A71502458AFEA0082D135 /* Sorts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sorts.swift; sourceTree = "<group>"; };
@@ -169,6 +173,7 @@
 				EEC0FE98244699BE00FC618F /* CalUtility.swift */,
 				EE91108424623F730021190C /* UIHelper.swift */,
 				EE3A59F12495C720009E5D25 /* HistorySection.swift */,
+				EE19344D24B7B8720005AE8E /* NotificationName.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -244,6 +249,7 @@
 				EE2DF00F2458F67400FEA015 /* CollectionViewControllerExt.swift */,
 				EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */,
 				EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */,
+				EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -368,6 +374,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EEA64ED02447B349008202D0 /* FormingTextField.swift in Sources */,
+				EE8CD26924B7D8880042FA46 /* NotificationCenterExt.swift in Sources */,
 				EEC0FE882446498A00FC618F /* HomeCollectionViewController.swift in Sources */,
 				EE3126B5244E82BE001EE83A /* SettingsViewController.swift in Sources */,
 				EEA64EDB244A17D4008202D0 /* FormingColors.swift in Sources */,
@@ -398,6 +405,7 @@
 				EE4C55C724AE9176000AD61C /* FormingSecondaryLabel.swift in Sources */,
 				EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */,
 				EE911087246242660021190C /* HistoryTitleCell.swift in Sources */,
+				EE19344E24B7B8720005AE8E /* NotificationName.swift in Sources */,
 				EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */,
 				EE79D83724B3EF5600B46008 /* ViewControllerExt.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,

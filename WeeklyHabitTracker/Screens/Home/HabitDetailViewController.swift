@@ -277,7 +277,7 @@ class HabitDetailViewController: UIViewController {
             deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 if let habitToDelete = self.habit {
-                    self.habitDelegate.delete(habit: habitToDelete)
+                    self.habitDelegate.finish(habit: habitToDelete)
                     self.dismiss(animated: true)
                 }
             })
@@ -354,5 +354,5 @@ extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDeleg
 protocol HabitDetailDelegate  {
     func add(habit: Habit)
     func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
-    func delete(habit: Habit)
+    func finish(habit: Habit)
 }

@@ -139,6 +139,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         self.persistenceService.save()
-        self.notificationCenter.post(name: NSNotification.Name("newDay"), object: nil)
+        self.notificationCenter.post(name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
     }
 }

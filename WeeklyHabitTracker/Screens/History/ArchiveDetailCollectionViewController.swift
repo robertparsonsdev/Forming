@@ -15,8 +15,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let archive: Archive
     private var archivedHabits = [ArchivedHabit]()
     private let persistenceManager: PersistenceService
-    private var delegate: ArchiveDetailDelegate
     private let defaults: UserDefaults
+    private let notificationCenter: NotificationCenter
+    private var delegate: ArchiveDetailDelegate
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>!
     
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
@@ -29,11 +30,12 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private let confirmRestoreAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     
     // MARK: - Initializers
-    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), persistenceManager: PersistenceService, archive: Archive, delegate: ArchiveDetailDelegate, defaults: UserDefaults) {
+    init(layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout(), persistenceManager: PersistenceService, defaults: UserDefaults, notifCenter: NotificationCenter, archive: Archive, delegate: ArchiveDetailDelegate) {
         self.persistenceManager = persistenceManager
+        self.defaults = defaults
+        self.notificationCenter = notifCenter
         self.archive = archive
         self.delegate = delegate
-        self.defaults = defaults
         
         super.init(collectionViewLayout: layout)
     }
@@ -67,14 +69,22 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         configureDataSource()
         
         fetchArchivedHabits()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        reloadArchivedHabits()
+        
+        // Notification oberservers
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.archiveDetail.rawValue), object: nil)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 150)
+    }
+    
+    override func willMove(toParent parent: UIViewController?) {
+        super.willMove(toParent: parent)
+        if parent == nil {
+            self.notificationCenter.removeObserver(self, name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+            self.notificationCenter.removeObserver(self, name: NSNotification.Name(NotificationName.archiveDetail.rawValue), object: nil)
+        }
     }
 
     // MARK: - Configuration Functions
@@ -197,12 +207,14 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     @objc func resetArchive(sender: UIAlertAction) {
         self.archive.reset()
         self.persistenceManager.save()
+        self.notificationCenter.reload(habits: true, history: true)
         reloadArchivedHabits()
     }
     
     @objc func restoreArchive(sender: UIAlertAction) {
         self.archive.restore()
         self.persistenceManager.save()
+        self.notificationCenter.reload(habits: true, history: true)
         navigationController?.popViewController(animated: true)
     }
 }
@@ -210,7 +222,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 // MARK: - Delegates
 extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
     func pushViewController(with archivedHabit: ArchivedHabit) {
-        let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager)
+        let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
         vc.set(archivedHabit: archivedHabit)
         vc.title = "Week \(archivedHabit.weekNumber)"
         navigationController?.pushViewController(vc, animated: true)

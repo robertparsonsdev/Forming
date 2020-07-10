@@ -9,8 +9,9 @@
 import UIKit
 
 class ArchivedHabitDetailViewController: UIViewController {
-    private var archivedHabit: ArchivedHabit?
+    private var archivedHabit: ArchivedHabit!
     private let persistenceManager: PersistenceService
+    private let notificationCenter: NotificationCenter
     private var containerHeight = 300
     
     private let scrollView = UIScrollView()
@@ -23,8 +24,9 @@ class ArchivedHabitDetailViewController: UIViewController {
     private var tap: UITapGestureRecognizer!
     
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService) {
+    init(persistenceManager: PersistenceService, notifCenter: NotificationCenter) {
         self.persistenceManager = persistenceManager
+        self.notificationCenter = notifCenter
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -47,6 +49,18 @@ class ArchivedHabitDetailViewController: UIViewController {
         configureNotesLabel()
         configureNotesTextView()
         configureConstraints()
+        
+        // Notification oberservers
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabit), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabit), name: NSNotification.Name(NotificationName.archivedHabitDetail.rawValue), object: nil)
+    }
+    
+    override func willMove(toParent parent: UIViewController?) {
+        super.willMove(toParent: parent)
+        if parent == nil {
+            self.notificationCenter.removeObserver(self, name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+            self.notificationCenter.removeObserver(self, name: NSNotification.Name(NotificationName.archivedHabitDetail.rawValue), object: nil)
+        }
     }
     
     // MARK: - Setters
@@ -145,6 +159,10 @@ class ArchivedHabitDetailViewController: UIViewController {
     @objc func keyboardWillDisappear() {
         self.persistenceManager.save()
         self.adjustContainerHeight(newConstraint: 300)
+    }
+    
+    @objc func reloadArchivedHabit() {
+        DispatchQueue.main.async { self.cell.set(archivedHabit: self.archivedHabit, attributed: false) }
     }
 }
 
