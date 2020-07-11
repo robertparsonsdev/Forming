@@ -25,7 +25,7 @@ class HabitDetailViewController: UIViewController {
     private let bottomColorsStackView = UIStackView()
     private let colorSelectionLabel = FormingSecondaryLabel(text: "Select a color.")
     private var formingTableView: FormingTableView?
-    private let finishButton = FormingFinishButton()
+//    private let finishButton = FormingFinishButton()
     private var dateCreatedLabel: FormingSecondaryLabel!
     
     private let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
@@ -65,11 +65,17 @@ class HabitDetailViewController: UIViewController {
         configureStackView(bottomColorsStackView, withArray: bottomColors)
         self.formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
         self.formingTableView?.tableDelegate = self
-        self.finishButton.addTarget(self, action: #selector(finishButtonTapped), for: .touchUpInside)
+//        self.finishButton.addTarget(self, action: #selector(finishButtonTapped), for: .touchUpInside)
         self.dateCreatedLabel = FormingSecondaryLabel(text: "Date Created: \(CalUtility.getDateAsString(date: self.dateCreated))")
         configureConstraints()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+        if self.editMode {
+            let finButton = UIBarButtonItem(image: UIImage(named: "checkmark"), style: .done, target: self, action: #selector(finishButtonTapped))
+            navigationItem.rightBarButtonItems = [saveButton, finButton]
+        } else {
+            navigationItem.rightBarButtonItems = [saveButton]
+        }
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
     }
     
@@ -140,13 +146,13 @@ class HabitDetailViewController: UIViewController {
 
         if let tableView = formingTableView {
             scrollView.addSubview(tableView)
-            tableView.anchor(top: colorSelectionLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 132)
+            tableView.anchor(top: colorSelectionLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 176)
         }
 
-        if self.editMode {
-            scrollView.addSubview(finishButton)
-            finishButton.anchor(top: formingTableView?.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad * 2, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: 40)
-        }
+//        if self.editMode {
+//            scrollView.addSubview(finishButton)
+//            finishButton.anchor(top: formingTableView?.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad * 2, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: 40)
+//        }
 
         view.addSubview(self.dateCreatedLabel)
         dateCreatedLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: labelHeight)

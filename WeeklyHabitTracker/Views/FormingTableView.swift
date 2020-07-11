@@ -32,7 +32,6 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         
         delegate = self
         dataSource = self
-        backgroundColor = .systemTeal
         register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
         configureStepper()
@@ -48,7 +47,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return RowNumbers.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,18 +56,22 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         cell = UITableViewCell(style: .value1, reuseIdentifier: "Cell")
         cell.imageView?.tintColor = .label
         switch indexPath.row {
-        case 0:
+        case RowNumbers.reminder.rawValue:
+            cell.textLabel?.text = "Reminder"
+            if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
+            cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
+            cell.accessoryType = .disclosureIndicator
+        case RowNumbers.goals.rawValue:
+            cell.textLabel?.text = "Goals"
+            cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: largeConfig)
+            cell.accessoryType = .disclosureIndicator
+        case RowNumbers.priority.rawValue:
             cell.textLabel?.text = "Priority"
             cell.detailTextLabel?.attributedText = createExclamation(fromPriority: self.priority)
             cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
             cell.accessoryView = stepper
             cell.selectionStyle = .none
-        case 1:
-            cell.textLabel?.text = "Reminder"
-            if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
-            cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
-            cell.accessoryType = .disclosureIndicator
-        case 2:
+        case RowNumbers.flag.rawValue:
             cell.textLabel?.text = "Flag"
             cell.imageView?.image = UIImage(named: "flag.circle", in: nil, with: largeConfig)
             cell.accessoryView = flagSwitch
@@ -79,14 +82,16 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var reminderView: ReminderViewController
         switch indexPath.row {
-        case 1:
+        case RowNumbers.reminder.rawValue:
+            var reminderView: ReminderViewController
             if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
             else { reminderView = ReminderViewController(reminder: nil) }
             reminderView.updateDelegate = self
             if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
             tableDelegate?.push(view: reminderView)
+        case RowNumbers.goals.rawValue:
+            tableDelegate?.push(view: GoalsViewController(rootView: GoalsSwiftUI()))
         default: ()
         }
         deselectRow(at: indexPath, animated: true)
@@ -106,7 +111,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
-        cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.attributedText = createExclamation(fromPriority: Int64(sender.value))
+        cellForRow(at: IndexPath(row: RowNumbers.priority.rawValue, section: 0))?.detailTextLabel?.attributedText = createExclamation(fromPriority: Int64(sender.value))
         tableDelegate?.save(priority: Int64(sender.value))
     }
     
@@ -145,7 +150,7 @@ protocol FormingTableViewDelegate {
 
 extension FormingTableView: UpdateReminderDelegate {
     func update(reminder: Date?) {
-        let cell = self.cellForRow(at: IndexPath(row: 1, section: 0))
+        let cell = self.cellForRow(at: IndexPath(row: RowNumbers.reminder.rawValue, section: 0))
         if let unwrappedReminder = reminder {
             self.reminder = unwrappedReminder
             cell?.detailTextLabel?.text = CalUtility.getTimeAsString(time: unwrappedReminder)
@@ -155,4 +160,8 @@ extension FormingTableView: UpdateReminderDelegate {
             cell?.detailTextLabel?.text = "None"
         }
     }
+}
+
+enum RowNumbers: Int, CaseIterable {
+    case goals, reminder, priority, flag
 }

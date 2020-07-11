@@ -22,6 +22,7 @@
 		EE4C55C524AE7A51000AD61C /* FormingFinishButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C55C424AE7A51000AD61C /* FormingFinishButton.swift */; };
 		EE4C55C724AE9176000AD61C /* FormingSecondaryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
+		EE6B1C2424B92CE300640D59 /* GoalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B1C2324B92CE300640D59 /* GoalsViewController.swift */; };
 		EE79D83724B3EF5600B46008 /* ViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */; };
 		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
 		EE8CD26924B7D8880042FA46 /* NotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */; };
@@ -78,6 +79,7 @@
 		EE4C55C424AE7A51000AD61C /* FormingFinishButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingFinishButton.swift; sourceTree = "<group>"; };
 		EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingSecondaryLabel.swift; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
+		EE6B1C2324B92CE300640D59 /* GoalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsViewController.swift; sourceTree = "<group>"; };
 		EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExt.swift; sourceTree = "<group>"; };
 		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
 		EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterExt.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 				EEA64ECB24476346008202D0 /* HabitDetailViewController.swift */,
 				EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */,
 				EE10369E2450A14700AFFBEB /* RepeatViewController.swift */,
+				EE6B1C2324B92CE300640D59 /* GoalsViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -393,6 +396,7 @@
 				EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* CVSection.swift in Sources */,
 				EEEB97E4249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift in Sources */,
+				EE6B1C2424B92CE300640D59 /* GoalsViewController.swift in Sources */,
 				EE33081C24A3005B006C8D0A /* FormingProgressView.swift in Sources */,
 				EE02E51F244FBD410039B015 /* FormingTableView.swift in Sources */,
 				EEC926C8249E767B009C960A /* FormingStatView.swift in Sources */,
