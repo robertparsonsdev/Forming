@@ -304,6 +304,9 @@ class HabitDetailViewController: UIViewController {
             if let updatedHabit = habit {
                 habit?.archive.title = updatedHabit.title ?? "Title Error"
                 habit?.archive.color = updatedHabit.color
+                habit?.archive.flag = updatedHabit.flag
+                habit?.archive.priority = updatedHabit.priority
+                habit?.archive.reminder = updatedHabit.reminder
                 habit?.archive.habit = updatedHabit
             }
             

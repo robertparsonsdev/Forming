@@ -24,6 +24,27 @@ public class Archive: NSManagedObject {
         }
     }
     
+    private func getStatuses(from days: [Bool]) -> [Status] {
+        var statuses = [Status]()
+        for day in days {
+            if day { statuses.append(.incomplete) }
+            else { statuses.append(.empty) }
+        }
+        return statuses
+    }
+    
+    private func getDays() -> [Bool] {
+        if let archivedHabit = self.archivedHabits?.lastObject as? ArchivedHabit {
+            var days = [Bool]()
+            for status in archivedHabit.statuses {
+                if status != .empty { days.append(true) }
+                else { days.append(false) }
+            }
+            return days
+        }
+        return [false, false, false, false, false, false, false]
+    }
+    
     func updateActive(toState state: Bool) {
         self.active = state
     }
@@ -73,6 +94,22 @@ public class Archive: NSManagedObject {
         insertIntoArchivedHabits(archivedHabit, at: 0)
     }
     
+    func createNewHabit() -> Habit {
+        let newHabit = Habit(context: PersistenceService.shared.context)
+        newHabit.title = self.title
+        newHabit.days = getDays()
+        newHabit.statuses = getStatuses(from: newHabit.days)
+        newHabit.color = self.color
+        newHabit.priority = self.priority
+        newHabit.reminder = self.reminder
+        newHabit.flag = self.flag
+        newHabit.dateCreated = CalUtility.getCurrentDate()
+        newHabit.buttonState = false
+        newHabit.uniqueID = UUID().uuidString
+        newHabit.archive = self
+        return newHabit
+    }
+    
     func reset() {
         self.completedTotal = 0
         self.failedTotal = 0
@@ -90,9 +127,9 @@ public class Archive: NSManagedObject {
     }
     
     func restore() {
-        // set active to true
         updateActive(toState: true)
-        // create new habit
-        // connect it to archive
+        self.habit = createNewHabit()
+        // if restored in same week as being deleted, update stats and latest archived habit's statuses
+        // else also update stats
     }
 }
