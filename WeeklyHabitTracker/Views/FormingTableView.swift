@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
     var priority: Int64
@@ -91,7 +92,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
             tableDelegate?.push(view: reminderView)
         case RowNumbers.goals.rawValue:
-            tableDelegate?.push(view: GoalsViewController(rootView: GoalsSwiftUI()))
+            tableDelegate?.push(view: GoalsViewController(weeklyGoal: 1, habitGoal: 1))
         default: ()
         }
         deselectRow(at: indexPath, animated: true)
