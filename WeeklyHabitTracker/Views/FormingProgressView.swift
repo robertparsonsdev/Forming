@@ -9,64 +9,62 @@
 import UIKit
 
 class FormingProgressView: UIView {
-    let label = UILabel()
-    let greenView = UIView()
-    let redView = UIView()
+    let progressLayer = CAShapeLayer()
+    let trackLayer = CAShapeLayer()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        clipsToBounds = true
-        layer.cornerRadius = 7
+    init(center: CGPoint) {
+        super.init(frame: .zero)
         
-        configureLabel()
-        configureConstraints()
+        let progressPath = UIBezierPath(arcCenter: center, radius: 80, startAngle: -CGFloat.pi / 2, endAngle: (3 * CGFloat.pi) / 2, clockwise: true)
+        self.progressLayer.path = progressPath.cgPath
+        
+        progressLayer.strokeColor = UIColor.systemGreen.cgColor
+        progressLayer.lineWidth = 15
+        progressLayer.strokeEnd = 0
+        progressLayer.lineCap = .round
+        progressLayer.fillColor = UIColor.clear.cgColor
+        
+        let trackPath = UIBezierPath(arcCenter: center, radius: 80, startAngle: -CGFloat.pi / 2, endAngle: (3 * CGFloat.pi) / 2, clockwise: true)
+        self.trackLayer.path = trackPath.cgPath
+        
+        trackLayer.strokeColor = UIColor.tertiarySystemFill.cgColor
+        trackLayer.lineWidth = 15
+        trackLayer.lineCap = .round
+        trackLayer.fillColor = UIColor.clear.cgColor
+        
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        basicAnimation.toValue = 0.75
+        basicAnimation.duration = 0.75
+        basicAnimation.fillMode = .forwards
+        basicAnimation.isRemovedOnCompletion = false
+        
+        progressLayer.add(basicAnimation, forKey: "strokeEnd")
+        
+        self.layer.addSublayer(trackLayer)
+        self.layer.addSublayer(progressLayer)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func set(bounds: CGRect) {
-        self.bounds = bounds
-        
-//        greenView.backgroundColor = .systemGreen
-//        redView.backgroundColor = .systemRed
-    }
-    
-    func configureLabel() {
-        label.text = "Coming Soon 🤔"
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        label.textColor = .label
-    }
-    
-    func configureConstraints() {
-        addSubview(redView)
-        redView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: frame.width / 2, height: 0)
-        addSubview(greenView)
-        greenView.anchor(top: topAnchor, left: nil, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: frame.width / 2, height: 0)
-        addSubview(label)
-        label.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        addBlurredView(belowView: label)
-    }
 }
 
-extension UIView {
-    func setGradientBackground() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = self.bounds
-        gradientLayer.colors = [UIColor.systemRed.cgColor, UIColor.systemGreen.cgColor]
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
-
-        layer.insertSublayer(gradientLayer, at: 0)
-    }
-    
-    func addBlurredView(belowView view: UIView) {
-        let blurEffect = UIBlurEffect(style: .light)
-        let blurredEffectView = UIVisualEffectView(effect: blurEffect)
-        blurredEffectView.frame = self.bounds
-        insertSubview(blurredEffectView, belowSubview: view)
-    }
-}
+//extension UIView {
+//    func setGradientBackground() {
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.frame = self.bounds
+//        gradientLayer.colors = [UIColor.systemRed.cgColor, UIColor.systemGreen.cgColor]
+//        gradientLayer.locations = [0.0, 1.0]
+//        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+//        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+//
+//        layer.insertSublayer(gradientLayer, at: 0)
+//    }
+//
+//    func addBlurredView(belowView view: UIView) {
+//        let blurEffect = UIBlurEffect(style: .light)
+//        let blurredEffectView = UIVisualEffectView(effect: blurEffect)
+//        blurredEffectView.frame = self.bounds
+//        insertSubview(blurredEffectView, belowSubview: view)
+//    }
+//}
