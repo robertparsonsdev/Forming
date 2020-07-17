@@ -17,15 +17,13 @@ class HabitDetailViewController: UIViewController {
     private var editMode = false
     private var habit: Habit!
     
-    private let scrollView = UIScrollView()
     private let titleTextField = FormingTextField(placeholder: "Habit Title" , returnKeyType: .done)
     private let daysStackView = UIStackView()
     private let daySelectionLabel = FormingSecondaryLabel(text: "Select at least one day.")
     private let topColorsStackView = UIStackView()
     private let bottomColorsStackView = UIStackView()
     private let colorSelectionLabel = FormingSecondaryLabel(text: "Select a color.")
-    private var formingTableView: FormingTableView?
-//    private let finishButton = FormingFinishButton()
+    private var formingTableView: FormingTableView!
     private var dateCreatedLabel: FormingSecondaryLabel!
     
     private let days = ["Su", "M", "T", "W", "Th", "F", "Sa"]
@@ -57,7 +55,6 @@ class HabitDetailViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = editMode ? "Habit Details" : "New Habit"
         
-        configureScrollView()
         titleTextField.delegate = self
         if !editMode { titleTextField.becomeFirstResponder() }
         configureStackView(daysStackView, withArray: days)
@@ -65,7 +62,6 @@ class HabitDetailViewController: UIViewController {
         configureStackView(bottomColorsStackView, withArray: bottomColors)
         self.formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
         self.formingTableView?.tableDelegate = self
-//        self.finishButton.addTarget(self, action: #selector(finishButtonTapped), for: .touchUpInside)
         self.dateCreatedLabel = FormingSecondaryLabel(text: "Date Created: \(CalUtility.getDateAsString(date: self.dateCreated))")
         configureConstraints()
         
@@ -80,18 +76,13 @@ class HabitDetailViewController: UIViewController {
     }
     
     // MARK: - Configuration Functions
-    func configureScrollView() {
-        self.scrollView.backgroundColor = .systemBackground
-        self.scrollView.alwaysBounceVertical = true
-    }
-    
     func configureStackView(_ stackView : UIStackView, withArray items: [Any]) {
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
         
         if items as? [String] == self.days {
-            stackView.spacing = (view.frame.width - 30 - 280) / 6
+            stackView.spacing = (view.frame.width - 40 - 280) / 6
             let heavyAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .heavy)]
             let thinAttribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .thin)]
             for (index, item) in items.enumerated() {
@@ -106,7 +97,7 @@ class HabitDetailViewController: UIViewController {
             }
         } else {
             var tagCounter = 0
-            stackView.spacing = (view.frame.width - 30 - 200) / 4
+            stackView.spacing = (view.frame.width - 40 - 200) / 4
             let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .heavy))
             for (index, item) in items.enumerated() {
                 guard let color = item as? UIColor else { return }
@@ -122,40 +113,29 @@ class HabitDetailViewController: UIViewController {
     }
     
     func configureConstraints() {
-        view.addSubview(scrollView)
-        scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        let top = view.safeAreaLayoutGuide.topAnchor, left = view.leftAnchor, right = view.rightAnchor
+        let labelHeight: CGFloat = 25, viewHeight: CGFloat = 40, outterPad: CGFloat = 20, innerPad: CGFloat = 5
         
-        let top = scrollView.topAnchor, left = scrollView.leftAnchor, right = scrollView.rightAnchor
-        let labelHeight: CGFloat = 25, viewHeight: CGFloat = 40, outterPad: CGFloat = 15, innerPad: CGFloat = 5
-        let viewWidth = view.frame.width - 30
+        view.addSubview(titleTextField)
+        titleTextField.anchor(top: top, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: viewHeight)
         
-        scrollView.addSubview(titleTextField)
-        titleTextField.anchor(top: top, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: viewWidth, height: viewHeight)
-        
-        scrollView.addSubview(daysStackView)
-        daysStackView.anchor(top: titleTextField.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad + 5, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: viewWidth, height: viewHeight)
-        scrollView.addSubview(daySelectionLabel)
+        view.addSubview(daysStackView)
+        daysStackView.anchor(top: titleTextField.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: viewHeight)
+        view.addSubview(daySelectionLabel)
         daySelectionLabel.anchor(top: daysStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 0, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: labelHeight)
 
-        scrollView.addSubview(topColorsStackView)
-        topColorsStackView.anchor(top: daySelectionLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad + 5, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: viewHeight)
-        scrollView.addSubview(bottomColorsStackView)
+        view.addSubview(topColorsStackView)
+        topColorsStackView.anchor(top: daySelectionLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: viewHeight)
+        view.addSubview(bottomColorsStackView)
         bottomColorsStackView.anchor(top: topColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad + 5, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: viewHeight)
-        scrollView.addSubview(colorSelectionLabel)
+        view.addSubview(colorSelectionLabel)
         colorSelectionLabel.anchor(top: bottomColorsStackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: innerPad, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: labelHeight)
 
-        if let tableView = formingTableView {
-            scrollView.addSubview(tableView)
-            tableView.anchor(top: colorSelectionLabel.bottomAnchor, left: left, bottom: view.bottomAnchor, right: right, paddingTop: outterPad, paddingLeft: 0, paddingBottom: labelHeight + 50, paddingRight: 0, width: 0, height: 0)
-        }
+        view.addSubview(dateCreatedLabel)
+        dateCreatedLabel.anchor(top: nil, left: left, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: right, paddingTop: 0, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: labelHeight)
 
-//        if self.editMode {
-//            scrollView.addSubview(finishButton)
-//            finishButton.anchor(top: formingTableView?.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad * 2, paddingLeft: outterPad, paddingBottom: 0, paddingRight: outterPad, width: 0, height: 40)
-//        }
-
-        view.addSubview(self.dateCreatedLabel)
-        dateCreatedLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: labelHeight)
+        view.addSubview(formingTableView)
+        formingTableView.anchor(top: colorSelectionLabel.bottomAnchor, left: left, bottom: dateCreatedLabel.topAnchor, right: right, paddingTop: innerPad + 5, paddingLeft: 0, paddingBottom: 5, paddingRight: 0, width: 0, height: 0)
     }
     
     // MARK: - Functions
@@ -297,6 +277,7 @@ class HabitDetailViewController: UIViewController {
     }
     
     @objc func colorButtonTapped(sender: UIButton) {
+        if self.titleTextField.isFirstResponder { self.titleTextField.resignFirstResponder() }
         let tag = sender.tag
         if sender.isSelected == true { sender.isSelected = false }
         else {
@@ -319,6 +300,7 @@ class HabitDetailViewController: UIViewController {
     }
     
     @objc func dayButtonTapped(sender: UIButton) {
+        if self.titleTextField.isFirstResponder { self.titleTextField.resignFirstResponder() }
         DispatchQueue.main.async { self.haptics.selectionChanged() }
         let tag = sender.tag
         if sender.isSelected == true {

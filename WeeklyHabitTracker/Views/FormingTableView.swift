@@ -18,9 +18,9 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
     private let exclamationAttachment = NSTextAttachment()
     private let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .default)
+    let largeConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17), scale: .large)
     
     let stepper = UIStepper()
-    let trackingSwitch = UISwitch()
     let flagSwitch = UISwitch()
     let haptics = UISelectionFeedbackGenerator()
     
@@ -45,52 +45,65 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return SectionNumber.allCases.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return FirstSection.allCases.count
-        default: return SecondSection.allCases.count
+        case SectionNumber.firstSection.rawValue: return FirstSection.allCases.count
+        case SectionNumber.secondSection.rawValue: return SecondSection.allCases.count
+        default: return 0
         }
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return " "
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return section == 0 ? 20 : 5
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        tableView.tableFooterView = UIView(frame: .zero)
-        let largeConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17), scale: .large)
         var cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell = UITableViewCell(style: .value1, reuseIdentifier: "Cell")
         cell.imageView?.tintColor = .label
         switch indexPath.section {
-        case 0:
+        case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
             case FirstSection.goal.rawValue:
                 cell.textLabel?.text = "Goal"
-                cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: largeConfig)
+                cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
+                cell.detailTextLabel?.text = "Unlimited"
                 cell.accessoryType = .disclosureIndicator
             case FirstSection.automaticTracking.rawValue:
                 cell.textLabel?.text = "Automatic Tracking"
-                cell.imageView?.image = UIImage(named: "xmark.circle", in: nil, with: largeConfig)
-                cell.accessoryView = trackingSwitch
-                cell.selectionStyle = .none
+                cell.imageView?.image = UIImage(named: "xmark.circle", in: nil, with: self.largeConfig)
+                cell.detailTextLabel?.text = "On"
+                cell.accessoryType = .disclosureIndicator
             default: ()
             }
-        case 1:
+        case SectionNumber.secondSection.rawValue:
             switch indexPath.row {
             case SecondSection.reminder.rawValue:
                 cell.textLabel?.text = "Reminder"
-                if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) } else { cell.detailTextLabel?.text = "None" }
-                cell.imageView?.image = UIImage(named: "clock", in: nil, with: largeConfig)
+                if let reminder = self.reminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) }
+                else { cell.detailTextLabel?.text = "None" }
+                cell.imageView?.image = UIImage(named: "clock", in: nil, with: self.largeConfig)
                 cell.accessoryType = .disclosureIndicator
             case SecondSection.priority.rawValue:
                 cell.textLabel?.text = "Priority"
                 cell.detailTextLabel?.attributedText = createExclamation(fromPriority: self.priority)
-                cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: largeConfig)
+                cell.imageView?.image = UIImage(named: "exclamationmark.circle", in: nil, with: self.largeConfig)
                 cell.accessoryView = stepper
                 cell.selectionStyle = .none
             case SecondSection.flag.rawValue:
                 cell.textLabel?.text = "Flag"
-                cell.imageView?.image = UIImage(named: "flag.circle", in: nil, with: largeConfig)
+                cell.imageView?.image = UIImage(named: "flag.circle", in: nil, with: self.largeConfig)
                 cell.accessoryView = flagSwitch
                 cell.selectionStyle = .none
             default: ()
@@ -102,18 +115,23 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row {
-        case SecondSection.reminder.rawValue:
-            var reminderView: ReminderViewController
-            if let reminder = self.reminder { reminderView = ReminderViewController(reminder: reminder) }
-            else { reminderView = ReminderViewController(reminder: nil) }
-            reminderView.updateDelegate = self
-            if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
-            tableDelegate?.push(view: reminderView)
-        case FirstSection.goal.rawValue:
-            tableDelegate?.push(view: GoalsViewController(weeklyGoal: 1, habitGoal: 1))
+        switch indexPath.section {
+        case SectionNumber.firstSection.rawValue:
+            switch indexPath.row {
+            case FirstSection.goal.rawValue: print("goal")
+            case FirstSection.automaticTracking.rawValue: print("tracking")
+            default: ()
+            }
+        case SectionNumber.secondSection.rawValue:
+            if indexPath.row == SecondSection.reminder.rawValue {
+                let reminderView = ReminderViewController(reminder: self.reminder)
+                reminderView.updateDelegate = self
+                if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
+                tableDelegate?.push(view: reminderView)
+            }
         default: ()
         }
+        
         deselectRow(at: indexPath, animated: true)
     }
             
@@ -131,7 +149,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     @objc func stepperTapped(sender: UIStepper) {
         haptics.selectionChanged()
-        cellForRow(at: IndexPath(row: SecondSection.priority.rawValue, section: 1))?.detailTextLabel?.attributedText = createExclamation(fromPriority: Int64(sender.value))
+        cellForRow(at: IndexPath(row: SecondSection.priority.rawValue, section: SectionNumber.secondSection.rawValue))?.detailTextLabel?.attributedText = createExclamation(fromPriority: Int64(sender.value))
         tableDelegate?.save(priority: Int64(sender.value))
     }
     
@@ -170,7 +188,7 @@ protocol FormingTableViewDelegate {
 
 extension FormingTableView: UpdateReminderDelegate {
     func update(reminder: Date?) {
-        let cell = self.cellForRow(at: IndexPath(row: SecondSection.reminder.rawValue, section: 1))
+        let cell = self.cellForRow(at: IndexPath(row: SecondSection.reminder.rawValue, section: SectionNumber.secondSection.rawValue))
         if let unwrappedReminder = reminder {
             self.reminder = unwrappedReminder
             cell?.detailTextLabel?.text = CalUtility.getTimeAsString(time: unwrappedReminder)
@@ -180,6 +198,10 @@ extension FormingTableView: UpdateReminderDelegate {
             cell?.detailTextLabel?.text = "None"
         }
     }
+}
+
+enum SectionNumber: Int, CaseIterable {
+    case firstSection, secondSection
 }
 
 enum FirstSection: Int, CaseIterable {
