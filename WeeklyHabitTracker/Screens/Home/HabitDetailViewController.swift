@@ -146,7 +146,7 @@ class HabitDetailViewController: UIViewController {
 
         if let tableView = formingTableView {
             scrollView.addSubview(tableView)
-            tableView.anchor(top: colorSelectionLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: outterPad, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 176)
+            tableView.anchor(top: colorSelectionLabel.bottomAnchor, left: left, bottom: view.bottomAnchor, right: right, paddingTop: outterPad, paddingLeft: 0, paddingBottom: labelHeight + 50, paddingRight: 0, width: 0, height: 0)
         }
 
 //        if self.editMode {
