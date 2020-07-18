@@ -226,14 +226,14 @@ extension FormingTableView: UpdateReminderDelegate {
     }
 }
 
-enum SectionNumber: Int, CaseIterable {
-    case firstSection, secondSection
-}
-
-enum FirstSection: Int, CaseIterable {
-    case goal, automaticTracking
-}
-
-enum SecondSection: Int, CaseIterable {
-    case reminder, priority, flag
-}
+//enum SectionNumber: Int, CaseIterable {
+//    case firstSection, secondSection
+//}
+//
+//enum FirstSection: Int, CaseIterable {
+//    case goal, automaticTracking
+//}
+//
+//enum SecondSection: Int, CaseIterable {
+//    case reminder, priority, flag
+//}

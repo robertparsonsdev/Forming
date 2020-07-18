@@ -60,6 +60,8 @@
 		EEEB97E5249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DF249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift */; };
 		EEEB97E6249452FB006DE24D /* Habit+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97E0249452FB006DE24D /* Habit+CoreDataClass.swift */; };
 		EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */; };
+		EEF25A6524C2781A00C1CBFA /* NewHabitDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF25A6424C2781A00C1CBFA /* NewHabitDetailTableViewController.swift */; };
+		EEF25A6724C27A7100C1CBFA /* HabitDetailHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +121,8 @@
 		EEEB97DF249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArchivedHabit+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EEEB97E0249452FB006DE24D /* Habit+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataClass.swift"; sourceTree = "<group>"; };
 		EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		EEF25A6424C2781A00C1CBFA /* NewHabitDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitDetailTableViewController.swift; sourceTree = "<group>"; };
+		EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +268,7 @@
 				EE10369C2450A12B00AFFBEB /* ReminderViewController.swift */,
 				EE10369E2450A14700AFFBEB /* GoalViewController.swift */,
 				EE6B1C2324B92CE300640D59 /* GoalsViewController.swift */,
+				EEF25A6424C2781A00C1CBFA /* NewHabitDetailTableViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -291,6 +296,7 @@
 			children = (
 				EE7C151A24917B9000194EA9 /* HabitCell.swift */,
 				EEC0FE9024464F6900FC618F /* HomeHeaderCell.swift */,
+				EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -386,6 +392,7 @@
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE91108524623F730021190C /* UIHelper.swift in Sources */,
 				EE9A71512458AFEA0082D135 /* Sorts.swift in Sources */,
+				EEF25A6524C2781A00C1CBFA /* NewHabitDetailTableViewController.swift in Sources */,
 				EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */,
 				EE4C55C524AE7A51000AD61C /* FormingFinishButton.swift in Sources */,
 				EEEB97E3249452FB006DE24D /* Archive+CoreDataProperties.swift in Sources */,
@@ -413,6 +420,7 @@
 				EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */,
 				EE79D83724B3EF5600B46008 /* ViewControllerExt.swift in Sources */,
 				EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */,
+				EEF25A6724C27A7100C1CBFA /* HabitDetailHeader.swift in Sources */,
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
 				EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */,

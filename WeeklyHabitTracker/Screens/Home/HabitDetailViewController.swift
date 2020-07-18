@@ -345,9 +345,9 @@ extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDeleg
     }
 }
 
-// MARK: - Protocols
-protocol HabitDetailDelegate  {
-    func add(habit: Habit)
-    func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
-    func finish(habit: Habit)
-}
+//// MARK: - Protocols
+//protocol HabitDetailDelegate  {
+//    func add(habit: Habit)
+//    func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
+//    func finish(habit: Habit)
+//}
