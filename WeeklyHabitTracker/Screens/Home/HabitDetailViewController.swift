@@ -33,6 +33,8 @@ class HabitDetailViewController: UIViewController {
     private let bottomColors = [FormingColors.getColor(fromValue: 5), FormingColors.getColor(fromValue: 6), FormingColors.getColor(fromValue: 7), FormingColors.getColor(fromValue: 8), FormingColors.getColor(fromValue: 9)]
     private var colorFlags = [false, false, false, false, false, false, false, false, false, false]
     private var selectedColor: Int? = nil
+    
+    private var goal: Int64? = 0
     private var priority: Int64 = 0
     private var flag: Bool = false
     private var reminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
@@ -60,8 +62,8 @@ class HabitDetailViewController: UIViewController {
         configureStackView(daysStackView, withArray: days)
         configureStackView(topColorsStackView, withArray: topColors)
         configureStackView(bottomColorsStackView, withArray: bottomColors)
-        self.formingTableView = FormingTableView(priority: self.priority, reminder: self.reminder, flag: self.flag)
-        self.formingTableView?.tableDelegate = self
+        self.formingTableView = FormingTableView(goal: self.goal, priority: self.priority, reminder: self.reminder, flag: self.flag)
+        self.formingTableView.set(delegate: self)
         self.dateCreatedLabel = FormingSecondaryLabel(text: "Date Created: \(CalUtility.getDateAsString(date: self.dateCreated))")
         configureConstraints()
         
@@ -146,6 +148,7 @@ class HabitDetailViewController: UIViewController {
         self.dayFlags = habit.days
         self.selectedColor = Int(habit.color)
         self.colorFlags[Int(habit.color)] = true
+        // self.goal = habit.goal
         self.priority = habit.priority
         self.flag = habit.flag
         self.reminder = habit.reminder
@@ -320,7 +323,7 @@ extension HabitDetailViewController: UITextFieldDelegate {
     }
 }
 
-extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDelegate {
+extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDelegate, SaveGoalDelegate {
     func push(view: UIViewController) {
         navigationController?.pushViewController(view, animated: true)
     }
@@ -335,6 +338,10 @@ extension HabitDetailViewController: FormingTableViewDelegate, SaveReminderDeleg
     
     func save(reminder: Date?) {
         self.reminder = reminder
+    }
+    
+    func save(goal: Int64?) {
+        self.goal = goal
     }
 }
 

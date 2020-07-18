@@ -19,11 +19,12 @@ class FormingTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(placeholder: String, textAlignment: NSTextAlignment = .center, returnKeyType: UIReturnKeyType) {
+    init(placeholder: String, textAlignment: NSTextAlignment = .center, keyboardType: UIKeyboardType = .default, returnKeyType: UIReturnKeyType) {
         super.init(frame: .zero)
         self.returnKeyType = returnKeyType
         self.placeholder = placeholder
         self.textAlignment = textAlignment
+        self.keyboardType = keyboardType
         configure()
     }
     

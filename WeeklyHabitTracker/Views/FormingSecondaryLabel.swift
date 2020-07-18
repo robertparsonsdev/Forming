@@ -22,6 +22,7 @@ class FormingSecondaryLabel: UILabel {
     func configureLabel(withText text: String) {
         self.text = text
         self.textAlignment = .center
+        self.numberOfLines = 0
         
         self.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         self.textColor = .secondaryLabel

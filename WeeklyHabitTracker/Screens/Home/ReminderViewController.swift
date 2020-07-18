@@ -9,19 +9,18 @@
 import UIKit
 
 class ReminderViewController: UIViewController {
-    var updateDelegate: UpdateReminderDelegate?
-    var saveDelegate: SaveReminderDelegate?
-    var reminderDate: Date?
+    private var updateDelegate: UpdateReminderDelegate?
+    private var saveDelegate: SaveReminderDelegate?
+    private var reminderDate: Date?
 
-    let reminderLabel = FormingPickerLabel()
-    let toggle = UISwitch()
-    let defaultLabel = UILabel()
-    let picker = UIDatePicker()
+    private let reminderLabel = FormingPickerLabel()
+    private let toggle = UISwitch()
+    private let explanationLabel = FormingSecondaryLabel(text: "Set a time to be reminded at on days this habit is supposed to be completed.")
+    private let picker = UIDatePicker()
     
     init(reminder: Date?) {
         super.init(nibName: nil, bundle: nil)
-        if let newReminder = reminder { self.reminderDate = newReminder }
-        else { self.reminderDate = nil }
+        self.reminderDate = reminder
     }
     
     required init?(coder: NSCoder) {
@@ -33,10 +32,12 @@ class ReminderViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Reminder"
 
-        if self.reminderDate != nil { reminderLabel.text = CalUtility.getTimeAsString(time: self.reminderDate!) }
-        else { reminderLabel.text = "No Reminder" }
+        if self.reminderDate != nil {
+            reminderLabel.text = CalUtility.getTimeAsString(time: self.reminderDate!)
+        } else {
+            reminderLabel.text = "No Reminder"
+        }
         configureToggle()
-        configureDefaultLabel()
         configurePicker()
         configureConstraints()
     }
@@ -51,19 +52,22 @@ class ReminderViewController: UIViewController {
         }
     }
     
-    func configureToggle() {
-        if self.reminderDate != nil { toggle.isOn = true }
-        else { toggle.isOn = false }
-        toggle.addTarget(self, action: #selector(toggleTapped), for: .valueChanged)
+    func setUpdateDelegate(delegate: UpdateReminderDelegate) {
+        self.updateDelegate = delegate
     }
     
-    func configureDefaultLabel() {
-        defaultLabel.text = "Set a time to be reminded at on days this habit is supposed to be completed."
-        defaultLabel.numberOfLines = 0
-        defaultLabel.sizeToFit()
-        defaultLabel.textAlignment = .center
-        defaultLabel.textColor = .secondaryLabel
-        defaultLabel.font = UIFont.systemFont(ofSize: 17)
+    func setSaveDelegate(delegate: SaveReminderDelegate) {
+        self.saveDelegate = delegate
+    }
+    
+    func configureToggle() {
+        if self.reminderDate != nil {
+            toggle.isOn = true
+        } else {
+            toggle.isOn = false
+        }
+        
+        toggle.addTarget(self, action: #selector(toggleTapped), for: .valueChanged)
     }
     
     func configurePicker() {
@@ -80,13 +84,13 @@ class ReminderViewController: UIViewController {
     func configureConstraints() {
         let top = view.safeAreaLayoutGuide.topAnchor, left = view.leftAnchor, right = view.rightAnchor
         view.addSubview(reminderLabel)
-        reminderLabel.anchor(top: top, left: left, bottom: nil, right: nil, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: view.frame.width - 96, height: 40)
+        reminderLabel.anchor(top: top, left: left, bottom: nil, right: nil, paddingTop: 20, paddingLeft: 20, paddingBottom: 0, paddingRight: 0, width: view.frame.width - toggle.frame.width - 60, height: 40)
         view.addSubview(toggle)
-        toggle.anchor(top: top, left: reminderLabel.rightAnchor, bottom: nil, right: right, paddingTop: 20, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+        toggle.anchor(top: top, left: reminderLabel.rightAnchor, bottom: nil, right: right, paddingTop: 25, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 0)
         view.addSubview(picker)
         picker.anchor(top: reminderLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 15, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: picker.frame.height)
-        view.addSubview(defaultLabel)
-        defaultLabel.anchor(top: picker.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+        view.addSubview(explanationLabel)
+        explanationLabel.anchor(top: picker.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 15, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 0)
     }
     
     @objc func toggleTapped(sender: UISwitch) {

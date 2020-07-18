@@ -10,21 +10,23 @@ import UIKit
 import SwiftUI
 
 class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
-    var priority: Int64
-    var flag: Bool
-    var reminder: Date?
-    var tableDelegate: FormingTableViewDelegate?
+    private var goal: Int64?
+    private var priority: Int64
+    private var flag: Bool
+    private var reminder: Date?
+    private var tableDelegate: FormingTableViewDelegate?
     
-    let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
+    private let priorities = [0: "None", 1: "1", 2: "2", 3: "3"]
     private let exclamationAttachment = NSTextAttachment()
     private let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .regular), scale: .default)
-    let largeConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17), scale: .large)
+    private let largeConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17), scale: .large)
     
-    let stepper = UIStepper()
-    let flagSwitch = UISwitch()
-    let haptics = UISelectionFeedbackGenerator()
+    private let stepper = UIStepper()
+    private let flagSwitch = UISwitch()
+    private let haptics = UISelectionFeedbackGenerator()
     
-    init(priority: Int64, reminder: Date?, flag: Bool) {
+    init(goal: Int64?, priority: Int64, reminder: Date?, flag: Bool) {
+        self.goal = goal
         self.priority = priority
         self.flag = flag
         self.reminder = reminder
@@ -42,6 +44,10 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func set(delegate: FormingTableViewDelegate) {
+        self.tableDelegate = delegate
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -78,7 +84,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
             case FirstSection.goal.rawValue:
                 cell.textLabel?.text = "Goal"
                 cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
-                cell.detailTextLabel?.text = "Unlimited"
+                cell.detailTextLabel?.text = "Never-ending"
                 cell.accessoryType = .disclosureIndicator
             case FirstSection.automaticTracking.rawValue:
                 cell.textLabel?.text = "Automatic Tracking"
@@ -118,15 +124,23 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
         switch indexPath.section {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
-            case FirstSection.goal.rawValue: print("goal")
+            case FirstSection.goal.rawValue:
+                let goalView = GoalViewController(goal: 0)
+                goalView.setUpdateDelegate(delegate: self)
+                if let parentView = tableView.findViewController() as? HabitDetailViewController {
+                    goalView.setSaveDelegate(delegate: parentView.self)
+                }
+                tableDelegate?.push(view: goalView)
             case FirstSection.automaticTracking.rawValue: print("tracking")
             default: ()
             }
         case SectionNumber.secondSection.rawValue:
             if indexPath.row == SecondSection.reminder.rawValue {
                 let reminderView = ReminderViewController(reminder: self.reminder)
-                reminderView.updateDelegate = self
-                if let parentView = tableView.findViewController() as? HabitDetailViewController { reminderView.saveDelegate = parentView.self }
+                reminderView.setUpdateDelegate(delegate: self)
+                if let parentView = tableView.findViewController() as? HabitDetailViewController {
+                    reminderView.setSaveDelegate(delegate: parentView.self)
+                }
                 tableDelegate?.push(view: reminderView)
             }
         default: ()
@@ -186,15 +200,27 @@ protocol FormingTableViewDelegate {
     func save(flag: Bool)
 }
 
+extension FormingTableView: UpdateGoalDelegate {
+    func update(goal: Int64?) {
+        self.goal = goal
+        
+        let cell = cellForRow(at: IndexPath(row: FirstSection.goal.rawValue, section: SectionNumber.firstSection.rawValue))
+        if let goal = self.goal {
+            cell?.detailTextLabel?.text = "\(goal)"
+        } else {
+            cell?.detailTextLabel?.text = "Never-ending"
+        }
+    }
+}
+
 extension FormingTableView: UpdateReminderDelegate {
     func update(reminder: Date?) {
-        let cell = self.cellForRow(at: IndexPath(row: SecondSection.reminder.rawValue, section: SectionNumber.secondSection.rawValue))
-        if let unwrappedReminder = reminder {
-            self.reminder = unwrappedReminder
-            cell?.detailTextLabel?.text = CalUtility.getTimeAsString(time: unwrappedReminder)
-        }
-        else {
-            self.reminder = nil
+        self.reminder = reminder
+
+        let cell = cellForRow(at: IndexPath(row: SecondSection.reminder.rawValue, section: SectionNumber.secondSection.rawValue))
+        if let reminder = self.reminder {
+            cell?.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder)
+        } else {
             cell?.detailTextLabel?.text = "None"
         }
     }
