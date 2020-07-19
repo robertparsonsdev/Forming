@@ -86,7 +86,7 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
                 cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
                 cell.detailTextLabel?.text = "Never-ending"
                 cell.accessoryType = .disclosureIndicator
-            case FirstSection.automaticTracking.rawValue:
+            case FirstSection.tracking.rawValue:
                 cell.textLabel?.text = "Automatic Tracking"
                 cell.imageView?.image = UIImage(named: "xmark.circle", in: nil, with: self.largeConfig)
                 cell.detailTextLabel?.text = "On"
@@ -131,17 +131,17 @@ class FormingTableView: UITableView, UITableViewDelegate, UITableViewDataSource 
                     goalView.setSaveDelegate(delegate: parentView.self)
                 }
                 tableDelegate?.push(view: goalView)
-            case FirstSection.automaticTracking.rawValue: print("tracking")
+            case FirstSection.tracking.rawValue: print("tracking")
             default: ()
             }
         case SectionNumber.secondSection.rawValue:
             if indexPath.row == SecondSection.reminder.rawValue {
-                let reminderView = ReminderViewController(reminder: self.reminder)
-                reminderView.setUpdateDelegate(delegate: self)
-                if let parentView = tableView.findViewController() as? HabitDetailViewController {
-                    reminderView.setSaveDelegate(delegate: parentView.self)
-                }
-                tableDelegate?.push(view: reminderView)
+//                let reminderView = ReminderViewController(reminder: self.reminder)
+//                reminderView.setUpdateDelegate(delegate: self)
+//                if let parentView = tableView.findViewController() as? HabitDetailViewController {
+//                    reminderView.setSaveDelegate(delegate: parentView.self)
+//                }
+//                tableDelegate?.push(view: reminderView)
             }
         default: ()
         }

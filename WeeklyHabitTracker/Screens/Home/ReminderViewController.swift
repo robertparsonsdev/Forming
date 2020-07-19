@@ -9,8 +9,9 @@
 import UIKit
 
 class ReminderViewController: UIViewController {
-    private var updateDelegate: UpdateReminderDelegate?
-    private var saveDelegate: SaveReminderDelegate?
+    private let delegate: DetailTextLabelDelegate
+    private let row: SecondSection
+    private let section: SectionNumber
     private var reminderDate: Date?
 
     private let reminderLabel = FormingPickerLabel()
@@ -18,9 +19,13 @@ class ReminderViewController: UIViewController {
     private let explanationLabel = FormingSecondaryLabel(text: "Set a time to be reminded at on days this habit is supposed to be completed.")
     private let picker = UIDatePicker()
     
-    init(reminder: Date?) {
-        super.init(nibName: nil, bundle: nil)
+    init(reminder: Date?, delegate: DetailTextLabelDelegate, row: SecondSection, section: SectionNumber) {
         self.reminderDate = reminder
+        self.delegate = delegate
+        self.row = row
+        self.section = section
+        
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -47,17 +52,13 @@ class ReminderViewController: UIViewController {
         if parent == nil {
             if toggle.isOn { self.reminderDate = picker.date }
             else { self.reminderDate = nil }
-            updateDelegate?.update(reminder: self.reminderDate)
-            saveDelegate?.save(reminder: self.reminderDate)
+            
+            if let reminder = self.reminderDate {
+                self.delegate.update(text: CalUtility.getTimeAsString(time: reminder), data: reminder, atSection: self.section.rawValue, andRow: self.row.rawValue)
+            } else {
+                self.delegate.update(text: "None", data: nil, atSection: self.section.rawValue, andRow: self.row.rawValue)
+            }
         }
-    }
-    
-    func setUpdateDelegate(delegate: UpdateReminderDelegate) {
-        self.updateDelegate = delegate
-    }
-    
-    func setSaveDelegate(delegate: SaveReminderDelegate) {
-        self.saveDelegate = delegate
     }
     
     func configureToggle() {

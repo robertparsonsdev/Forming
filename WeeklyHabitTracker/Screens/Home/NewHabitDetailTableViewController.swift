@@ -130,8 +130,8 @@ class NewHabitDetailTableViewController: UITableViewController {
                 cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
                 cell.detailTextLabel?.text = "Never-ending"
                 cell.accessoryType = .disclosureIndicator
-            case FirstSection.automaticTracking.rawValue:
-                cell.textLabel?.text = "Automatic Tracking"
+            case FirstSection.tracking.rawValue:
+                cell.textLabel?.text = "Tracking"
                 cell.imageView?.image = UIImage(named: "xmark.circle", in: nil, with: self.largeConfig)
                 cell.detailTextLabel?.text = "On"
                 cell.accessoryType = .disclosureIndicator
@@ -169,21 +169,16 @@ class NewHabitDetailTableViewController: UITableViewController {
             switch indexPath.row {
             case FirstSection.goal.rawValue:
                 let goalView = GoalViewController(goal: 0)
-//                goalView.setUpdateDelegate(delegate: self)
                 if let parentView = tableView.findViewController() as? HabitDetailViewController {
                     goalView.setSaveDelegate(delegate: parentView.self)
                 }
                 self.navigationController?.pushViewController(goalView, animated: true)
-            case FirstSection.automaticTracking.rawValue: print("tracking")
+            case FirstSection.tracking.rawValue: print("tracking")
             default: ()
             }
         case SectionNumber.secondSection.rawValue:
             if indexPath.row == SecondSection.reminder.rawValue {
-                let reminderView = ReminderViewController(reminder: self.habitReminder)
-//                reminderView.setUpdateDelegate(delegate: self)
-                if let parentView = tableView.findViewController() as? HabitDetailViewController {
-                    reminderView.setSaveDelegate(delegate: parentView.self)
-                }
+                let reminderView = ReminderViewController(reminder: self.habitReminder, delegate: self, row: .reminder, section: .secondSection)
                 self.navigationController?.pushViewController(reminderView, animated: true)
             }
         default: ()
@@ -310,11 +305,35 @@ extension NewHabitDetailTableViewController: HabitDetailHeaderDelegate {
     }
 }
 
+extension NewHabitDetailTableViewController: DetailTextLabelDelegate {
+    func update(text: String, data: Any?, atSection section: Int, andRow row: Int) {
+        tableView.cellForRow(at: IndexPath(row: row, section: section))?.detailTextLabel?.text = text
+        switch section {
+        case SectionNumber.firstSection.rawValue:
+            switch row {
+            case FirstSection.goal.rawValue: self.habitGoal = data as? Int64
+            case FirstSection.tracking.rawValue: self.habitTracking = data as! Bool
+            default: ()
+            }
+        case SectionNumber.secondSection.rawValue:
+            switch row {
+            case SecondSection.reminder.rawValue: self.habitReminder = data as? Date
+            default: ()
+            }
+        default:()
+        }
+    }
+}
+
 // MARK: - Protocols
 protocol HabitDetailDelegate  {
     func add(habit: Habit)
     func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
     func finish(habit: Habit)
+}
+
+protocol DetailTextLabelDelegate {
+    func update(text: String, data: Any?, atSection section: Int, andRow row: Int)
 }
 
 // MARK: - Enums
@@ -323,7 +342,7 @@ enum SectionNumber: Int, CaseIterable {
 }
 
 enum FirstSection: Int, CaseIterable {
-    case goal, automaticTracking
+    case goal, tracking
 }
 
 enum SecondSection: Int, CaseIterable {
