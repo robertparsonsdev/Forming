@@ -17,10 +17,24 @@ class NewHabitDetailTableViewController: UITableViewController {
     private var editMode: Bool = false
     private var habit: Habit!
     
+    private var habitTitle: String?
+    private var habitDays: [Bool] = [false, false, false, false, false, false, false]
+    private var habitColor: Int64?
+    
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService, delegate: HabitDetailDelegate) {
+    init(persistenceManager: PersistenceService, delegate: HabitDetailDelegate, habitToEdit: Habit? = nil) {
         self.persistenceManager = persistenceManager
         self.habitDelegate = delegate
+        if let editingHabit = habitToEdit {
+            self.habit = editingHabit
+            self.editMode = true
+            self.habitTitle = editingHabit.title
+            self.habitDays = editingHabit.days
+            self.habitColor = editingHabit.color
+        } else {
+            self.editMode = false
+        }
+            
         super.init(style: .insetGrouped)
     }
     
@@ -46,7 +60,6 @@ class NewHabitDetailTableViewController: UITableViewController {
     }
 
     // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         return SectionNumber.allCases.count
     }
@@ -68,6 +81,7 @@ class NewHabitDetailTableViewController: UITableViewController {
         switch section {
         case SectionNumber.firstSection.rawValue:
             let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.headerReuseIdentifier) as! HabitDetailHeader
+            header.set(delegate: self)
             if self.editMode {
                 header.set(title: self.habit.title)
                 header.set(days: self.habit.days)
@@ -85,25 +99,76 @@ class NewHabitDetailTableViewController: UITableViewController {
         }
     }
     
-    // MARK: - Setters
-    func set(habit: Habit) {
-        self.habit = habit
-        self.editMode = true
+    // MARK: - Functions
+    func presentAlert() {
+        let alert = UIAlertController(title: "Incomplete Habit", message: "Please ensure that you have a color and at least one day selected.", preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: "Okay", style: .default))
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+    
+    func saveHabitData() {
+        self.habit.title = self.habitTitle
+        self.habit.days = self.habitDays
+        self.habit.color = self.habitColor!
+        
+        if self.editMode {
+            
+        } else {
+            var statuses = [Status]()
+            for day in self.habit.days {
+                if day {
+                    statuses.append(.incomplete)
+                } else {
+                    statuses.append(.empty)
+                }
+            }
+            self.habit.statuses = statuses
+        }
     }
     
     // MARK: - Selectors
     @objc func saveButtonTapped() {
-        print("save tapped")
+        guard !self.habitDays.allSatisfy( { $0 == false } ), self.habitColor != nil else {
+            self.presentAlert()
+            return
+        }
+        
+        if self.editMode {
+            saveHabitData()
+            self.habitDelegate.update(habit: self.habit, deleteNotifications: (false, [false]), updateNotifications: false)
+        } else {
+            self.habit = Habit(context: self.persistenceManager.context)
+            saveHabitData()
+            self.habitDelegate.add(habit: self.habit)
+        }
+        
         DispatchQueue.main.async { self.dismiss(animated: true) }
     }
     
     @objc func finishButtonTapped() {
-        print("finished tapped")
         DispatchQueue.main.async { self.dismiss(animated: true) }
     }
     
     @objc func cancelButtonTapped() {
         DispatchQueue.main.async { self.dismiss(animated: true) }
+    }
+}
+
+// MARK: - Delegates
+extension NewHabitDetailTableViewController: HabitDetailHeaderDelegate {
+    func send(title: String?) {
+        self.habitTitle = title
+    }
+    
+    func send(day: Int, andFlag flag: Bool) {
+        self.habitDays[day] = flag
+    }
+    
+    func send(color: Int64?) {
+        self.habitColor = color
     }
 }
 

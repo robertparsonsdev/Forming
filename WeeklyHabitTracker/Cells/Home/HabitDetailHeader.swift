@@ -9,6 +9,8 @@
 import UIKit
 
 class HabitDetailHeader: UITableViewHeaderFooterView {
+    private var delegate: HabitDetailHeaderDelegate!
+    
     private let titleTextField = FormingTextField(placeholder: "Habit Title", returnKeyType: .done)
     private let daysStackView = UIStackView()
     private let daySelectionLabel = FormingSecondaryLabel(text: "Select at least one day.")
@@ -16,6 +18,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
     private let bottomColorsStackView = UIStackView()
     private let colorSelectionLabel = FormingSecondaryLabel(text: "Select a color.")
     
+    private var previousColor: Int64? = nil
     private let topColors = [FormingColors.getColor(fromValue: 0), FormingColors.getColor(fromValue: 1), FormingColors.getColor(fromValue: 2), FormingColors.getColor(fromValue: 3), FormingColors.getColor(fromValue: 4)]
     private let bottomColors = [FormingColors.getColor(fromValue: 5), FormingColors.getColor(fromValue: 6), FormingColors.getColor(fromValue: 7), FormingColors.getColor(fromValue: 8), FormingColors.getColor(fromValue: 9)]
     
@@ -98,6 +101,10 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
     }
     
     // MARK: - Setters
+    func set(delegate: HabitDetailHeaderDelegate) {
+        self.delegate = delegate
+    }
+    
     func set(title: String?) {
         self.titleTextField.text = title
         self.titleTextField.resignFirstResponder()
@@ -114,6 +121,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
     }
     
     func set(color: Int64) {
+        self.previousColor = color
         if color < 5 {
             if let colorButton = self.topColorsStackView.arrangedSubviews[Int(color)] as? FormingColorButton {
                 colorButton.isSelected = true
@@ -132,45 +140,59 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
         let tag = sender.tag
         if sender.isSelected == true {
             sender.isSelected = false
-//            self.dayFlags[tag] = false
-            // send to TVC
+            self.delegate.send(day: tag, andFlag: sender.isSelected)
         } else {
             sender.isSelected = true
-//            self.dayFlags[tag] = true
-            // send to TVC
+            self.delegate.send(day: tag, andFlag: sender.isSelected)
         }
     }
     
     @objc func colorButtonTapped(sender: UIButton) {
         if self.titleTextField.isFirstResponder { self.titleTextField.resignFirstResponder() }
-//        let tag = sender.tag
-//        if sender.isSelected == true { sender.isSelected = false }
-//        else {
-//            if self.colorFlags.contains(true) {
-//                if let index = self.colorFlags.firstIndex(of: true) {
-//                    if index < 5 {
-//                        let button = self.topColorsStackView.arrangedSubviews[index] as? UIButton
-//                        button?.isSelected = false
-//                    } else {
-//                        let button = self.bottomColorsStackView.arrangedSubviews[index - 5] as? UIButton
-//                        button?.isSelected = false
-//                    }
-//                    self.colorFlags[index] = false
-//                }
-//            }
-//            self.colorFlags[tag] = true
-//            DispatchQueue.main.async { self.haptics.selectionChanged() }
-//            sender.isSelected = true
-//        }
+        DispatchQueue.main.async { self.haptics.selectionChanged() }
+        let tag = sender.tag
+        
+        if sender.isSelected == true {
+            sender.isSelected = false
+            self.previousColor = nil
+            self.delegate.send(color: nil)
+        } else {
+            if let previous = self.previousColor {
+                if previous < 5 {
+                    if let colorButton = self.topColorsStackView.arrangedSubviews[Int(previous)] as? FormingColorButton {
+                        colorButton.isSelected = false
+                    }
+                } else {
+                    if let colorButton = self.bottomColorsStackView.arrangedSubviews[Int(previous - 5)] as? FormingColorButton {
+                        colorButton.isSelected = false
+                    }
+                }
+                sender.isSelected = true
+                self.delegate.send(color: Int64(tag))
+                self.previousColor = Int64(tag)
+            } else {
+                sender.isSelected = true
+                self.delegate.send(color: Int64(tag))
+                self.previousColor = Int64(tag)
+            }
+        }
     }
 }
 
+// MARK: Delegates
 extension HabitDetailHeader: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
     }
     
     @objc func textFieldDidChange(textField: UITextField) {
-        // send to TVC
+        self.delegate.send(title: textField.text?.trimmingCharacters(in: .whitespaces))
     }
+}
+
+// MARK: Protocols
+protocol HabitDetailHeaderDelegate {
+    func send(title: String?)
+    func send(day: Int, andFlag flag: Bool)
+    func send(color: Int64?)
 }

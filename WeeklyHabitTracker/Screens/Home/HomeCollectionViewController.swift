@@ -52,6 +52,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         navigationItem.rightBarButtonItems = [newButton, sortButton]
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(notifications))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Habits", style: .plain, target: self, action: #selector(printHabits))
+
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
@@ -68,6 +70,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         // Notifications observers
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
+    }
+    
+    @objc func printHabits() {
+        let habits = self.persistenceManager.fetch(Habit.self)
+        print(habits)
     }
     
 //    @objc func notifications() {
@@ -227,8 +234,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
 //        let editHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, delegate: self)
-        let editHabitVC = NewHabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self)
-        editHabitVC.set(habit: habit)
+        let editHabitVC = NewHabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         DispatchQueue.main.async { self.present(navController, animated: true) }
