@@ -168,92 +168,92 @@ class HabitDetailViewController: UIViewController {
         DispatchQueue.main.async { self.dismiss(animated: true) }
         
         if !self.editMode {
-            let initialHabit = Habit(context: self.persistenceManager.context)
-            initialHabit.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
-            initialHabit.days = self.dayFlags
-            if let color = self.colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
-            self.dayFlags.forEach {
-                if $0 { self.dayStatuses.append(.incomplete) }
-                else { self.dayStatuses.append(.empty) }
-            }
-            initialHabit.statuses = self.dayStatuses
-            initialHabit.priority = self.priority
-            initialHabit.reminder = self.reminder
-            initialHabit.flag = self.flag
-            initialHabit.dateCreated = CalUtility.getCurrentDate()
-            initialHabit.buttonState = false
-            initialHabit.uniqueID = UUID().uuidString
+//            let initialHabit = Habit(context: self.persistenceManager.context)
+//            initialHabit.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
+//            initialHabit.days = self.dayFlags
+//            if let color = self.colorFlags.firstIndex(of: true) { initialHabit.color = Int64(color) }
+//            self.dayFlags.forEach {
+//                if $0 { self.dayStatuses.append(.incomplete) }
+//                else { self.dayStatuses.append(.empty) }
+//            }
+//            initialHabit.statuses = self.dayStatuses
+//            initialHabit.priority = self.priority
+//            initialHabit.reminder = self.reminder
+//            initialHabit.flag = self.flag
+//            initialHabit.dateCreated = CalUtility.getCurrentDate()
+//            initialHabit.buttonState = false
+//            initialHabit.uniqueID = UUID().uuidString
             
-            let initialArchive = Archive(context: self.persistenceManager.context)
-            initialArchive.title = initialHabit.title ?? "Error"
-            initialArchive.color = initialHabit.color
-            initialArchive.habit = initialHabit
-            initialArchive.flag = initialHabit.flag
-            initialArchive.priority = initialHabit.priority
-            initialArchive.reminder = initialHabit.reminder
-            initialArchive.active = true
-            initialArchive.successRate = 100.0
-            initialArchive.completedTotal = 0
-            initialArchive.failedTotal = 0
-            initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
-            initialArchive.currentWeekNumber = 1
+//            let initialArchive = Archive(context: self.persistenceManager.context)
+//            initialArchive.title = initialHabit.title ?? "Error"
+//            initialArchive.color = initialHabit.color
+//            initialArchive.habit = initialHabit
+//            initialArchive.flag = initialHabit.flag
+//            initialArchive.priority = initialHabit.priority
+//            initialArchive.reminder = initialHabit.reminder
+//            initialArchive.active = true
+//            initialArchive.successRate = 100.0
+//            initialArchive.completedTotal = 0
+//            initialArchive.failedTotal = 0
+//            initialArchive.incompleteTotal = Int64(initialHabit.days.filter({ $0 == true }).count)
+//            initialArchive.currentWeekNumber = 1
             
-            initialArchive.createNewArchivedHabit(withStatuses: initialHabit.statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
-            
-            initialHabit.archive = initialArchive
-            
-            self.habitDelegate.add(habit: initialHabit)
+//            initialArchive.createNewArchivedHabit(withStatuses: initialHabit.statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
+//            
+//            initialHabit.archive = initialArchive
+//            
+//            self.habitDelegate.add(habit: initialHabit)
         } else {
-            self.habit?.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
-            if let color = self.colorFlags.firstIndex(of: true) { self.habit?.color = Int64(color) }
-            if self.dayFlags[CalUtility.getCurrentDay()] != self.habit?.days[CalUtility.getCurrentDay()] {
-                if self.dayFlags[CalUtility.getCurrentDay()] { self.habit?.buttonState = false }
-            }
+//            self.habit?.title = self.titleTextField.text?.trimmingCharacters(in: .whitespaces)
+//            if let color = self.colorFlags.firstIndex(of: true) { self.habit?.color = Int64(color) }
+//            if self.dayFlags[CalUtility.getCurrentDay()] != self.habit?.days[CalUtility.getCurrentDay()] {
+//                if self.dayFlags[CalUtility.getCurrentDay()] { self.habit?.buttonState = false }
+//            }
             
-            var deleteNotifications: (Bool, [Bool]) = (false, [])
-            var updateNotifications = false
-            if self.reminder == nil {
-                let days = self.habit.days
-                deleteNotifications = (true, days)
-            } else if (self.reminder != self.habit?.reminder) || (self.dayFlags != self.habit?.days ) {
-                let days = self.habit.days
-                deleteNotifications = (true, days)
-                updateNotifications = true
-            }
+//            var deleteNotifications: (Bool, [Bool]) = (false, [])
+//            var updateNotifications = false
+//            if self.reminder == nil {
+//                let days = self.habit.days
+//                deleteNotifications = (true, days)
+//            } else if (self.reminder != self.habit?.reminder) || (self.dayFlags != self.habit?.days ) {
+//                let days = self.habit.days
+//                deleteNotifications = (true, days)
+//                updateNotifications = true
+//            }
             
-            if self.habit?.days != self.dayFlags {
-                for (index, day) in self.dayFlags.enumerated() {
-                    if day {
-                        switch self.habit?.statuses[index] {
-                        case .completed: self.dayStatuses.append(.completed)
-                        case .failed: self.dayStatuses.append(.failed)
-                        case .incomplete: self.dayStatuses.append(.incomplete)
-                        case .empty: self.dayStatuses.append(.incomplete)
-                        default: ()
-                        }
-                    } else { self.dayStatuses.append(.empty) }
-                }
-                
-                for (oldStatus, newStatus) in zip(self.habit.statuses, self.dayStatuses) {
-                    self.habit?.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
-                }
-                
-                self.habit?.days = self.dayFlags
-                self.habit?.statuses = self.dayStatuses
-                self.habit?.archive.updateCurrentArchivedHabit(withStatuses: dayStatuses)
-            }
-            self.habit?.priority = self.priority
-            self.habit?.reminder = self.reminder
-            self.habit?.flag = self.flag
-            
-            self.habit?.archive.title = self.habit.title ?? "Title Error"
-            self.habit?.archive.color = self.habit.color
-            self.habit?.archive.flag = self.habit.flag
-            self.habit?.archive.priority = self.habit.priority
-            self.habit?.archive.reminder = self.habit.reminder
-            self.habit?.archive.habit = self.habit
-            
-            self.habitDelegate.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
+//            if self.habit?.days != self.dayFlags {
+//                for (index, day) in self.dayFlags.enumerated() {
+//                    if day {
+//                        switch self.habit?.statuses[index] {
+//                        case .completed: self.dayStatuses.append(.completed)
+//                        case .failed: self.dayStatuses.append(.failed)
+//                        case .incomplete: self.dayStatuses.append(.incomplete)
+//                        case .empty: self.dayStatuses.append(.incomplete)
+//                        default: ()
+//                        }
+//                    } else { self.dayStatuses.append(.empty) }
+//                }
+//
+//                for (oldStatus, newStatus) in zip(self.habit.statuses, self.dayStatuses) {
+//                    self.habit?.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
+//                }
+//
+//                self.habit?.days = self.dayFlags
+//                self.habit?.statuses = self.dayStatuses
+//                self.habit?.archive.updateCurrentArchivedHabit(withStatuses: dayStatuses)
+//            }
+//            self.habit?.priority = self.priority
+//            self.habit?.reminder = self.reminder
+//            self.habit?.flag = self.flag
+//
+//            self.habit?.archive.title = self.habit.title ?? "Title Error"
+//            self.habit?.archive.color = self.habit.color
+//            self.habit?.archive.flag = self.habit.flag
+//            self.habit?.archive.priority = self.habit.priority
+//            self.habit?.archive.reminder = self.habit.reminder
+//            self.habit?.archive.habit = self.habit
+//
+//            self.habitDelegate.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
         }
     }
     

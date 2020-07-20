@@ -233,12 +233,61 @@ class NewHabitDetailTableViewController: UITableViewController {
     
     func saveHabitData() {
         self.habit.title = self.habitTitle
-        self.habit.days = self.habitDays
         self.habit.color = self.habitColor!
         
         if self.editMode {
+            if self.habitDays[CalUtility.getCurrentDay()] != self.habit.days[CalUtility.getCurrentDay()] {
+                if self.habitDays[CalUtility.getCurrentDay()] { self.habit.buttonState = false }
+            }
             
+            var deleteNotifications: (Bool, [Bool]) = (false, [])
+            var updateNotifications = false
+            if self.habitReminder == nil {
+                let days = self.habit.days
+                deleteNotifications = (true, days)
+            } else if (self.habitReminder != self.habit.reminder) || (self.habitDays != self.habit.days ) {
+                let days = self.habit.days
+                deleteNotifications = (true, days)
+                updateNotifications = true
+            }
+            
+            if self.habit.days != self.habitDays {
+                var statuses = [Status]()
+                for (index, day) in self.habitDays.enumerated() {
+                    if day {
+                        switch self.habit.statuses[index] {
+                        case .completed: statuses.append(.completed)
+                        case .failed: statuses.append(.failed)
+                        case .incomplete: statuses.append(.incomplete)
+                        case .empty: statuses.append(.incomplete)
+                        default: ()
+                        }
+                    } else { statuses.append(.empty) }
+                }
+                
+                for (oldStatus, newStatus) in zip(self.habit.statuses, statuses) {
+                    self.habit.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
+                }
+                
+                self.habit.days = self.habitDays
+                self.habit.statuses = statuses
+                self.habit.archive.updateCurrentArchivedHabit(withStatuses: statuses)
+            }
+            
+            self.habit.priority = self.habitPriority
+            self.habit.reminder = self.habitReminder
+            self.habit.flag = self.habitFlag
+            
+            self.habit.archive.title = self.habit.title ?? "Title Error"
+            self.habit.archive.color = self.habit.color
+            self.habit.archive.flag = self.habit.flag
+            self.habit.archive.priority = self.habit.priority
+            self.habit.archive.reminder = self.habit.reminder
+            self.habit.archive.habit = self.habit
+            
+            self.habitDelegate.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
         } else {
+            self.habit.days = self.habitDays
             var statuses = [Status]()
             for day in self.habit.days {
                 if day {
@@ -248,6 +297,31 @@ class NewHabitDetailTableViewController: UITableViewController {
                 }
             }
             self.habit.statuses = statuses
+            self.habit.priority = self.habitPriority
+            self.habit.reminder = self.habitReminder
+            self.habit.flag = self.habitFlag
+            self.habit.dateCreated = CalUtility.getCurrentDate()
+            self.habit.buttonState = false
+            self.habit.uniqueID = UUID().uuidString
+            
+            let initialArchive = Archive(context: self.persistenceManager.context)
+            initialArchive.title = self.habit.title ?? "Error"
+            initialArchive.color = self.habit.color
+            initialArchive.habit = self.habit
+            initialArchive.flag = self.habit.flag
+            initialArchive.priority = self.habit.priority
+            initialArchive.reminder = self.habit.reminder
+            initialArchive.active = true
+            initialArchive.successRate = 100.0
+            initialArchive.completedTotal = 0
+            initialArchive.failedTotal = 0
+            initialArchive.incompleteTotal = Int64(self.habit.days.filter({ $0 == true }).count)
+            initialArchive.currentWeekNumber = 1
+            
+            initialArchive.createNewArchivedHabit(withStatuses: self.habit.statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
+            self.habit.archive = initialArchive
+            
+            self.habitDelegate.add(habit: self.habit)
         }
     }
     
@@ -260,18 +334,30 @@ class NewHabitDetailTableViewController: UITableViewController {
         
         if self.editMode {
             saveHabitData()
-            self.habitDelegate.update(habit: self.habit, deleteNotifications: (false, [false]), updateNotifications: false)
         } else {
             self.habit = Habit(context: self.persistenceManager.context)
             saveHabitData()
-            self.habitDelegate.add(habit: self.habit)
         }
         
         DispatchQueue.main.async { self.dismiss(animated: true) }
     }
     
     @objc func finishButtonTapped() {
-        DispatchQueue.main.async { self.dismiss(animated: true) }
+        DispatchQueue.main.async {
+            let deleteVC = UIAlertController(title: "Are you sure you want to finish this habit?",
+                                             message: "Finishing a habit removes it from Habits and archives it in History.",
+                                             preferredStyle: .alert)
+            deleteVC.view.tintColor = .systemGreen
+            deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                if let habitToDelete = self.habit {
+                    self.habitDelegate.finish(habit: habitToDelete)
+                    self.dismiss(animated: true)
+                }
+            })
+            deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            self.present(deleteVC, animated: true)
+        }
     }
     
     @objc func cancelButtonTapped() {

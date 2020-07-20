@@ -51,8 +51,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
         let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         navigationItem.rightBarButtonItems = [newButton, sortButton]
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(notifications))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Habits", style: .plain, target: self, action: #selector(printHabits))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(notifications))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Habits", style: .plain, target: self, action: #selector(printHabits))
 
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
@@ -77,13 +77,13 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         print(habits)
     }
     
-//    @objc func notifications() {
-//        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
-//            requests.forEach { (request) in
-//                print(request)
-//            }
-//        }
-//    }
+    @objc func notifications() {
+        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
+            requests.forEach { (request) in
+                print(request)
+            }
+        }
+    }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 80)
