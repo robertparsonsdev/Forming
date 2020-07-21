@@ -8,13 +8,13 @@
 
 import UIKit
 
-class NewHabitDetailTableViewController: UITableViewController {
+class HabitDetailTableViewController: UITableViewController {
     private let headerReuseIdentifier = "header"
     private let cellReuseIdentifier = "cell"
     
     private let persistenceManager: PersistenceService
     private let habitDelegate: HabitDetailDelegate
-    private var editMode: Bool = false
+    private var editMode: Bool
     private var habit: Habit!
     
     private var habitTitle: String?
@@ -67,6 +67,7 @@ class NewHabitDetailTableViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UITableView Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         title = self.editMode ? "Habit Details" : "New Habit"
@@ -188,12 +189,7 @@ class NewHabitDetailTableViewController: UITableViewController {
         switch indexPath.section {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
-            case FirstSection.goal.rawValue:
-                let goalView = GoalViewController(goal: 0)
-                if let parentView = tableView.findViewController() as? HabitDetailViewController {
-                    goalView.setSaveDelegate(delegate: parentView.self)
-                }
-                self.navigationController?.pushViewController(goalView, animated: true)
+            case FirstSection.goal.rawValue: print("goal")
             case FirstSection.tracking.rawValue: print("tracking")
             default: ()
             }
@@ -222,7 +218,7 @@ class NewHabitDetailTableViewController: UITableViewController {
     }
     
     // MARK: - Functions
-    func presentAlert() {
+    func presentIncompleteAlert() {
         let alert = UIAlertController(title: "Incomplete Habit", message: "Please ensure that you have a color and at least one day selected.", preferredStyle: .alert)
         alert.view.tintColor = .systemGreen
         alert.addAction(UIAlertAction(title: "Okay", style: .default))
@@ -349,7 +345,7 @@ class NewHabitDetailTableViewController: UITableViewController {
     // MARK: - Selectors
     @objc func saveButtonTapped() {
         guard !self.habitDays.allSatisfy( { $0 == false } ), self.habitColor != nil else {
-            self.presentAlert()
+            self.presentIncompleteAlert()
             return
         }
         
@@ -371,10 +367,8 @@ class NewHabitDetailTableViewController: UITableViewController {
             deleteVC.view.tintColor = .systemGreen
             deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
                 guard let self = self else { return }
-                if let habitToDelete = self.habit {
-                    self.habitDelegate.finish(habit: habitToDelete)
-                    self.dismiss(animated: true)
-                }
+                self.habitDelegate.finish(habit: self.habit)
+                self.dismiss(animated: true)
             })
             deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             self.present(deleteVC, animated: true)
@@ -398,7 +392,7 @@ class NewHabitDetailTableViewController: UITableViewController {
 }
 
 // MARK: - Delegates
-extension NewHabitDetailTableViewController: HabitDetailHeaderDelegate {
+extension HabitDetailTableViewController: HabitDetailHeaderDelegate {
     func send(title: String?) {
         self.habitTitle = title
     }
@@ -412,7 +406,7 @@ extension NewHabitDetailTableViewController: HabitDetailHeaderDelegate {
     }
 }
 
-extension NewHabitDetailTableViewController: DetailTextLabelDelegate {
+extension HabitDetailTableViewController: DetailTextLabelDelegate {
     func update(text: String, data: Any?, atSection section: Int, andRow row: Int) {
         tableView.cellForRow(at: IndexPath(row: row, section: section))?.detailTextLabel?.text = text
         switch section {

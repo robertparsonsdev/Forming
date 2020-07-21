@@ -138,6 +138,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
         if self.titleTextField.isFirstResponder { self.titleTextField.resignFirstResponder() }
         DispatchQueue.main.async { self.haptics.selectionChanged() }
         let tag = sender.tag
+        
         if sender.isSelected == true {
             sender.isSelected = false
             self.delegate.send(day: tag, andFlag: sender.isSelected)
