@@ -59,7 +59,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
             let button = FormingDayButton(title: day, tag: index, width: 40)
             button.setAttributedTitle(NSAttributedString(string: day, attributes: thinAttribute), for: .normal)
             button.setAttributedTitle(NSAttributedString(string: day, attributes: heavyAttribute), for: .selected)
-            button.setBackgroundColor(color: .systemFill, forState: .selected)
+            button.setBackgroundColor(color: .tertiarySystemFill, forState: .selected)
             button.addTarget(self, action: #selector(dayButtonTapped), for: .touchUpInside)
             daysStackView.addArrangedSubview(button)
         }
@@ -97,7 +97,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
         addSubview(bottomColorsStackView)
         bottomColorsStackView.anchor(top: topColorsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 10, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 40)
         addSubview(colorSelectionLabel)
-        colorSelectionLabel.anchor(top: bottomColorsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 5, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 25)
+        colorSelectionLabel.anchor(top: bottomColorsStackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 25)
     }
     
     // MARK: - Setters

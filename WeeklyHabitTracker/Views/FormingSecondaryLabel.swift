@@ -12,14 +12,26 @@ class FormingSecondaryLabel: UILabel {
 
     init(text: String) {
         super.init(frame: .zero)
-        configureLabel(withText: text)
+        
+        configureLabel()
+        set(text: text)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        configureLabel()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureLabel(withText text: String) {
+    func set(text: String) {
+        self.text = text
+    }
+    
+    func configureLabel() {
         self.text = text
         self.textAlignment = .center
         self.numberOfLines = 0

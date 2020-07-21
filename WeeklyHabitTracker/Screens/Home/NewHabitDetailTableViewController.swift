@@ -96,6 +96,13 @@ class NewHabitDetailTableViewController: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch section {
+        case SectionNumber.secondSection.rawValue: return 50
+        default: return 0
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch section {
         case SectionNumber.firstSection.rawValue:
@@ -107,6 +114,20 @@ class NewHabitDetailTableViewController: UITableViewController {
                 header.set(color: self.habit.color)
             }
             return header
+        default: return UIView()
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let dateCreatedLabel = FormingSecondaryLabel()
+        switch section {
+        case SectionNumber.secondSection.rawValue:
+            if self.editMode {
+                dateCreatedLabel.set(text: "Date Created: \(CalUtility.getDateAsString(date: self.habit.dateCreated))")
+            } else {
+                dateCreatedLabel.set(text: "Date Created: \(CalUtility.getDateAsString(date: CalUtility.getCurrentDate()))")
+            }
+            return dateCreatedLabel
         default: return UIView()
         }
     }
