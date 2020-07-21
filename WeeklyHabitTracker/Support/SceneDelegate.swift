@@ -50,6 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getPersistenceService().save()
+        appDelegate.saveDate()
         appDelegate.scheduleAppRefresh()
     }
 

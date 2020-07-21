@@ -81,9 +81,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
+        self.persistenceService.save()
+    }
+    
+    func saveDate() {
         self.oldDate = CalUtility.getCurrentDate()
         self.defaults.set(self.oldDate, forKey: self.oldDateKey)
-        self.persistenceService.save()
     }
     
     func scheduleAppRefresh() {

@@ -51,8 +51,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
         let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         navigationItem.rightBarButtonItems = [newButton, sortButton]
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(notifications))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNotifications))
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Habits", style: .plain, target: self, action: #selector(printHabits))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Archived Habits", style: .plain, target: self, action: #selector(printArchivedHabits))
 
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
@@ -77,7 +78,20 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         print(habits)
     }
     
-    @objc func notifications() {
+    @objc func printArchivedHabits() {
+        var archivedHabits = self.persistenceManager.fetch(ArchivedHabit.self)
+        archivedHabits.sort { (one, two) -> Bool in
+            return one.archive.title < two.archive.title
+        }
+        print(archivedHabits.count)
+        archivedHabits.forEach( {
+            print($0.archive.title)
+            print($0.startDate)
+            print()
+        } )
+    }
+    
+    @objc func printNotifications() {
         self.userNotificationCenter.getPendingNotificationRequests { (requests) in
             requests.forEach { (request) in
                 print(request)
