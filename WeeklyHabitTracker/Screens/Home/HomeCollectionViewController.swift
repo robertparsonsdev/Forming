@@ -247,7 +247,6 @@ extension HomeCollectionViewController: HabitDetailDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-//        let editHabitVC = HabitDetailViewController(persistenceManager: persistenceManager, delegate: self)
         let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
         navController.navigationBar.tintColor = .systemGreen

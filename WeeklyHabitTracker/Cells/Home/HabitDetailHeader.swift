@@ -59,7 +59,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
             let button = FormingDayButton(title: day, tag: index, width: 40)
             button.setAttributedTitle(NSAttributedString(string: day, attributes: thinAttribute), for: .normal)
             button.setAttributedTitle(NSAttributedString(string: day, attributes: heavyAttribute), for: .selected)
-            button.setBackgroundColor(color: .tertiarySystemFill, forState: .selected)
+            button.setBackgroundColor(color: .secondarySystemFill, forState: .selected)
             button.addTarget(self, action: #selector(dayButtonTapped), for: .touchUpInside)
             daysStackView.addArrangedSubview(button)
         }
