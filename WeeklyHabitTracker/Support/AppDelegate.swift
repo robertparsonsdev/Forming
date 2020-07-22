@@ -14,7 +14,7 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     private var habits: [Habit]!
     private var dateClosed: Date!
-    private let dateKey = "dateClosedKey"
+    private let dateClosedKey = "dateClosedKey"
     private let defaults = UserDefaults.standard
     private let persistenceService = PersistenceService.shared
     private let notificationCenter = NotificationCenter.default
@@ -39,11 +39,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
+        // for next update
+        self.defaults.removeObject(forKey: "oldDateKey")
+        self.defaults.removeObject(forKey: "date")
+        self.defaults.removeObject(forKey: "currentDateKey")
+        
         return true
     }
     
     @objc func didBecomeActive() {
-        if let date = self.defaults.object(forKey: self.dateKey) as? Date {
+        if let date = self.defaults.object(forKey: self.dateClosedKey) as? Date {
             if !Calendar.current.isDateInToday(date) {
                 self.habits = self.persistenceService.fetch(Habit.self)
                 let elapsed = CalUtility.getDaysElapsed(fromOldDate: date, toCurrentDate: CalUtility.getCurrentDate())
@@ -54,22 +59,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.notificationCenter.post(name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
                 
                 self.dateClosed = CalUtility.getCurrentDate()
-                self.defaults.set(self.dateClosed, forKey: self.dateKey)
-                
-                self.scheduleLocalNotification(withTitle: "Day Change Refresh")
-            } else {
-                self.scheduleLocalNotification(withTitle: "Do Nothing Refresh")
+                self.defaults.set(self.dateClosed, forKey: self.dateClosedKey)
             }
         }
     }
     
     @objc func didEnterBackground() {
         self.dateClosed = CalUtility.getCurrentDate()
-        self.defaults.set(self.dateClosed, forKey: self.dateKey)
+        self.defaults.set(self.dateClosed, forKey: self.dateClosedKey)
         
         self.persistenceService.save()
         
         self.scheduleAppRefresh()
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        self.persistenceService.save()
     }
     
     @objc func dayChangeNotification() {
@@ -101,10 +106,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        self.persistenceService.save()
     }
     
     func scheduleAppRefresh() {
