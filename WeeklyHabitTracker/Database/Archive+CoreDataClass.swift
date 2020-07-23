@@ -145,4 +145,30 @@ public class Archive: NSManagedObject {
         
         return newHabit
     }
+    
+    func stringRepresentation() -> String {
+        var stringRepresentation = String()
+        stringRepresentation = """
+        \ttitle: \(self.title)
+        \tcolor: \(self.color)
+        \tflag: \(self.flag)
+        \tpriority: \(self.priority)
+        \treminder: \(CalUtility.getTimeAsString(time: self.reminder))
+        \tactive: \(self.active)
+        \tsuccessRate: \(self.successRate)
+        \tcompletedTotal: \(self.completedTotal)
+        \tfailedTotal: \(self.failedTotal)
+        \tincompleteTotal: \(self.incompleteTotal)
+        \tcurrentWeekNumber: \(self.currentWeekNumber)
+        \tarchivedHabits: \n \(getArchivedHabitsAsString())
+        """
+        return stringRepresentation
+    }
+    
+    private func getArchivedHabitsAsString() -> String {
+        var string = ""
+        let archivedHabits = self.archivedHabits?.array as? [ArchivedHabit]
+        archivedHabits?.forEach( { string += "\($0.stringRepresentation())\n\n" } )
+        return string
+    }
 }

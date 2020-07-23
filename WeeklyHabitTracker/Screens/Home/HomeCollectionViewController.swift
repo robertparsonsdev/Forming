@@ -20,6 +20,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private let notificationCenter: NotificationCenter
     private let userNotificationCenter: UNUserNotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, Habit>!
+    private var diagnosticsString = String()
     
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     private let sortKey = "homeSort"
@@ -51,9 +52,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
         let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         navigationItem.rightBarButtonItems = [newButton, sortButton]
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNotifications))
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Habits", style: .plain, target: self, action: #selector(printHabits))
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Archived Habits", style: .plain, target: self, action: #selector(printArchivedHabits))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
 
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
@@ -73,30 +72,31 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
     }
     
-    @objc func printHabits() {
-        let habits = self.persistenceManager.fetch(Habit.self)
-        print(habits)
-    }
-    
-    @objc func printArchivedHabits() {
-        var archivedHabits = self.persistenceManager.fetch(ArchivedHabit.self)
-        archivedHabits.sort { (one, two) -> Bool in
-            return one.archive.title < two.archive.title
+    @objc func diagnostics() {
+        for habit in self.persistenceManager.fetch(Habit.self) {
+            self.diagnosticsString.append(habit.stringRepresentation())
         }
-        print(archivedHabits.count)
-        archivedHabits.forEach( {
-            print($0.archive.title)
-            print($0.startDate)
-            print()
-        } )
-    }
-    
-    @objc func printNotifications() {
         self.userNotificationCenter.getPendingNotificationRequests { (requests) in
             requests.forEach { (request) in
-                print(request)
+                self.diagnosticsString.append(request.description)
+            }
+            DispatchQueue.main.async {
+                let diagnosticsFile = self.getDocumentsDirectory().appendingPathComponent("diagnostics.txt")
+                do {
+                    try self.diagnosticsString.write(to: diagnosticsFile, atomically: true, encoding: String.Encoding.utf8)
+                } catch {
+                    return
+                }
+                let activityController = UIActivityViewController(activityItems: [diagnosticsFile], applicationActivities: nil)
+                self.present(activityController, animated: true)
+                self.diagnosticsString = String()
             }
         }
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

@@ -64,4 +64,28 @@ public class Habit: NSManagedObject {
     func updateButtonState(toState state: Bool) {
         self.buttonState = state
     }
+    
+    func stringRepresentation() -> String {
+        var stringRepresentation = String()
+        stringRepresentation = """
+        title: \(self.title!)
+        color: \(self.color)
+        days: \(self.days)
+        statuses: \(getStatusesAsString())
+        button state: \(self.buttonState)
+        flag: \(self.flag)
+        priority: \(self.priority)
+        reminder: \(CalUtility.getTimeAsString(time: self.reminder))
+        date created: \(self.dateCreated)
+        unique ID: \(self.uniqueID)
+        archive: \n\(self.archive.stringRepresentation())
+        """
+        return stringRepresentation
+    }
+    
+    private func getStatusesAsString() -> String {
+        var string = ""
+        self.statuses.forEach( { string += "\(String($0.rawValue)) " } )
+        return string
+    }
 }

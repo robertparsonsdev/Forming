@@ -45,12 +45,13 @@ class CalUtility {
         return days
     }
     
-    static func getTimeAsString(time: Date) -> String {
+    static func getTimeAsString(time: Date?) -> String {
+        guard let unwrappedTime = time else { return "nil" }
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"
         formatter.amSymbol = "AM"
         formatter.pmSymbol = "PM"
-        return formatter.string(from: time)
+        return formatter.string(from: unwrappedTime)
     }
     
     static func getDateAsString(date: Date) -> String {
