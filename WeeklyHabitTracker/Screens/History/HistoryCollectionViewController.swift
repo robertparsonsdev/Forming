@@ -173,6 +173,19 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
             updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
         }
     }
+    
+    func reset(archive: Archive) {
+        archive.reset()
+        self.persistenceManager.save()
+        self.notificationCenter.reload(habits: true, history: true, archiveDetail: true)
+    }
+    
+    func restore(archive: Archive) {
+        archive.restore()
+        self.persistenceManager.save()
+        self.userNotificationCenter.createNotificationRequest(forHabit: archive.habit)
+        self.notificationCenter.reload(habits: true, history: true)
+    }
 }
 
 extension HistoryCollectionViewController: CollapsibleHeaderDelegate {

@@ -205,16 +205,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
     
     @objc func resetArchive(sender: UIAlertAction) {
-        self.archive.reset()
-        self.persistenceManager.save()
-        self.notificationCenter.reload(habits: true, history: true)
-        reloadArchivedHabits()
+        self.delegate.reset(archive: self.archive)
     }
     
     @objc func restoreArchive(sender: UIAlertAction) {
-        self.archive.restore()
-        self.persistenceManager.save()
-        self.notificationCenter.reload(habits: true, history: true)
+        self.delegate.restore(archive: self.archive)
         navigationController?.popViewController(animated: true)
     }
 }
@@ -232,4 +227,6 @@ extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
 // MARK: - Protocols
 protocol ArchiveDetailDelegate {
     func delete(archive: Archive)
+    func reset(archive: Archive)
+    func restore(archive: Archive)
 }
