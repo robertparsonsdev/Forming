@@ -9,30 +9,31 @@
 import UIKit
 
 class ArchiveDetailHeaderCell: UICollectionViewCell {
-    private let percentLabel = UILabel()
-    private let percentSublabel = UILabel()
-    private var leftProgressView: FormingProgressView!
-    private var rightProgressView: FormingProgressView!
+//    private let percentLabel = UILabel()
+//    private let percentSublabel = UILabel()
+//    private var leftProgressView: FormingProgressView!
+//    private var rightProgressView: FormingProgressView!
     private let completedView = FormingStatView(title: "Completed", color: .systemGreen)
     private let failedView = FormingStatView(title: "Failed", color: .systemRed)
     private let incompleteView = FormingStatView(title: "Incomplete", color: .lightGray)
     private let totalView = FormingStatView(title: "Total", color: .label)
-    private var progressY: CGFloat!
-    private var progressX: CGFloat!
+    private let placeholder = FormingSecondaryLabel(text: "Almost Done 😌")
+//    private var progressY: CGFloat!
+//    private var progressX: CGFloat!
     
-    private let progressStackView = UIStackView()
+//    private let progressStackView = UIStackView()
     private let statsStackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
-        self.progressY = (self.frame.height - 10 - 65 - 15) / 2
-        self.progressX = self.frame.width - 30
+//        self.progressY = (self.frame.height - 10 - 65 - 15) / 2
+//        self.progressX = self.frame.width - 30
 //        configurePercentLabel()
 //        configurePercentSublabel()
-        configureLeftProgressView()
-        configureRightProgressView()
-        configureProgressStackView()
+//        configureLeftProgressView()
+//        configureRightProgressView()
+//        configureProgressStackView()
         configureStatsStackViews()
         configureConstraints()
     }
@@ -42,7 +43,7 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
     }
     
     func set(percentage: String) {
-        percentLabel.text = percentage
+//        percentLabel.text = percentage
     }
     
     func set(completed: Int64, failed: Int64, incomplete: Int64) {
@@ -52,14 +53,13 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
         totalView.set(stat: completed + failed + incomplete)
     }
     
-    func configureLeftProgressView() {
-        leftProgressView = FormingProgressView(center: CGPoint(x: self.progressX / 4, y: self.progressY))
-        
-    }
+//    func configureLeftProgressView() {
+//        leftProgressView = FormingProgressView(center: CGPoint(x: self.progressX / 4, y: self.progressY))
+//    }
     
-    func configureRightProgressView() {
-        rightProgressView = FormingProgressView(center: CGPoint(x: self.progressX / 4, y: self.progressY))
-    }
+//    func configureRightProgressView() {
+//        rightProgressView = FormingProgressView(center: CGPoint(x: self.progressX / 4, y: self.progressY))
+//    }
     
 //    func configurePercentLabel() {
 //        percentLabel.textAlignment = .center
@@ -73,14 +73,14 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
 //        percentSublabel.textColor = .secondaryLabel
 //    }
     
-    func configureProgressStackView() {
-        progressStackView.axis = .horizontal
-        progressStackView.alignment = .fill
-        progressStackView.distribution = .fillEqually
-        
-        progressStackView.addArrangedSubview(leftProgressView)
-        progressStackView.addArrangedSubview(rightProgressView)
-    }
+//    func configureProgressStackView() {
+//        progressStackView.axis = .horizontal
+//        progressStackView.alignment = .fill
+//        progressStackView.distribution = .fillEqually
+//
+//        progressStackView.addArrangedSubview(leftProgressView)
+//        progressStackView.addArrangedSubview(rightProgressView)
+//    }
     
     func configureStatsStackViews() {
         statsStackView.axis = .horizontal
@@ -100,9 +100,10 @@ class ArchiveDetailHeaderCell: UICollectionViewCell {
 //        redView.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 45, width: 135, height: 135)
         addSubview(statsStackView)
         statsStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 5, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 65)
-        
-        addSubview(progressStackView)
-        progressStackView.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+        addSubview(placeholder)
+        placeholder.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+//        addSubview(progressStackView)
+//        progressStackView.anchor(top: statsStackView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
         
 //        addSubview(statsStackView)
 //        statsStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 10, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 65)
