@@ -13,6 +13,7 @@ class HistorySectionHeader: UICollectionViewCell {
     private let collapseButton = UIButton()
     private var delegate: CollapsibleHeaderDelegate!
     private var section: HistorySection!
+    private var habitCount: Int?
     private var notificationCenter: NotificationCenter!
     private let selectionGenerator = UISelectionFeedbackGenerator()
 
@@ -30,8 +31,9 @@ class HistorySectionHeader: UICollectionViewCell {
     }
     
     // MARK: - Setters
-    func set(title: String) {
-        label.text = title
+    func set(title: String, andCount count: Int) {
+        self.habitCount = count
+        self.label.text = "\(count) \(title)"
     }
     
     func set(delegate: CollapsibleHeaderDelegate) {

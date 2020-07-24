@@ -23,13 +23,13 @@ struct SettingsSwiftUI: View {
                                   message: "Thank you so much for your support!",
                                   leftMemoji: Memoji(imageName: "thumbsup-left"),
                                   rightMemoji: Memoji(imageName: "thumbsup-right"),
-                                  backgroundColor: .systemGreen)
-                        TipButton(title: "$4.99 Tip",
+                                  backgroundColor: .systemBlue)
+                        TipButton(title: "$2.99 Tip",
                                   message: "You're awesome! Thank you so much!",
                                   leftMemoji: Memoji(imageName: "celebration-left"),
                                   rightMemoji: Memoji(imageName: "celebration-right"),
-                                  backgroundColor: .systemTeal)
-                        TipButton(title: "$9.99 Tip",
+                                  backgroundColor: .systemPink)
+                        TipButton(title: "$4.99 Tip",
                                   message: "Wow! I really appreciate it! Thank you!",
                                   leftMemoji: Memoji(imageName: "explosion-left"),
                                   rightMemoji: Memoji(imageName: "explosion-right"),

@@ -95,14 +95,20 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as? HistorySectionHeader
             switch indexPath.section {
             case 0:
-                header?.set(title: "Active Habits")
+                switch self.activeArchives.count {
+                case 1: header?.set(title: "Active Habit", andCount: self.activeArchives.count)
+                default: header?.set(title: "Active Habits", andCount: self.activeArchives.count)
+                }
                 header?.set(section: .activeHabits)
                 header?.set(buttonState: self.isActiveCollapsed)
             case 1:
-                header?.set(title: "Finished Habits")
+                switch self.finishedArchives.count {
+                case 1: header?.set(title: "Finished Habit", andCount: self.finishedArchives.count)
+                default: header?.set(title: "Finished Habits", andCount: self.finishedArchives.count)
+                }
                 header?.set(section: .finishedHabits)
                 header?.set(buttonState: self.isFinishedCollapsed)
-            default: header?.set(title: "Error")
+            default: header?.set(title: "Error", andCount: -1)
             }
             header?.set(delegate: self)
             header?.set(notificationCenter: self.notificationCenter)
@@ -167,10 +173,9 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
     func delete(archive: Archive) {
         self.userNotificationCenter.deleteNotificationRequests(forDays: archive.habit.days, andUniqueID: archive.habit.uniqueID)
         self.persistenceManager.delete(archive)
-        self.notificationCenter.reload(habits: true)
         if let index = self.archives.firstIndex(of: archive) {
             self.archives.remove(at: index)
-            updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
+            self.notificationCenter.reload(habits: true, history: true)
         }
     }
     
