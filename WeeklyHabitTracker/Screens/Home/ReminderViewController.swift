@@ -10,7 +10,7 @@ import UIKit
 
 class ReminderViewController: UIViewController {
     private var reminderDate: Date?
-    private let delegate: HabitDetailTableViewDelegate
+    private weak var delegate: HabitDetailTableViewDelegate?
     private let row: SecondSection
     private let section: SectionNumber
 
@@ -54,9 +54,9 @@ class ReminderViewController: UIViewController {
             else { self.reminderDate = nil }
             
             if let reminder = self.reminderDate {
-                self.delegate.update(text: CalUtility.getTimeAsString(time: reminder), data: reminder, atSection: self.section.rawValue, andRow: self.row.rawValue)
+                self.delegate?.update(text: CalUtility.getTimeAsString(time: reminder), data: reminder, atSection: self.section.rawValue, andRow: self.row.rawValue)
             } else {
-                self.delegate.update(text: "None", data: nil, atSection: self.section.rawValue, andRow: self.row.rawValue)
+                self.delegate?.update(text: "None", data: nil, atSection: self.section.rawValue, andRow: self.row.rawValue)
             }
         }
     }

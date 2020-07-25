@@ -13,7 +13,7 @@ class HabitDetailTableViewController: UITableViewController {
     private let cellReuseIdentifier = "cell"
     
     private let persistenceManager: PersistenceService
-    private let habitDelegate: HabitDetailDelegate
+    private weak var habitDelegate: HabitDetailDelegate?
     private var editMode: Bool
     private var habit: Habit!
     
@@ -313,7 +313,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habit.archive.reminder = self.habit.reminder
             self.habit.archive.habit = self.habit
             
-            self.habitDelegate.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
+            self.habitDelegate!.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
         } else {
             self.habit.days = self.habitDays
             var statuses = [Status]()
@@ -350,7 +350,7 @@ class HabitDetailTableViewController: UITableViewController {
             initialArchive.createNewArchivedHabit(withStatuses: self.habit.statuses, andDate: CalUtility.getCurrentDate(), andDay: CalUtility.getCurrentDay())
             self.habit.archive = initialArchive
             
-            self.habitDelegate.add(habit: self.habit)
+            self.habitDelegate!.add(habit: self.habit)
         }
     }
     
@@ -379,7 +379,7 @@ class HabitDetailTableViewController: UITableViewController {
             deleteVC.view.tintColor = .systemGreen
             deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
                 guard let self = self else { return }
-                self.habitDelegate.finish(habit: self.habit)
+                self.habitDelegate!.finish(habit: self.habit)
                 self.dismiss(animated: true)
             })
             deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -439,13 +439,13 @@ extension HabitDetailTableViewController: HabitDetailTableViewDelegate {
 }
 
 // MARK: - Protocols
-protocol HabitDetailDelegate  {
+protocol HabitDetailDelegate: AnyObject {
     func add(habit: Habit)
     func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
     func finish(habit: Habit)
 }
 
-protocol HabitDetailTableViewDelegate {
+protocol HabitDetailTableViewDelegate: AnyObject {
     func update(text: String, data: Any?, atSection section: Int, andRow row: Int)
 }
 

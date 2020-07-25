@@ -10,7 +10,7 @@ import UIKit
 
 class GoalViewController: UIViewController {
     private var goal: Int64
-    private let delegate: HabitDetailTableViewDelegate
+    private weak var delegate: HabitDetailTableViewDelegate?
     private let row: FirstSection
     private let section: SectionNumber
     
@@ -48,9 +48,9 @@ class GoalViewController: UIViewController {
         
         if parent == nil {
             if self.goal > 0 {
-                self.delegate.update(text: "\(self.goal)", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+                self.delegate?.update(text: "\(self.goal)", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
             } else {
-                self.delegate.update(text: "Never-ending", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+                self.delegate?.update(text: "Never-ending", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
             }
         }
     }
