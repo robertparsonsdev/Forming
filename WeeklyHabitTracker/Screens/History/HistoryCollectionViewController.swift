@@ -15,6 +15,8 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private var archives: [Archive] = []
     private var activeArchives: [Archive] = []
     private var finishedArchives: [Archive] = []
+    private var activeArchivesCount: Int = 0
+    private var finishedArchivesCount: Int = 0
     private let persistenceManager: PersistenceService
     private let defaults: UserDefaults
     private let notificationCenter: NotificationCenter
@@ -95,16 +97,16 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: sectionReuseIdentifier, for: indexPath) as? HistorySectionHeader
             switch indexPath.section {
             case 0:
-                switch self.activeArchives.count {
-                case 1: header?.set(title: "Active Habit", andCount: self.activeArchives.count)
-                default: header?.set(title: "Active Habits", andCount: self.activeArchives.count)
+                switch self.activeArchivesCount {
+                case 1: header?.set(title: "Active Habit", andCount: 1)
+                default: header?.set(title: "Active Habits", andCount: self.activeArchivesCount)
                 }
                 header?.set(section: .activeHabits)
                 header?.set(buttonState: self.isActiveCollapsed)
             case 1:
-                switch self.finishedArchives.count {
-                case 1: header?.set(title: "Finished Habit", andCount: self.finishedArchives.count)
-                default: header?.set(title: "Finished Habits", andCount: self.finishedArchives.count)
+                switch self.finishedArchivesCount {
+                case 1: header?.set(title: "Finished Habit", andCount: 1)
+                default: header?.set(title: "Finished Habits", andCount: self.finishedArchivesCount)
                 }
                 header?.set(section: .finishedHabits)
                 header?.set(buttonState: self.isFinishedCollapsed)
@@ -133,16 +135,20 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         var snapshot = NSDiffableDataSourceSnapshot<HistorySection, Archive>()
         if !self.archives.isEmpty {
             if isActiveCollapsed {
+                self.activeArchivesCount = archives.filter( { $0.active == true } ).count
                 self.activeArchives.removeAll()
             } else {
                 self.activeArchives = archives.filter( { $0.active == true } )
                 self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+                self.activeArchivesCount = self.activeArchives.count
             }
             if isFinishedCollapsed {
+                self.finishedArchivesCount = archives.filter( { $0.active == false } ).count
                 self.finishedArchives.removeAll()
             } else {
                 self.finishedArchives = archives.filter( { $0.active == false } )
                 self.finishedArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+                self.finishedArchivesCount = self.finishedArchives.count
             }
             
             snapshot.appendSections([.activeHabits, .finishedHabits])
