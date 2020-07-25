@@ -9,17 +9,17 @@
 import UIKit
 
 class ReminderViewController: UIViewController {
-    private let delegate: DetailTextLabelDelegate
+    private var reminderDate: Date?
+    private let delegate: HabitDetailTableViewDelegate
     private let row: SecondSection
     private let section: SectionNumber
-    private var reminderDate: Date?
 
     private let reminderLabel = FormingPickerLabel()
     private let toggle = UISwitch()
     private let explanationLabel = FormingSecondaryLabel(text: "Set a time to be reminded at on days this habit is supposed to be completed.")
     private let picker = UIDatePicker()
     
-    init(reminder: Date?, delegate: DetailTextLabelDelegate, row: SecondSection, section: SectionNumber) {
+    init(reminder: Date?, delegate: HabitDetailTableViewDelegate, row: SecondSection, section: SectionNumber) {
         self.reminderDate = reminder
         self.delegate = delegate
         self.row = row

@@ -40,9 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.notificationCenter.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         // for next update
-        self.defaults.removeObject(forKey: "oldDateKey")
-        self.defaults.removeObject(forKey: "date")
-        self.defaults.removeObject(forKey: "currentDateKey")
+//        let habits = self.persistenceService.fetch(Habit.self)
+//        for habit in habits {
+//            habit.goal = 0
+//        }
         
         return true
     }

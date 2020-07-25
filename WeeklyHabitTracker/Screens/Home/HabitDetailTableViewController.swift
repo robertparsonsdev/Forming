@@ -20,7 +20,7 @@ class HabitDetailTableViewController: UITableViewController {
     private var habitTitle: String?
     private var habitDays: [Bool] = [false, false, false, false, false, false, false]
     private var habitColor: Int64?
-    private var habitGoal: Int64? = nil
+    private var habitGoal: Int64 = 0
     private var habitTracking: Bool = true
     private var habitPriority: Int64 = 0
     private var habitFlag: Bool = false
@@ -45,7 +45,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habitTitle = editingHabit.title
             self.habitDays = editingHabit.days
             self.habitColor = editingHabit.color
-//            self.habitGoal =
+            self.habitGoal = editingHabit.goal
 //            self.habitTracking =
             self.habitPriority = editingHabit.priority
             self.habitFlag = editingHabit.flag
@@ -150,12 +150,20 @@ class HabitDetailTableViewController: UITableViewController {
             case FirstSection.goal.rawValue:
                 cell.textLabel?.text = "Goal"
                 cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
-                cell.detailTextLabel?.text = "Never-ending"
+                if self.habitGoal > 0 {
+                    cell.detailTextLabel?.text = "\(self.habitGoal)"
+                } else {
+                    cell.detailTextLabel?.text = "Never-ending"
+                }
                 cell.accessoryType = .disclosureIndicator
             case FirstSection.tracking.rawValue:
                 cell.textLabel?.text = "Tracking"
                 cell.imageView?.image = UIImage(named: "xmark.circle", in: nil, with: self.largeConfig)
-                cell.detailTextLabel?.text = "On"
+                if self.habitTracking {
+                    cell.detailTextLabel?.text = "On"
+                } else {
+                    cell.detailTextLabel?.text = "Off"
+                }
                 cell.accessoryType = .disclosureIndicator
             default: ()
             }
@@ -189,7 +197,9 @@ class HabitDetailTableViewController: UITableViewController {
         switch indexPath.section {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
-            case FirstSection.goal.rawValue: print("goal")
+            case FirstSection.goal.rawValue:
+                let goalView = GoalViewController(goal: self.habitGoal, delegate: self, row: .goal, section: .firstSection)
+                self.navigationController?.pushViewController(goalView, animated: true)
             case FirstSection.tracking.rawValue: print("tracking")
             default: ()
             }
@@ -291,6 +301,7 @@ class HabitDetailTableViewController: UITableViewController {
                 self.habit.archive.updateCurrentArchivedHabit(withStatuses: statuses)
             }
             
+            self.habit.goal = self.habitGoal
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
@@ -314,6 +325,7 @@ class HabitDetailTableViewController: UITableViewController {
                 }
             }
             self.habit.statuses = statuses
+            self.habit.goal = 0
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
@@ -406,13 +418,13 @@ extension HabitDetailTableViewController: HabitDetailHeaderDelegate {
     }
 }
 
-extension HabitDetailTableViewController: DetailTextLabelDelegate {
+extension HabitDetailTableViewController: HabitDetailTableViewDelegate {
     func update(text: String, data: Any?, atSection section: Int, andRow row: Int) {
         tableView.cellForRow(at: IndexPath(row: row, section: section))?.detailTextLabel?.text = text
         switch section {
         case SectionNumber.firstSection.rawValue:
             switch row {
-            case FirstSection.goal.rawValue: self.habitGoal = data as? Int64
+            case FirstSection.goal.rawValue: self.habitGoal = data as! Int64
             case FirstSection.tracking.rawValue: self.habitTracking = data as! Bool
             default: ()
             }
@@ -433,7 +445,7 @@ protocol HabitDetailDelegate  {
     func finish(habit: Habit)
 }
 
-protocol DetailTextLabelDelegate {
+protocol HabitDetailTableViewDelegate {
     func update(text: String, data: Any?, atSection section: Int, andRow row: Int)
 }
 

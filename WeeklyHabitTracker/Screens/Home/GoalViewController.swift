@@ -9,17 +9,23 @@
 import UIKit
 
 class GoalViewController: UIViewController {
-    private var updateDelegate: UpdateGoalDelegate?
-    private var saveDelegate: SaveGoalDelegate?
-    private var goal: Int64?
+    private var goal: Int64
+    private let delegate: HabitDetailTableViewDelegate
+    private let row: FirstSection
+    private let section: SectionNumber
     
-    private let goalTextField = FormingTextField(placeholder: "Enter a Goal", keyboardType: .decimalPad, returnKeyType: .done)
+    private let goalTextField = FormingTextField(placeholder: "Enter a goal", keyboardType: .numberPad, returnKeyType: .done)
     private let toggle = UISwitch()
-    private let explanationLabel = FormingSecondaryLabel(text: "Set a goal to be notified when you reach a certain number of completed days for this habit. By default, habit goals are never-ending. \n\nProgress towards your goal can be checked in History.")
+    private let explanationLabel = FormingSecondaryLabel(text: "Set a goal to be notified when you reach a certain number of completed days for this habit. Progress towards your goal can be checked in History.\n\nBy default, goals are never-ending. But a habit can be finished at any time by tapping the checkmark on that habit's Habit Detail screen.")
+    private var toolBar: UIToolbar!
 
-    init(goal: Int64?) {
-        super.init(nibName: nil, bundle: nil)
+    init(goal: Int64, delegate: HabitDetailTableViewDelegate, row: FirstSection, section: SectionNumber) {
         self.goal = goal
+        self.delegate = delegate
+        self.row = row
+        self.section = section
+        
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -31,6 +37,7 @@ class GoalViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Goal"
         
+        configureToolbar()
         configureTextField()
         configureToggle()
         configureConstraints()
@@ -38,37 +45,42 @@ class GoalViewController: UIViewController {
     
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
+        
         if parent == nil {
-            updateDelegate?.update(goal: self.goal)
-            saveDelegate?.save(goal: self.goal)
+            if self.goal > 0 {
+                self.delegate.update(text: "\(self.goal)", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+            } else {
+                self.delegate.update(text: "Never-ending", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+            }
         }
     }
     
-    func setUpdateDelegate(delegate: UpdateGoalDelegate) {
-        self.updateDelegate = delegate
-    }
-    
-    func setSaveDelegate(delegate: SaveGoalDelegate) {
-        self.saveDelegate = delegate
-    }
-    
     func configureTextField() {
-        if let goal = self.goal {
-            self.goalTextField.text = "\(goal)"
+        goalTextField.inputAccessoryView = self.toolBar
+        if self.goal > 0 {
+            self.goalTextField.text = "\(self.goal)"
         } else {
             self.goalTextField.isEnabled = false
-            self.goalTextField.placeholder = "Never-ending"
+            self.goalTextField.text = "Never-ending"
         }
     }
     
     func configureToggle() {
-        if self.goal != nil {
+        if self.goal > 0 {
             toggle.isOn = true
         } else {
             toggle.isOn = false
         }
         
         toggle.addTarget(self, action: #selector(toggleTapped), for: .valueChanged)
+    }
+    
+    func configureToolbar() {
+        toolBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: view.frame.width, height: 30)))
+        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+        saveButton.tintColor = .systemGreen
+        toolBar.setItems([UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil), saveButton], animated: false)
+        toolBar.sizeToFit()
     }
     
     func configureConstraints() {
@@ -80,27 +92,45 @@ class GoalViewController: UIViewController {
         view.addSubview(explanationLabel)
         explanationLabel.anchor(top: goalTextField.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 20, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 0)
     }
+    
+    func presentIncompleteAlert(withTitle title: String, andMessage message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: "Okay", style: .default))
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
 
     @objc func toggleTapped(sender: UISwitch) {
         if sender.isOn {
+            if goalTextField.text == "Never-ending" {
+                goalTextField.text = ""
+            }
             goalTextField.isEnabled = true
             goalTextField.becomeFirstResponder()
-            goalTextField.placeholder = "Enter a Goal"
-            self.goal = 1
         } else {
             goalTextField.isEnabled = false
             goalTextField.resignFirstResponder()
-            goalTextField.text = ""
-            goalTextField.placeholder = "Never-ending"
-            self.goal = nil
+            goalTextField.text = "Never-ending"
+            self.goal = 0
         }
     }
-}
-
-protocol UpdateGoalDelegate {
-    func update(goal: Int64?)
-}
-
-protocol SaveGoalDelegate {
-    func save(goal: Int64?)
+    
+    @objc func saveButtonTapped() {
+        if let text = self.goalTextField.text {
+            if let goal = Int64(text) {
+                guard goal > 0 else {
+                    presentIncompleteAlert(withTitle: "Cannot Be 0", andMessage: "A goal must be greater than 0.")
+                    return
+                }
+                self.goal = goal
+                self.view.endEditing(true)
+            } else {
+                presentIncompleteAlert(withTitle: "Not a Number", andMessage: "Please ensure that you have entered a valid integer in the text field.")
+            }
+        } else {
+            presentIncompleteAlert(withTitle: "Empty Text Field", andMessage: "Please ensure that you have entered a valid integer in the text field.")
+        }
+    }
 }
