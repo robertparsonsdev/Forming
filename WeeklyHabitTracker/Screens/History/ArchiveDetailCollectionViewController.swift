@@ -76,7 +76,12 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 270)
+//        let indexPath = IndexPath(row: 0, section: 0)
+//        let headerView = self.dataSource.collectionView(self.collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+//        return headerView.systemLayoutSizeFitting(CGSize(width: self.collectionView.frame.width, height: UIView.layoutFittingCompressedSize.height),
+//        withHorizontalFittingPriority: .required,
+//        verticalFittingPriority: .fittingSizeLevel)
+        return CGSize(width: view.frame.width, height: collectionView.frame.width / 2 + 60)
     }
     
     override func willMove(toParent parent: UIViewController?) {
