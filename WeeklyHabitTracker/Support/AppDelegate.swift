@@ -44,11 +44,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        for habit in habits {
 //            habit.goal = 0
 //        }
-        let archives = self.persistenceService.fetch(Archive.self)
-        for archive in archives {
-            archive.successRate /= 100.0
-        }
-        persistenceService.save()
+//        let archives = self.persistenceService.fetch(Archive.self)
+//        for archive in archives {
+//            archive.successRate = 0
+//            let total = Double(archive.completedTotal + archive.failedTotal)
+//            if total != 0 { archive.successRate = Double(archive.completedTotal) / total }
+//            else { archive.successRate = 1.0 }
+//            print(archive.successRate)
+//        }
+//        persistenceService.save()
         
         return true
     }
