@@ -44,6 +44,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        for habit in habits {
 //            habit.goal = 0
 //        }
+        let archives = self.persistenceService.fetch(Archive.self)
+        for archive in archives {
+            archive.successRate /= 100.0
+        }
+        persistenceService.save()
         
         return true
     }

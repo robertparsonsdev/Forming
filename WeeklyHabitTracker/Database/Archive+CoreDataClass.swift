@@ -91,8 +91,8 @@ public class Archive: NSManagedObject {
         }
         
         let total = Double(self.completedTotal + self.failedTotal)
-        if total != 0 { self.successRate = Double(self.completedTotal) / total * 100 }
-        else { self.successRate = 100.0 }
+        if total != 0 { self.successRate = Double(self.completedTotal) / total }
+        else { self.successRate = 1.0 }
     }
     
     func createNewArchivedHabit(withStatuses statuses: [Status], andDate date: Date, andDay day: Int) {

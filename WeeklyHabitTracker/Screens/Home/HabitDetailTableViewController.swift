@@ -341,7 +341,7 @@ class HabitDetailTableViewController: UITableViewController {
             initialArchive.priority = self.habit.priority
             initialArchive.reminder = self.habit.reminder
             initialArchive.active = true
-            initialArchive.successRate = 100.0
+            initialArchive.successRate = 1.0
             initialArchive.completedTotal = 0
             initialArchive.failedTotal = 0
             initialArchive.incompleteTotal = Int64(self.habit.days.filter({ $0 == true }).count)

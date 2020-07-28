@@ -81,7 +81,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 //        return headerView.systemLayoutSizeFitting(CGSize(width: self.collectionView.frame.width, height: UIView.layoutFittingCompressedSize.height),
 //        withHorizontalFittingPriority: .required,
 //        verticalFittingPriority: .fittingSizeLevel)
-        return CGSize(width: view.frame.width, height: collectionView.frame.width / 2 + 60)
+//        return CGSize(width: view.frame.width, height: collectionView.frame.width / 2 + 60)
+        return CGSize(width: view.frame.width, height: 200)
     }
     
     override func willMove(toParent parent: UIViewController?) {
@@ -140,8 +141,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         
         self.dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) -> UICollectionReusableView? in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
-            header.set(percentage: String(format: "%.1f%%", self.archive.successRate))
             header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, incomplete: self.archive.incompleteTotal)
+            header.set(goal: self.archive.habit.goal)
+            header.set(completionRate: self.archive.successRate)
+            header.set(goalProgress: 0.5)
+            header.configureViews()
             return header
         }
     }
