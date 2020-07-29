@@ -16,36 +16,43 @@ class FormingProgressView: UIView {
     private let infoLabelOne = FormingSecondaryLabel()
     private let infoLabelTwo = FormingSecondaryLabel()
     
+    private let trackLayer = CAShapeLayer()
+    private let trackPath = UIBezierPath()
+    private let progressLayer = CAShapeLayer()
+    private let progressPath = UIBezierPath()
+    private let failedLayer = CAShapeLayer()
+    private let failedPath = UIBezierPath()
+    
     private let yPosition: CGFloat = 5.0
+    private var reloaded = false
     
     // MARK: - Initializers
-    init(startX: CGFloat, endX: CGFloat, progressRate: CGFloat) {
-        super.init(frame: .zero)
-
-        configurePercentLabel(withText: progressRate)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        configurePercentLabel()
         configureInfoButton()
-        
-        let trackLayer = createLayer(startX: startX, endX: endX, andColor: .tertiarySystemFill)
-        self.progressContainer.layer.addSublayer(trackLayer)
-        
-        let progressLayer = createLayer(startX: startX, endX: endX, andColor: .systemGreen)
-        self.progressContainer.layer.addSublayer(progressLayer)
-        animate(from: 0.0, to: progressRate, onLayer: progressLayer)
-
+        configureProgressContainer()
         configureConstraints()
     }
+    
+//    init(startX: CGFloat, endX: CGFloat, progressRate: CGFloat) {
+//        super.init(frame: .zero)
+//
+//        let trackLayer = addLayer(startX: startX, endX: endX, andColor: .tertiarySystemFill)
+//        self.progressContainer.layer.addSublayer(trackLayer)
+//
+//        let progressLayer = addLayer(startX: startX, endX: endX, andColor: .systemGreen)
+//        self.progressContainer.layer.addSublayer(progressLayer)
+//        animate(from: 0.0, to: progressRate, onLayer: progressLayer)
+//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: Configuration Functions
-    private func configurePercentLabel(withText rate: CGFloat) {
-        if Int(rate * 100) % 100 == 0 {
-            percentLabel.text = String(format: "%.0f%%", rate * 100)
-        } else {
-            percentLabel.text = String(format: "%.1f%%", rate * 100)
-        }
+    private func configurePercentLabel() {
         percentLabel.textAlignment = .center
         percentLabel.font = UIFont.systemFont(ofSize: 30, weight: .heavy)
     }
@@ -55,19 +62,21 @@ class FormingProgressView: UIView {
         infoButton.tintColor = .label
     }
     
-    private func createLayer(startX: CGFloat, endX: CGFloat, andColor color: UIColor) -> CAShapeLayer {
-        let path = UIBezierPath()
+    private func configureProgressContainer() {
+        progressContainer.layer.addSublayer(self.trackLayer)
+        progressContainer.layer.addSublayer(self.progressLayer)
+        progressContainer.layer.addSublayer(self.failedLayer)
+    }
+    
+    private func configureLayer(_ layer: CAShapeLayer, path: UIBezierPath, startX: CGFloat, endX: CGFloat, andColor color: UIColor) {
         path.move(to: CGPoint(x: startX, y: self.yPosition))
         path.addLine(to: CGPoint(x: endX, y: self.yPosition))
         
-        let layer = CAShapeLayer()
         layer.frame = path.bounds
         layer.path = path.cgPath
         layer.strokeColor = color.cgColor
         layer.lineWidth = 15
         layer.lineCap = .round
-        
-        return layer
     }
     
     private func configureConstraints() {
@@ -106,11 +115,29 @@ class FormingProgressView: UIView {
         infoLabelTwo.set(text: infoTwo)
     }
     
-    func addLayer(startX: CGFloat, endX: CGFloat, color: UIColor, rate: CGFloat) {
-        let layer = createLayer(startX: startX, endX: endX, andColor: color)
-        self.progressContainer.layer.addSublayer(layer)
-        animate(from: 0.0, to: rate, onLayer: layer)
+    func set(progressRate: CGFloat, startX: CGFloat, endX: CGFloat) {
+        self.progressContainer.layer.addSublayer(self.trackLayer)
+        configureLayer(self.trackLayer, path: self.trackPath, startX: startX, endX: endX, andColor: .tertiarySystemFill)
+
+        if self.reloaded {
+            self.progressLayer.removeAllAnimations()
+            self.progressLayer.removeFromSuperlayer()
+//            self.progressContainer.layer.addSublayer(self.progressLayer)
+        }
+        configureLayer(self.progressLayer, path: self.progressPath, startX: startX, endX: endX * progressRate, andColor: .systemGreen)
+        animate(from: 0.0, to: 1.0, onLayer: self.progressLayer)
+        self.reloaded = true
     }
+    
+    func set(failedRate: CGFloat, startX: CGFloat, endX: CGFloat) {
+        
+    }
+    
+//    func addLayer(startX: CGFloat, endX: CGFloat, color: UIColor, rate: CGFloat) {
+//        let layer = addLayer(startX: startX, endX: endX, andColor: color)
+//        self.progressContainer.layer.addSublayer(layer)
+//        animate(from: 0.0, to: rate, onLayer: layer)
+//    }
     
     // MARK: - Functions
     private func animate(from fromValue: CGFloat, to toValue: CGFloat, onLayer layer: CAShapeLayer) {

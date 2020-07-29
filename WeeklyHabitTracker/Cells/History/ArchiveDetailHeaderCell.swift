@@ -9,11 +9,15 @@
 import UIKit
 
 class ArchiveDetailHeaderCell: UICollectionReusableView {
-    private var completionProgressView: FormingProgressView!
-    private var goalProgressView: FormingProgressView!
+    private var completionProgressView = FormingProgressView()
+    private var goalProgressView = FormingProgressView()
+    private var endX: CGFloat = 0.0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.endX = self.frame.width - 55
+        
+        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -21,28 +25,25 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     }
     
     func set(completed: Int64, failed: Int64, completionRate: Double, goal: Int64) {
-        if completionProgressView != nil { completionProgressView.removeFromSuperview() }
-        completionProgressView = FormingProgressView(startX: 5.0, endX: self.frame.width - 55, progressRate: CGFloat(completionRate))
+        completionProgressView.set(progressRate: CGFloat(completionRate), startX: 5.0, endX: self.endX)
+        completionProgressView.set(percentLabel: Int(completionRate * 100) % 100 == 0 ? String(format: "%.0f%%", completionRate * 100) : String(format: "%.1f%%", completionRate * 100))
         completionProgressView.set(description: "Completion Rate")
         completionProgressView.set(infoOne: "\(completed) Completed")
         completionProgressView.set(infoTwo: "\(failed) Failed")
-        completionProgressView.addLayer(startX: self.frame.width - 55, endX: 5.0, color: .systemRed, rate: CGFloat(1.0 - completionRate))
+//        completionProgressView.addLayer(startX: self.frame.width - 55, endX: 5.0, color: .systemRed, rate: CGFloat(1.0 - completionRate))
         
-        if goalProgressView != nil { goalProgressView.removeFromSuperview() }
+        goalProgressView.set(description: "Goal Progress")
+        goalProgressView.set(infoOne: "\(completed) Completed")
         if goal == 0 {
-            goalProgressView = FormingProgressView(startX: 5.0, endX: self.frame.width - 55, progressRate: 0)
+            goalProgressView.set(progressRate: 0, startX: 5.0, endX: self.endX)
             goalProgressView.set(percentLabel: "N/A")
-            goalProgressView.set(description: "Goal Progress")
-            goalProgressView.set(infoOne: "\(completed) Completed")
             goalProgressView.set(infoTwo: "Goal: Never-ending")
         } else {
-            goalProgressView = FormingProgressView(startX: 5.0, endX: self.frame.width - 55, progressRate: CGFloat(completed) / CGFloat(goal))
-            goalProgressView.set(description: "Goal Progress")
-            goalProgressView.set(infoOne: "\(completed) Completed")
+            let goalRate = CGFloat(completed) / CGFloat(goal)
+            goalProgressView.set(progressRate: goalRate, startX: 5.0, endX: self.endX)
+            goalProgressView.set(percentLabel: Int(goalRate * 100) % 100 == 0 ? String(format: "%.0f%%", goalRate * 100) : String(format: "%.1f%%", goalRate * 100))
             goalProgressView.set(infoTwo: "Goal: \(goal)")
         }
-        
-        configureConstraints()
     }
     
     private func configureConstraints() {
