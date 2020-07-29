@@ -141,11 +141,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         
         self.dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) -> UICollectionReusableView? in
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
-            header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, incomplete: self.archive.incompleteTotal)
-            header.set(goal: self.archive.habit.goal)
-            header.set(completionRate: self.archive.successRate)
-            header.set(goalProgress: 0.5)
-            header.configureViews()
+            header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, completionRate: self.archive.successRate, goal: self.archive.habit.goal)
             return header
         }
     }
@@ -184,8 +180,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     
     // MARK: - Selectors
     @objc func reloadArchivedHabits() {
-        fetchArchivedHabits()
-        DispatchQueue.main.async { self.title = self.archive.title; self.collectionView.reloadData() }
+        DispatchQueue.main.async {
+            self.title = self.archive.title
+            self.configureDataSource()
+            self.fetchArchivedHabits()
+        }
     }
     
     @objc func sortButtonPressed() {

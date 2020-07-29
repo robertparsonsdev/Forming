@@ -9,12 +9,6 @@
 import UIKit
 
 class ArchiveDetailHeaderCell: UICollectionReusableView {
-    private var completed: Int64!
-    private var failed: Int64!
-    private var incomplete: Int64!
-    private var total: Int64!
-    private var goal: Int64!
-    
     private var completionProgressView: FormingProgressView!
     private var goalProgressView: FormingProgressView!
     
@@ -26,34 +20,28 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(completionRate: Double) {
-        completionProgressView = FormingProgressView(xPosition: self.frame.width - 55,
-                                                     progressRate: completionRate)
+    func set(completed: Int64, failed: Int64, completionRate: Double, goal: Int64) {
+        if completionProgressView != nil { completionProgressView.removeFromSuperview() }
+        completionProgressView = FormingProgressView(startX: 5.0, endX: self.frame.width - 55, progressRate: CGFloat(completionRate))
         completionProgressView.set(description: "Completion Rate")
-        completionProgressView.set(infoOne: "\(self.completed ?? -1) Completed")
-        completionProgressView.set(infoTwo: "\(self.failed ?? -1) Failed")
-    }
-    
-    func set(goalProgress: Double) {
-        goalProgressView = FormingProgressView(xPosition: self.frame.width - 55,
-                                               progressRate: goalProgress)
-        goalProgressView.set(description: "Goal Progress")
-        goalProgressView.set(infoOne: "\(self.completed ?? -1) Completed")
-        goalProgressView.set(infoTwo: "Goal: \(self.goal ?? -1)")
-    }
-    
-    func set(completed: Int64, failed: Int64, incomplete: Int64) {
-        self.completed = completed
-        self.failed = failed
-        self.incomplete = incomplete
-        self.total = completed + failed + incomplete
-    }
-    
-    func set(goal: Int64) {
-        self.goal = goal
-    }
-    
-    func configureViews() {
+        completionProgressView.set(infoOne: "\(completed) Completed")
+        completionProgressView.set(infoTwo: "\(failed) Failed")
+        completionProgressView.addLayer(startX: self.frame.width - 55, endX: 5.0, color: .systemRed, rate: CGFloat(1.0 - completionRate))
+        
+        if goalProgressView != nil { goalProgressView.removeFromSuperview() }
+        if goal == 0 {
+            goalProgressView = FormingProgressView(startX: 5.0, endX: self.frame.width - 55, progressRate: 0)
+            goalProgressView.set(percentLabel: "N/A")
+            goalProgressView.set(description: "Goal Progress")
+            goalProgressView.set(infoOne: "\(completed) Completed")
+            goalProgressView.set(infoTwo: "Goal: Never-ending")
+        } else {
+            goalProgressView = FormingProgressView(startX: 5.0, endX: self.frame.width - 55, progressRate: CGFloat(completed) / CGFloat(goal))
+            goalProgressView.set(description: "Goal Progress")
+            goalProgressView.set(infoOne: "\(completed) Completed")
+            goalProgressView.set(infoTwo: "Goal: \(goal)")
+        }
+        
         configureConstraints()
     }
     
