@@ -87,13 +87,10 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<HistorySection, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HistoryTitleCell
-            if archive.successRate == 1.0 {
-                cell?.setPercentLabelText(String(format: "%.0f%%", archive.successRate * 100))
-            } else {
-                cell?.setPercentLabelText(String(format: "%.1f%%", archive.successRate * 100))
-            }
-            cell?.setTitleLabelText(archive.title)
-            cell?.setBackgroundColor(FormingColors.getColor(fromValue: archive.color))
+            cell?.set(percent: archive.successRate == 1.0 ? String(format: "%.0f%%", archive.successRate * 100) : String(format: "%.1f%%", archive.successRate * 100))
+            cell?.set(detail: "Completion Rate")
+            cell?.set(title: archive.title)
+            cell?.set(color: FormingColors.getColor(fromValue: archive.color))
             return cell
         })
         
