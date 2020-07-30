@@ -24,7 +24,8 @@ class FormingProgressView: UIView {
     private let failedPath = UIBezierPath()
     
     private let yPosition: CGFloat = 5.0
-    private var reloaded = false
+    private var reload: Bool = false
+    private var compensate: Bool = false
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -35,17 +36,6 @@ class FormingProgressView: UIView {
         configureProgressContainer()
         configureConstraints()
     }
-    
-//    init(startX: CGFloat, endX: CGFloat, progressRate: CGFloat) {
-//        super.init(frame: .zero)
-//
-//        let trackLayer = addLayer(startX: startX, endX: endX, andColor: .tertiarySystemFill)
-//        self.progressContainer.layer.addSublayer(trackLayer)
-//
-//        let progressLayer = addLayer(startX: startX, endX: endX, andColor: .systemGreen)
-//        self.progressContainer.layer.addSublayer(progressLayer)
-//        animate(from: 0.0, to: progressRate, onLayer: progressLayer)
-//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -115,38 +105,38 @@ class FormingProgressView: UIView {
         infoLabelTwo.set(text: infoTwo)
     }
     
+    func set(trackStartX: CGFloat, trackEndX: CGFloat) {
+        configureLayer(self.trackLayer, path: self.trackPath, startX: trackStartX, endX: trackEndX, andColor: .tertiarySystemFill)
+    }
+    
     func set(progressRate: CGFloat, startX: CGFloat, endX: CGFloat) {
-        self.progressContainer.layer.addSublayer(self.trackLayer)
-        configureLayer(self.trackLayer, path: self.trackPath, startX: startX, endX: endX, andColor: .tertiarySystemFill)
-
-        if self.reloaded {
-            self.progressLayer.removeAllAnimations()
-            self.progressLayer.removeFromSuperlayer()
-//            self.progressContainer.layer.addSublayer(self.progressLayer)
-        }
-        configureLayer(self.progressLayer, path: self.progressPath, startX: startX, endX: endX * progressRate, andColor: .systemGreen)
-        animate(from: 0.0, to: 1.0, onLayer: self.progressLayer)
-        self.reloaded = true
+        if self.reload { self.progressPath.removeAllPoints() }
+        
+        configureLayer(self.progressLayer, path: self.progressPath, startX: startX, endX: endX, andColor: .systemGreen)
+        animate(from: 0.0, to: progressRate, onLayer: self.progressLayer)
+        self.reload = true
     }
     
     func set(failedRate: CGFloat, startX: CGFloat, endX: CGFloat) {
+        if self.reload { self.failedPath.removeAllPoints() }
         
+        configureLayer(self.failedLayer, path: self.failedPath, startX: startX, endX: endX, andColor: .systemRed)
+        animate(from: 0.0, to: failedRate, onLayer: self.failedLayer)
+        self.reload = true
     }
     
-//    func addLayer(startX: CGFloat, endX: CGFloat, color: UIColor, rate: CGFloat) {
-//        let layer = addLayer(startX: startX, endX: endX, andColor: color)
-//        self.progressContainer.layer.addSublayer(layer)
-//        animate(from: 0.0, to: rate, onLayer: layer)
-//    }
+    func set(compensate: Bool) {
+        self.compensate = compensate
+    }
     
     // MARK: - Functions
     private func animate(from fromValue: CGFloat, to toValue: CGFloat, onLayer layer: CAShapeLayer) {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         basicAnimation.fromValue = fromValue
-        if toValue == 1.0 {
-            basicAnimation.toValue = toValue
-        } else {
+        if self.compensate && toValue != 1.0 {
             basicAnimation.toValue = toValue - 0.02125
+        } else {
+            basicAnimation.toValue = toValue
         }
         basicAnimation.duration = CFTimeInterval((toValue / toValue) * 0.75)
         basicAnimation.fillMode = .forwards
