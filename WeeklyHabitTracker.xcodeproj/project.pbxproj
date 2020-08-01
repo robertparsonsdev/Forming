@@ -19,6 +19,8 @@
 		EE3A59F22495C720009E5D25 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3A59F12495C720009E5D25 /* HistorySection.swift */; };
 		EE3A59F42495C8B6009E5D25 /* HistorySectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3A59F32495C8B6009E5D25 /* HistorySectionHeader.swift */; };
 		EE4C55C724AE9176000AD61C /* FormingSecondaryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */; };
+		EE51D1CE24D4F76C009079A4 /* FormingAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51D1CD24D4F76C009079A4 /* FormingAlertViewController.swift */; };
+		EE51D1D024D4F947009079A4 /* UIViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51D1CF24D4F947009079A4 /* UIViewControllerExt.swift */; };
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
 		EE79D83724B3EF5600B46008 /* ViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */; };
 		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
@@ -74,6 +76,8 @@
 		EE3A59F12495C720009E5D25 /* HistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySection.swift; sourceTree = "<group>"; };
 		EE3A59F32495C8B6009E5D25 /* HistorySectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySectionHeader.swift; sourceTree = "<group>"; };
 		EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingSecondaryLabel.swift; sourceTree = "<group>"; };
+		EE51D1CD24D4F76C009079A4 /* FormingAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingAlertViewController.swift; sourceTree = "<group>"; };
+		EE51D1CF24D4F947009079A4 /* UIViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExt.swift; sourceTree = "<group>"; };
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExt.swift; sourceTree = "<group>"; };
 		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 				EEC926C7249E767B009C960A /* FormingStatView.swift */,
 				EE33081B24A3005B006C8D0A /* FormingProgressView.swift */,
 				EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */,
+				EE51D1CD24D4F76C009079A4 /* FormingAlertViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -246,6 +251,7 @@
 				EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */,
 				EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */,
 				EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */,
+				EE51D1CF24D4F947009079A4 /* UIViewControllerExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -378,6 +384,7 @@
 				EEEB97E6249452FB006DE24D /* Habit+CoreDataClass.swift in Sources */,
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
+				EE51D1CE24D4F76C009079A4 /* FormingAlertViewController.swift in Sources */,
 				EE91108524623F730021190C /* UIHelper.swift in Sources */,
 				EE9A71512458AFEA0082D135 /* Sorts.swift in Sources */,
 				EEF25A6524C2781A00C1CBFA /* HabitDetailTableViewController.swift in Sources */,
@@ -413,6 +420,7 @@
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
 				EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
+				EE51D1D024D4F947009079A4 /* UIViewControllerExt.swift in Sources */,
 				EE3A59F0249578ED009E5D25 /* ArchivedHabitDetailViewController.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,
 				EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */,

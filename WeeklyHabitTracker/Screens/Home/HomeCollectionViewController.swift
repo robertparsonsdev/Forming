@@ -67,7 +67,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         configureDataSource()
         
         fetchHabits()
-        
+                
         // Notifications observers
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
@@ -82,25 +82,27 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func diagnostics() {
-        for habit in self.persistenceManager.fetch(Habit.self) {
-            self.diagnosticsString.append(habit.stringRepresentation())
-        }
-        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
-            requests.forEach { (request) in
-                self.diagnosticsString.append(request.description)
-            }
-            DispatchQueue.main.async {
-                let diagnosticsFile = self.getDocumentsDirectory().appendingPathComponent("diagnostics.txt")
-                do {
-                    try self.diagnosticsString.write(to: diagnosticsFile, atomically: true, encoding: String.Encoding.utf8)
-                } catch {
-                    return
-                }
-                let activityController = UIActivityViewController(activityItems: [diagnosticsFile], applicationActivities: nil)
-                self.present(activityController, animated: true)
-                self.diagnosticsString = String()
-            }
-        }
+        presentAlertController(withTitle: "Test", andMessage: "Test")
+
+//        for habit in self.persistenceManager.fetch(Habit.self) {
+//            self.diagnosticsString.append(habit.stringRepresentation())
+//        }
+//        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
+//            requests.forEach { (request) in
+//                self.diagnosticsString.append(request.description)
+//            }
+//            DispatchQueue.main.async {
+//                let diagnosticsFile = self.getDocumentsDirectory().appendingPathComponent("diagnostics.txt")
+//                do {
+//                    try self.diagnosticsString.write(to: diagnosticsFile, atomically: true, encoding: String.Encoding.utf8)
+//                } catch {
+//                    return
+//                }
+//                let activityController = UIActivityViewController(activityItems: [diagnosticsFile], applicationActivities: nil)
+//                self.present(activityController, animated: true)
+//                self.diagnosticsString = String()
+//            }
+//        }
     }
     
     func getDocumentsDirectory() -> URL {
