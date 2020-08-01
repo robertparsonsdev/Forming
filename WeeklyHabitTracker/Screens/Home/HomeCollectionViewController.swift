@@ -56,7 +56,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
 
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
-        collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
+        collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)

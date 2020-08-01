@@ -56,7 +56,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         let menuButton = UIBarButtonItem(image: UIImage(named:"ellipsis.circle"), style: .plain, target: self, action: #selector(menuButtonPressed))
         navigationItem.rightBarButtonItems = [menuButton, sortButton]
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = ArchiveDetailSort(rawValue: sort as! String)! }
-        collectionView.collectionViewLayout = UIHelper.createSingleColumnFlowLayout(in: collectionView)
+        collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
 //        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
         // Register cell classes

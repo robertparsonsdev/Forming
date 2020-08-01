@@ -53,7 +53,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
         navigationController?.navigationBar.prefersLargeTitles = true
-        collectionView.collectionViewLayout = UIHelper.createTwoColumnFlowLayout(in: collectionView)
+        collectionView.collectionViewLayout = UIHelper.createHistoryFlowLayout(in: collectionView)
 
         self.collectionView.register(HistoryTitleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(HistorySectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionReuseIdentifier)
@@ -87,10 +87,16 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<HistorySection, Archive>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, archive) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HistoryTitleCell
-            cell?.set(percent: archive.successRate == 1.0 ? String(format: "%.0f%%", archive.successRate * 100) : String(format: "%.1f%%", archive.successRate * 100))
-            cell?.set(detail: "Completion Rate")
             cell?.set(title: archive.title)
             cell?.set(color: FormingColors.getColor(fromValue: archive.color))
+            cell?.set(completionRate: archive.successRate, text: archive.successRate == 1.0 ? String(format: "%.0f%%", archive.successRate * 100) : String(format: "%.1f%%", archive.successRate * 100))
+            let goal = archive.habit.goal
+            if goal == 0 {
+                cell?.set(goalRate: nil, text: "N/A")
+            } else {
+                let goalRate = CGFloat(archive.completedTotal) / CGFloat(archive.habit.goal)
+                cell?.set(goalRate: goalRate >= 1.0 ? 1.0: goalRate, text: goalRate == 1.0 ? String(format: "%.0f%%", goalRate * 100) : String(format: "%.1f%%", goalRate * 100))
+            }
             return cell
         })
         
