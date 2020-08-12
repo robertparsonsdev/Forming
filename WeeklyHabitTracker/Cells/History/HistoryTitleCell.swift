@@ -26,8 +26,8 @@ class HistoryTitleCell: UICollectionViewCell {
         configureTitleLabel()
         configure(percentLabel: compPercentLabel)
         configure(percentLabel: goalPercentLabel)
-        createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: .tertiaryLabel, progressView: compProgressView)
-        createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: .tertiaryLabel, progressView: goalProgressView)
+        createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: compProgressView)
+        createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: goalProgressView)
         configureConstraints()
     }
     

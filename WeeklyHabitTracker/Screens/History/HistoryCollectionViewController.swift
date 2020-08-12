@@ -176,8 +176,12 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     // MARK: - Selectors
     @objc func reloadArchives() {
-        fetchArchives()
-        DispatchQueue.main.async { self.collectionView.reloadData() }
+//        fetchArchives()
+//        DispatchQueue.main.async { self.collectionView.reloadData() }
+        DispatchQueue.main.async {
+            self.configureDataSource()
+            self.fetchArchives()
+        }
     }
 }
 
