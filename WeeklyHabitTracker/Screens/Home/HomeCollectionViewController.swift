@@ -267,6 +267,10 @@ extension HomeCollectionViewController: HabitCellDelegate {
         habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
         self.persistenceManager.save()
         self.notificationCenter.reload(history: true, archiveDetail: true, archivedHabitDetail: true)
+        
+        if habit.archive.completedTotal == habit.goal {
+            presentAlertController(withTitle: "Goal Reached!", andMessage: "Yay!")
+        }
     }
     
     func presentAlertController(with alert: UIAlertController) {

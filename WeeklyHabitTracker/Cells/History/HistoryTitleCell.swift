@@ -16,7 +16,7 @@ class HistoryTitleCell: UICollectionViewCell {
     private let goalProgressView = UIView()
     
     private let compDescriptionLabel = FormingSecondaryLabel(text: "Completion")
-    private let goalDescriptionLabel = FormingSecondaryLabel(text: "Goal")
+    private let goalDescriptionLabel = FormingSecondaryLabel(text: "To Goal")
     
     override init(frame: CGRect) {
         super.init(frame: frame)

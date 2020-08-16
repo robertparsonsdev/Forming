@@ -41,7 +41,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         if goal == 0 {
             goalProgressView.set(progressRate: CGFloat(goal), startX: self.startX, endX: self.endX)
             goalProgressView.set(percentLabel: "N/A")
-            goalProgressView.set(infoTwo: "Goal: Never-ending")
+            goalProgressView.set(infoTwo: "Goal: Off")
         } else {
             let goalRate = CGFloat(completed) / CGFloat(goal)
             goalProgressView.set(progressRate: goalRate, startX: self.startX, endX: self.endX)
