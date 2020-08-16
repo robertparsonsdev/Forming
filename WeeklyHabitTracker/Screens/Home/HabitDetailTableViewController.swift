@@ -21,6 +21,7 @@ class HabitDetailTableViewController: UITableViewController {
     private var habitDays: [Bool] = [false, false, false, false, false, false, false]
     private var habitColor: Int64?
     private var habitGoal: Int64 = 0
+    private var habitDeadline: Date? = nil
     private var habitTracking: Bool = true
     private var habitPriority: Int64 = 0
     private var habitFlag: Bool = false
@@ -46,6 +47,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habitDays = editingHabit.days
             self.habitColor = editingHabit.color
             self.habitGoal = editingHabit.goal
+            self.habitDeadline = editingHabit.deadline
 //            self.habitTracking =
             self.habitPriority = editingHabit.priority
             self.habitFlag = editingHabit.flag
@@ -147,13 +149,17 @@ class HabitDetailTableViewController: UITableViewController {
         switch indexPath.section {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
-            case FirstSection.goal.rawValue:
+            case FirstSection.goals.rawValue:
                 cell.textLabel?.text = "Goals"
                 cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
-                if self.habitGoal > 0 {
-                    cell.detailTextLabel?.text = "\(self.habitGoal)"
+                if self.habitGoal > 0, let date = self.habitDeadline {
+                    cell.detailTextLabel?.text = "Complete \(self.habitGoal) by \(CalUtility.getDateAsShortString(date: date))"
+                } else if self.habitGoal > 0 && self.habitDeadline == nil {
+                    cell.detailTextLabel?.text = "Completion Goal: \(self.habitGoal)"
+                } else if self.habitGoal == 0, let date = self.habitDeadline {
+                    cell.detailTextLabel?.text = "Deadline: \(CalUtility.getDateAsShortString(date: date))"
                 } else {
-                    cell.detailTextLabel?.text = "Never-ending"
+                    cell.detailTextLabel?.text = "Off"
                 }
                 cell.accessoryType = .disclosureIndicator
             case FirstSection.tracking.rawValue:
@@ -197,8 +203,8 @@ class HabitDetailTableViewController: UITableViewController {
         switch indexPath.section {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
-            case FirstSection.goal.rawValue:
-                let goalView = GoalViewController(goal: self.habitGoal, deadline: nil, delegate: self, row: .goal, section: .firstSection)
+            case FirstSection.goals.rawValue:
+                let goalView = GoalsViewController(goal: self.habitGoal, deadline: self.habitDeadline, delegate: self, row: .goals, section: .firstSection)
                 self.navigationController?.pushViewController(goalView, animated: true)
             case FirstSection.tracking.rawValue: print("tracking")
             default: ()
@@ -302,6 +308,7 @@ class HabitDetailTableViewController: UITableViewController {
             }
             
             self.habit.goal = self.habitGoal
+            self.habit.deadline = self.habitDeadline
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
@@ -325,7 +332,8 @@ class HabitDetailTableViewController: UITableViewController {
                 }
             }
             self.habit.statuses = statuses
-            self.habit.goal = 0
+            self.habit.goal = self.habitGoal
+            self.habit.deadline = self.habitDeadline
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
@@ -424,7 +432,11 @@ extension HabitDetailTableViewController: HabitDetailTableViewDelegate {
         switch section {
         case SectionNumber.firstSection.rawValue:
             switch row {
-            case FirstSection.goal.rawValue: self.habitGoal = data as! Int64
+            case FirstSection.goals.rawValue:
+                if let array = data as? [Any] {
+                    self.habitGoal = array[0] as! Int64
+                    self.habitDeadline = array[1] as? Date
+                }
             case FirstSection.tracking.rawValue: self.habitTracking = data as! Bool
             default: ()
             }
@@ -433,7 +445,7 @@ extension HabitDetailTableViewController: HabitDetailTableViewDelegate {
             case SecondSection.reminder.rawValue: self.habitReminder = data as? Date
             default: ()
             }
-        default:()
+        default: ()
         }
     }
 }
@@ -455,7 +467,7 @@ enum SectionNumber: Int, CaseIterable {
 }
 
 enum FirstSection: Int, CaseIterable {
-    case goal, tracking
+    case goals, tracking
 }
 
 enum SecondSection: Int, CaseIterable {

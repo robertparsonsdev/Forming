@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GoalViewController: UIViewController {
+class GoalsViewController: UIViewController {
     private var goal: Int64
     private var deadline: Date?
     private weak var delegate: HabitDetailTableViewDelegate?
@@ -85,11 +85,18 @@ class GoalViewController: UIViewController {
         super.willMove(toParent: parent)
         
         if parent == nil {
-            if self.goal > 0 {
-                self.delegate?.update(text: "\(self.goal)", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+            var text = String()
+            if self.goal > 0, let date = self.deadline {
+                text = "Complete \(self.goal) by \(CalUtility.getDateAsShortString(date: date))"
+            } else if self.goal > 0 && self.deadline == nil {
+                text = "Completion Goal: \(self.goal)"
+            } else if self.goal == 0, let date = deadline {
+                text = "Deadline: \(CalUtility.getDateAsShortString(date: date))"
             } else {
-                self.delegate?.update(text: "Off", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+                text = "Off"
             }
+            
+            self.delegate?.update(text: text, data: [self.goal, self.deadline as Any], atSection: self.section.rawValue, andRow: self.row.rawValue)
         }
     }
     
@@ -231,7 +238,7 @@ class GoalViewController: UIViewController {
     }
 }
 
-extension GoalViewController: UIPickerViewDataSource {
+extension GoalsViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -241,7 +248,7 @@ extension GoalViewController: UIPickerViewDataSource {
     }
 }
 
-extension GoalViewController: UIPickerViewDelegate {
+extension GoalsViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return "\(self.goalData[row])"
     }
