@@ -148,7 +148,7 @@ class HabitDetailTableViewController: UITableViewController {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
             case FirstSection.goal.rawValue:
-                cell.textLabel?.text = "Goal"
+                cell.textLabel?.text = "Goals"
                 cell.imageView?.image = UIImage(named: "star.circle", in: nil, with: self.largeConfig)
                 if self.habitGoal > 0 {
                     cell.detailTextLabel?.text = "\(self.habitGoal)"
@@ -198,7 +198,7 @@ class HabitDetailTableViewController: UITableViewController {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
             case FirstSection.goal.rawValue:
-                let goalView = GoalViewController(goal: self.habitGoal, delegate: self, row: .goal, section: .firstSection)
+                let goalView = GoalViewController(goal: self.habitGoal, deadline: nil, delegate: self, row: .goal, section: .firstSection)
                 self.navigationController?.pushViewController(goalView, animated: true)
             case FirstSection.tracking.rawValue: print("tracking")
             default: ()

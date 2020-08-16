@@ -74,8 +74,9 @@ class ReminderViewController: UIViewController {
     func configurePicker() {
         picker.datePickerMode = .time
         picker.minuteInterval = 5
-        if let reminder = self.reminderDate { picker.date = reminder }
-        else {
+        if let reminder = self.reminderDate {
+            picker.date = reminder
+        } else {
             if let date = CalUtility.getTimeAsDate(time: "9:00 AM") { picker.date = date }
             picker.isEnabled = false
         }
@@ -105,8 +106,11 @@ class ReminderViewController: UIViewController {
     }
     
     @objc func pickerChanged() {
-        if picker.isEnabled { reminderLabel.text = CalUtility.getTimeAsString(time: picker.date) }
-        else { reminderLabel.text = "No Reminder" }
+        if picker.isEnabled {
+            reminderLabel.text = CalUtility.getTimeAsString(time: picker.date)
+        } else {
+            reminderLabel.text = "No Reminder"
+        }
     }
 }
 
