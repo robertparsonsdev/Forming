@@ -23,11 +23,12 @@ class HistoryTitleCell: UICollectionViewCell {
         layer.cornerRadius = 14
         clipsToBounds = true
         
+        compDescriptionLabel.textColor = .white
+        goalDescriptionLabel.textColor = .white
+        
         configureTitleLabel()
         configure(percentLabel: compPercentLabel)
         configure(percentLabel: goalPercentLabel)
-        createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: compProgressView)
-        createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: goalProgressView)
         configureConstraints()
     }
     
@@ -68,36 +69,24 @@ class HistoryTitleCell: UICollectionViewCell {
     private func configureConstraints() {
         addSubview(titleLabel)
         titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 0, paddingRight: 10, width: 0, height: 28)
-        
+    }
+    
+    private func addCompletionConstraints() {
         addSubview(compPercentLabel)
         compPercentLabel.anchor(top: titleLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 0, height: 20)
-        addSubview(goalPercentLabel)
-        goalPercentLabel.anchor(top: titleLabel.bottomAnchor, left: centerXAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 10, paddingBottom: 0, paddingRight: 10, width: 0, height: 20)
-        
         addSubview(compDescriptionLabel)
         compDescriptionLabel.anchor(top: nil, left: compPercentLabel.rightAnchor, bottom: compPercentLabel.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 5, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        addSubview(goalDescriptionLabel)
-        goalDescriptionLabel.anchor(top: nil, left: goalPercentLabel.rightAnchor, bottom: goalPercentLabel.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 5, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        
         addSubview(compProgressView)
         compProgressView.anchor(top: compPercentLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: centerXAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
+    }
+    
+    private func addGoalConstraints() {
+        addSubview(goalPercentLabel)
+        goalPercentLabel.anchor(top: titleLabel.bottomAnchor, left: centerXAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 10, paddingBottom: 0, paddingRight: 10, width: 0, height: 20)
+        addSubview(goalDescriptionLabel)
+        goalDescriptionLabel.anchor(top: nil, left: goalPercentLabel.rightAnchor, bottom: goalPercentLabel.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 5, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
         addSubview(goalProgressView)
         goalProgressView.anchor(top: goalPercentLabel.bottomAnchor, left: centerXAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
-        
-//        let stackView = UIStackView()
-//        stackView.axis = .horizontal
-//        stackView.alignment = .fill
-//        stackView.distribution = .fillEqually
-//
-//        let stat1 = FormingStatView(title: "Stat 1", color: .systemRed)
-//        stat1.set(stat: 10)
-//        let stat2 = FormingStatView(title: "Stat 2", color: .systemGreen)
-//        stat2.set(stat: 20)
-//
-//        stackView.addArrangedSubview(stat1)
-//        stackView.addArrangedSubview(stat2)
-//        addSubview(stackView)
-//        stackView.anchor(top: titleLabel.bottomAnchor, left: centerXAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
     }
     
     func set(title: String) {
@@ -108,19 +97,30 @@ class HistoryTitleCell: UICollectionViewCell {
         backgroundColor = color
     }
     
-    func set(completionRate: Double, text: String) {
-        compPercentLabel.text = text
-        if completionRate != 0.0 {
-            createLayerAndPath(startX: 3.0, endX: (self.frame.width / 2 - 30) * CGFloat(completionRate), color: .white, progressView: compProgressView)
-        }
-    }
-    
-    func set(goalRate: CGFloat?, text: String) {
-        goalPercentLabel.text = text
-        if let rate = goalRate {
-            if rate != 0.0 {
-                createLayerAndPath(startX: 3.0, endX: (self.frame.width / 2 - 30) * rate, color: .white, progressView: goalProgressView)
+    func set(completionRate: Double, compRateText: String, goalRate: CGFloat?, goalRateText: String?) {
+        if let goal = goalRate, let goalText = goalRateText {
+            compPercentLabel.text = compRateText
+            createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: compProgressView)
+            if completionRate != 0.0 {
+                createLayerAndPath(startX: 3.0, endX: (self.frame.width / 2 - 30) * CGFloat(completionRate), color: .white, progressView: compProgressView)
             }
+            
+            goalPercentLabel.text = goalText
+            createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: goalProgressView)
+            if goal != 0.0 {
+                createLayerAndPath(startX: 3.0, endX: (self.frame.width / 2 - 30) * CGFloat(completionRate), color: .white, progressView: goalProgressView)
+            }
+            
+            addCompletionConstraints()
+            addGoalConstraints()
+        } else {
+            compPercentLabel.text = compRateText
+            createLayerAndPath(startX: 3.0, endX: self.frame.width - 30, color: UIColor.lightGray.withAlphaComponent(0.5), progressView: compProgressView)
+            if completionRate != 0.0 {
+                createLayerAndPath(startX: 3.0, endX: (self.frame.width - 30) * CGFloat(completionRate), color: .white, progressView: compProgressView)
+            }
+            
+            addCompletionConstraints()
         }
     }
 }

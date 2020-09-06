@@ -89,14 +89,16 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HistoryTitleCell
             cell?.set(title: archive.title)
             cell?.set(color: FormingColors.getColor(fromValue: archive.color))
-            cell?.set(completionRate: archive.successRate, text: archive.successRate == 1.0 ? String(format: "%.0f%%", archive.successRate * 100) : String(format: "%.1f%%", archive.successRate * 100))
+            
             let goal = archive.habit.goal
-            if goal == 0 {
-                cell?.set(goalRate: nil, text: "N/A")
-            } else {
-                let goalRate = CGFloat(archive.completedTotal) / CGFloat(archive.habit.goal)
-                cell?.set(goalRate: goalRate >= 1.0 ? 1.0: goalRate, text: goalRate == 1.0 ? String(format: "%.0f%%", goalRate * 100) : String(format: "%.1f%%", goalRate * 100))
-            }
+            let goalRate: CGFloat? = goal == 0 ? nil : CGFloat(archive.completedTotal) / CGFloat(goal)
+            let goalText: String? = goalRate == nil ? nil : (goalRate == 1.0 ? String(format: "%.0f%%", goalRate! * 100) : String(format: "%.1f%%", goalRate! * 100))
+            
+            cell?.set(completionRate: archive.successRate,
+                      compRateText: archive.successRate == 1.0 ? String(format: "%.0f%%", archive.successRate * 100) : String(format: "%.1f%%", archive.successRate * 100),
+                      goalRate: goalRate,
+                      goalRateText: goalText)
+            
             return cell
         })
         
