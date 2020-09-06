@@ -71,7 +71,6 @@ class HistoryTitleCell: UICollectionViewCell {
         
         addSubview(compPercentLabel)
         compPercentLabel.anchor(top: titleLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 0, height: 20)
-        goalPercentLabel.text = "100%"
         addSubview(goalPercentLabel)
         goalPercentLabel.anchor(top: titleLabel.bottomAnchor, left: centerXAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 10, paddingBottom: 0, paddingRight: 10, width: 0, height: 20)
         
@@ -84,6 +83,21 @@ class HistoryTitleCell: UICollectionViewCell {
         compProgressView.anchor(top: compPercentLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: centerXAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
         addSubview(goalProgressView)
         goalProgressView.anchor(top: goalPercentLabel.bottomAnchor, left: centerXAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
+        
+//        let stackView = UIStackView()
+//        stackView.axis = .horizontal
+//        stackView.alignment = .fill
+//        stackView.distribution = .fillEqually
+//
+//        let stat1 = FormingStatView(title: "Stat 1", color: .systemRed)
+//        stat1.set(stat: 10)
+//        let stat2 = FormingStatView(title: "Stat 2", color: .systemGreen)
+//        stat2.set(stat: 20)
+//
+//        stackView.addArrangedSubview(stat1)
+//        stackView.addArrangedSubview(stat2)
+//        addSubview(stackView)
+//        stackView.anchor(top: titleLabel.bottomAnchor, left: centerXAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
     }
     
     func set(title: String) {
