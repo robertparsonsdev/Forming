@@ -28,7 +28,6 @@ extension Habit {
     @NSManaged public var title: String?
     @NSManaged public var uniqueID: String
     @NSManaged public var goal: Int64
-    @NSManaged public var deadline: Date?
     @NSManaged public var tracking: Bool
     @NSManaged public var archive: Archive
     
