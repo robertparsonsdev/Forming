@@ -93,7 +93,6 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             let goal = archive.habit.goal
             let goalRate: CGFloat? = goal == 0 ? nil : CGFloat(archive.completedTotal) / CGFloat(goal)
             let goalText: String? = goalRate == nil ? nil : (goalRate == 1.0 ? String(format: "%.0f%%", goalRate! * 100) : String(format: "%.1f%%", goalRate! * 100))
-            
             cell?.set(completionRate: archive.successRate,
                       compRateText: archive.successRate == 1.0 ? String(format: "%.0f%%", archive.successRate * 100) : String(format: "%.1f%%", archive.successRate * 100),
                       goalRate: goalRate,

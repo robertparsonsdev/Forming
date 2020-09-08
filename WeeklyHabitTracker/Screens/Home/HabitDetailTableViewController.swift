@@ -306,7 +306,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
             
-            self.habit.archive.title = self.habit.title ?? "Title Error"
+            self.habit.archive.title = self.habit.title ?? ""
             self.habit.archive.color = self.habit.color
             self.habit.archive.flag = self.habit.flag
             self.habit.archive.priority = self.habit.priority
@@ -334,7 +334,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habit.uniqueID = UUID().uuidString
             
             let initialArchive = Archive(context: self.persistenceManager.context)
-            initialArchive.title = self.habit.title ?? "Error"
+            initialArchive.title = self.habit.title ?? ""
             initialArchive.color = self.habit.color
             initialArchive.habit = self.habit
             initialArchive.flag = self.habit.flag

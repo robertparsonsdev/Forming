@@ -18,6 +18,17 @@ class HistoryTitleCell: UICollectionViewCell {
     private let compDescriptionLabel = FormingSecondaryLabel(text: "Completion")
     private let goalDescriptionLabel = FormingSecondaryLabel(text: "To Goal")
     
+    private let compTrackLayer = CAShapeLayer()
+    private let compTrackPath = UIBezierPath()
+    private let compProgressLayer = CAShapeLayer()
+    private let compProgressPath = UIBezierPath()
+    private let goalTrackLayer = CAShapeLayer()
+    private let goalTrackPath = UIBezierPath()
+    private let goalProgressLayer = CAShapeLayer()
+    private let goalProgressPath = UIBezierPath()
+    
+    private var reload: Bool = false
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 14
@@ -49,11 +60,7 @@ class HistoryTitleCell: UICollectionViewCell {
         percentLabel.textColor = .white
     }
     
-    private func createLayerAndPath(startX: CGFloat, endX: CGFloat, color: UIColor, progressView: UIView) {
-        let layer = CAShapeLayer()
-        let path = UIBezierPath()
-        
-        path.removeAllPoints()
+    private func configureLayer(_ layer: CAShapeLayer, path: UIBezierPath, startX: CGFloat, endX: CGFloat, color: UIColor, progressView: UIView) {
         path.move(to: CGPoint(x: startX, y: 5.5))
         path.addLine(to: CGPoint(x: endX, y: 5.5))
         
@@ -89,6 +96,15 @@ class HistoryTitleCell: UICollectionViewCell {
         goalProgressView.anchor(top: goalPercentLabel.bottomAnchor, left: centerXAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 5, paddingLeft: 10, paddingBottom: 5, paddingRight: 10, width: 0, height: 0)
     }
     
+    private func removeConstraints() {
+        compPercentLabel.removeFromSuperview()
+        compDescriptionLabel.removeFromSuperview()
+        compProgressView.removeFromSuperview()
+        goalPercentLabel.removeFromSuperview()
+        goalDescriptionLabel.removeFromSuperview()
+        goalProgressView.removeFromSuperview()
+    }
+    
     func set(title: String) {
         titleLabel.text = title
     }
@@ -98,29 +114,42 @@ class HistoryTitleCell: UICollectionViewCell {
     }
     
     func set(completionRate: Double, compRateText: String, goalRate: CGFloat?, goalRateText: String?) {
+        if self.reload { removePoints(); removeConstraints() }
+            
+        let endX: CGFloat
         if let goal = goalRate, let goalText = goalRateText {
-            compPercentLabel.text = compRateText
-            createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: compProgressView)
-            if completionRate != 0.0 {
-                createLayerAndPath(startX: 3.0, endX: (self.frame.width / 2 - 30) * CGFloat(completionRate), color: .white, progressView: compProgressView)
-            }
-            
+            endX = self.frame.width / 2 - 30
             goalPercentLabel.text = goalText
-            createLayerAndPath(startX: 3.0, endX: self.frame.width / 2 - 30, color: UIColor(red: 1, green: 1, blue: 1, alpha: 0.4), progressView: goalProgressView)
-            if goal != 0.0 {
-                createLayerAndPath(startX: 3.0, endX: (self.frame.width / 2 - 30) * CGFloat(completionRate), color: .white, progressView: goalProgressView)
+            configureLayer(self.goalTrackLayer, path: self.goalTrackPath, startX: 3.0, endX: endX, color: UIColor.white.withAlphaComponent(0.5), progressView: goalProgressView)
+            if goal > 0 && goal <= 1.0 {
+                configureLayer(self.goalProgressLayer, path: self.goalProgressPath, startX: 3.0, endX: endX * CGFloat(goal), color: .white, progressView: goalProgressView)
+            } else if goal > 1.0 {
+                configureLayer(self.goalProgressLayer, path: self.goalProgressPath, startX: 3.0, endX: endX, color: .white, progressView: goalProgressView)
+            } else {
+                goalProgressLayer.removeFromSuperlayer()
             }
             
-            addCompletionConstraints()
             addGoalConstraints()
         } else {
-            compPercentLabel.text = compRateText
-            createLayerAndPath(startX: 3.0, endX: self.frame.width - 30, color: UIColor.lightGray.withAlphaComponent(0.5), progressView: compProgressView)
-            if completionRate != 0.0 {
-                createLayerAndPath(startX: 3.0, endX: (self.frame.width - 30) * CGFloat(completionRate), color: .white, progressView: compProgressView)
-            }
-            
-            addCompletionConstraints()
+            endX = self.frame.width - 30
         }
+        
+        compPercentLabel.text = compRateText
+        configureLayer(self.compTrackLayer, path: self.compTrackPath, startX: 3.0, endX: endX, color: UIColor.white.withAlphaComponent(0.5), progressView: compProgressView)
+        if completionRate > 0 {
+            configureLayer(self.compProgressLayer, path: self.compProgressPath, startX: 3.0, endX: endX * CGFloat(completionRate), color: .white, progressView: compProgressView)
+        } else {
+            compProgressLayer.removeFromSuperlayer()
+        }
+        
+        addCompletionConstraints()
+        self.reload = true
+    }
+    
+    private func removePoints() {
+        self.compTrackPath.removeAllPoints()
+        self.compProgressPath.removeAllPoints()
+        self.goalTrackPath.removeAllPoints()
+        self.goalProgressPath.removeAllPoints()
     }
 }
