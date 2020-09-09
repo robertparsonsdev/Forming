@@ -9,7 +9,7 @@
 import UIKit
 
 class HabitDetailHeader: UITableViewHeaderFooterView {
-    private var delegate: HabitDetailHeaderDelegate!
+    private weak var delegate: HabitDetailHeaderDelegate?
     
     private let titleTextField = FormingTextField(placeholder: "Habit Title", returnKeyType: .done)
     private let daysStackView = UIStackView()
@@ -37,6 +37,10 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("habit detail header deinit")
     }
     
     // MARK: - Configuration Functions
@@ -141,10 +145,10 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
         
         if sender.isSelected == true {
             sender.isSelected = false
-            self.delegate.send(day: tag, andFlag: sender.isSelected)
+            self.delegate!.send(day: tag, andFlag: sender.isSelected)
         } else {
             sender.isSelected = true
-            self.delegate.send(day: tag, andFlag: sender.isSelected)
+            self.delegate!.send(day: tag, andFlag: sender.isSelected)
         }
     }
     
@@ -156,7 +160,7 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
         if sender.isSelected == true {
             sender.isSelected = false
             self.previousColor = nil
-            self.delegate.send(color: nil)
+            self.delegate!.send(color: nil)
         } else {
             if let previous = self.previousColor {
                 if previous < 5 {
@@ -169,11 +173,11 @@ class HabitDetailHeader: UITableViewHeaderFooterView {
                     }
                 }
                 sender.isSelected = true
-                self.delegate.send(color: Int64(tag))
+                self.delegate!.send(color: Int64(tag))
                 self.previousColor = Int64(tag)
             } else {
                 sender.isSelected = true
-                self.delegate.send(color: Int64(tag))
+                self.delegate!.send(color: Int64(tag))
                 self.previousColor = Int64(tag)
             }
         }
@@ -187,12 +191,12 @@ extension HabitDetailHeader: UITextFieldDelegate {
     }
     
     @objc func textFieldDidChange(textField: UITextField) {
-        self.delegate.send(title: textField.text?.trimmingCharacters(in: .whitespaces))
+        self.delegate!.send(title: textField.text?.trimmingCharacters(in: .whitespaces))
     }
 }
 
 // MARK: Protocols
-protocol HabitDetailHeaderDelegate {
+protocol HabitDetailHeaderDelegate: class {
     func send(title: String?)
     func send(day: Int, andFlag flag: Bool)
     func send(color: Int64?)

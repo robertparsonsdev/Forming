@@ -37,7 +37,6 @@ class HabitDetailTableViewController: UITableViewController {
     
     // MARK: - Initializers
     init(persistenceManager: PersistenceService, delegate: HabitDetailDelegate, habitToEdit: Habit? = nil) {
-        print("init")
         self.persistenceManager = persistenceManager
         self.habitDelegate = delegate
         if let editingHabit = habitToEdit {
