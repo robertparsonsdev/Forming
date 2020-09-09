@@ -10,7 +10,7 @@ import UIKit
 
 class ArchivedHabitCell: UICollectionViewCell {
     private var archivedHabit: ArchivedHabit?
-    private var delegate: ArchivedHabitCellDelegate?
+    private weak var delegate: ArchivedHabitCellDelegate?
     
     private let titleButton = UIButton()
     private let statusStackView = UIStackView()
@@ -110,6 +110,6 @@ class ArchivedHabitCell: UICollectionViewCell {
 }
 
 // MARK: - Protocols
-protocol ArchivedHabitCellDelegate {
+protocol ArchivedHabitCellDelegate: class {
     func pushViewController(with archivedHabit: ArchivedHabit)
 }

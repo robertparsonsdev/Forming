@@ -37,6 +37,7 @@ class HabitDetailTableViewController: UITableViewController {
     
     // MARK: - Initializers
     init(persistenceManager: PersistenceService, delegate: HabitDetailDelegate, habitToEdit: Habit? = nil) {
+        print("init")
         self.persistenceManager = persistenceManager
         self.habitDelegate = delegate
         if let editingHabit = habitToEdit {
@@ -65,6 +66,10 @@ class HabitDetailTableViewController: UITableViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("habit detail deinit")
     }
     
     // MARK: - UITableView Functions

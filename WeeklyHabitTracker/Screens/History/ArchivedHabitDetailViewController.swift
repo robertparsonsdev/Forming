@@ -34,6 +34,10 @@ class ArchivedHabitDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("notes deinit")
+    }
+    
     // MARK: - UIViewControllerFunctions
     override func viewDidLoad() {
         super.viewDidLoad()

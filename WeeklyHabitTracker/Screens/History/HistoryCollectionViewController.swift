@@ -47,6 +47,10 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("history deinit")
+    }
+    
     // MARK: - CollectionView Functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,13 +200,13 @@ extension HistoryCollectionViewController: ArchiveDetailDelegate {
             self.notificationCenter.reload(habits: true, history: true)
         }
     }
-    
+
     func reset(archive: Archive) {
         archive.reset()
         self.persistenceManager.save()
         self.notificationCenter.reload(habits: true, history: true, archiveDetail: true)
     }
-    
+
     func restore(archive: Archive) {
         archive.restore()
         self.persistenceManager.save()
