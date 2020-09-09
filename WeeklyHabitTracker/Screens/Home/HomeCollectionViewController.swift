@@ -127,13 +127,23 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
         sortAC.view.tintColor = .systemGreen
         HomeSort.allCases.forEach { (sort) in
-            sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: sortAlertTapped))
+            sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
+                guard let self = self else { return }
+                if let sortTitle = alert.title {
+                    self.defaultSort = HomeSort(rawValue: sortTitle)!
+                    self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
+                    self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
+                    guard !self.habits.isEmpty else { return }
+                    self.sortHabits()
+                }
+            }))
         }
         sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
     func configureDataSource() {
-        self.dataSource = UICollectionViewDiffableDataSource<CVSection, Habit>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, habit) -> UICollectionViewCell? in
+        self.dataSource = UICollectionViewDiffableDataSource<CVSection, Habit>(collectionView: self.collectionView, cellProvider: { [weak self] (collectionView, indexPath, habit) -> UICollectionViewCell? in
+            guard let self = self else { return nil }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
             cell.set(delegate: self)
             cell.set(habit: habit)
@@ -171,16 +181,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             sortHabits()
         } else {
             updateDataSource(on: self.habits)
-        }
-    }
-    
-    func sortAlertTapped(sender: UIAlertAction) {
-        if let sortTitle = sender.title {
-            self.defaultSort = HomeSort(rawValue: sortTitle)!
-            self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
-            self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-            guard !self.habits.isEmpty else { return }
-            sortHabits()
         }
     }
     

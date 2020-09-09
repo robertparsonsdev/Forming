@@ -34,6 +34,7 @@ class HabitCell: UICollectionViewCell {
     
     // MARK: - Initializers
     override init(frame: CGRect) {
+        print("habit cell init")
         super.init(frame: frame)
         
         configureCell()
@@ -41,6 +42,10 @@ class HabitCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("habit cell deinit")
     }
     
     // MARK: - Setters
