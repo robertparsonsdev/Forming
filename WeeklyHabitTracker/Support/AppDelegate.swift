@@ -30,11 +30,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if granted { print("granted") }
             else { print("not granted") }
         }
-        
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { (task) in
-            self.handleAppRefresh(task: task as! BGAppRefreshTask)
-        }
-        
+
+//        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { [weak self] (task) in
+//            guard let self = self else { return }
+//            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+//        }
+
         self.notificationCenter.addObserver(self, selector: #selector(dayChangeNotification), name: .NSCalendarDayChanged, object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
@@ -67,19 +68,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 self.persistenceService.save()
                 self.notificationCenter.post(name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
-                
+
                 self.dateClosed = CalUtility.getCurrentDate()
                 self.defaults.set(self.dateClosed, forKey: self.dateClosedKey)
             }
         }
     }
-    
+
     @objc func didEnterBackground() {
         self.dateClosed = CalUtility.getCurrentDate()
         self.defaults.set(self.dateClosed, forKey: self.dateClosedKey)
-        
+
         self.persistenceService.save()
-        
+
         self.scheduleAppRefresh()
     }
     
@@ -94,16 +95,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    
-    func scheduleLocalNotification(withTitle title: String) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = "Notification"
-        content.sound = UNNotificationSound.default
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        self.userNotificationCenter.add(request)
-    }
+
+//    func scheduleLocalNotification(withTitle title: String) {
+//        let content = UNMutableNotificationContent()
+//        content.title = title
+//        content.body = "Notification"
+//        content.sound = UNNotificationSound.default
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+//        self.userNotificationCenter.add(request)
+//    }
 
     // MARK: UISceneSession Lifecycle
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -119,20 +120,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func scheduleAppRefresh() {
-        let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 3600)
+//        let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
+//        request.earliestBeginDate = Date(timeIntervalSinceNow: 3600)
 
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            print("Successfully scheduled app refresh.")
-        } catch {
-            print("Could not schedule app refresh: \(error)")
-        }
+//        do {
+//            try BGTaskScheduler.shared.submit(request)
+//            print("Successfully scheduled app refresh.")
+//        } catch {
+//            print("Could not schedule app refresh: \(error)")
+//        }
     }
-    
+
     func handleAppRefresh(task: BGAppRefreshTask) {
         scheduleAppRefresh()
-        
+
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
         queue.addOperation {

@@ -29,7 +29,7 @@ class MainTabBarController: UITabBarController {
                                                                                                defaults: self.appDelegate.getUserDefaults(),
                                                                                                userNotifCenter: self.appDelegate.getUserNotificationCenter(),
                                                                                                notifCenter: self.appDelegate.getNotificationCenter()))
-        
+
         let historyNavController = buildTabBarControllers(withTitle: "History",
                                                           andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!,
                                                           andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(),
@@ -37,12 +37,12 @@ class MainTabBarController: UITabBarController {
                                                                                                      defaults: self.appDelegate.getUserDefaults(),
                                                                                                      notifCenter: self.appDelegate.getNotificationCenter(),
                                                                                                      userNotifCenter: self.appDelegate.getUserNotificationCenter()))
-        
+
         let settingsHostController = SettingsViewController(rootView: SettingsSwiftUI())
         settingsHostController.title = "Settings"
         settingsHostController.tabBarItem.title = "Settings"
         settingsHostController.tabBarItem.image = UIImage(named: "gear", in: nil, with: boldConfig)!
-        
+
         viewControllers = [homeNavController, historyNavController, settingsHostController]
     }
         
