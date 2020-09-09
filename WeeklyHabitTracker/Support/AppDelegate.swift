@@ -31,10 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             else { print("not granted") }
         }
 
-//        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { [weak self] (task) in
-//            guard let self = self else { return }
-//            self.handleAppRefresh(task: task as! BGAppRefreshTask)
-//        }
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { [weak self] (task) in
+            guard let self = self else { return }
+            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+        }
 
         self.notificationCenter.addObserver(self, selector: #selector(dayChangeNotification), name: .NSCalendarDayChanged, object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -120,15 +120,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func scheduleAppRefresh() {
-//        let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
-//        request.earliestBeginDate = Date(timeIntervalSinceNow: 3600)
+        let request = BGAppRefreshTaskRequest(identifier: "com.forming.refresh")
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 3600)
 
-//        do {
-//            try BGTaskScheduler.shared.submit(request)
-//            print("Successfully scheduled app refresh.")
-//        } catch {
-//            print("Could not schedule app refresh: \(error)")
-//        }
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            print("Successfully scheduled app refresh.")
+        } catch {
+            print("Could not schedule app refresh: \(error)")
+        }
     }
 
     func handleAppRefresh(task: BGAppRefreshTask) {
