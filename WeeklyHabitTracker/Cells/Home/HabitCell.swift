@@ -10,7 +10,7 @@ import UIKit
 
 class HabitCell: UICollectionViewCell {
     private var habit: Habit!
-    private var delegate: HabitCellDelegate?
+    private weak var delegate: HabitCellDelegate?
     private var currentDay = CalUtility.getCurrentDay()
     private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
@@ -295,7 +295,7 @@ class HabitCell: UICollectionViewCell {
 }
 
 // MARK: - Protocols
-protocol HabitCellDelegate {
+protocol HabitCellDelegate: class {
     func presentNewHabitViewController(with habit: Habit)
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
