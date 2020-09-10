@@ -94,7 +94,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             cell?.set(title: archive.title)
             cell?.set(color: FormingColors.getColor(fromValue: archive.color))
             
-            let goal = archive.habit.goal
+            let goal = archive.goal
             let goalRate: CGFloat? = goal == -1 ? nil : CGFloat(archive.completedTotal) / CGFloat(goal)
             let goalText: String? = goalRate == nil ? nil : (goalRate == 1.0 ? String(format: "%.0f%%", goalRate! * 100) : String(format: "%.1f%%", goalRate! * 100))
             cell?.set(completionRate: archive.successRate,

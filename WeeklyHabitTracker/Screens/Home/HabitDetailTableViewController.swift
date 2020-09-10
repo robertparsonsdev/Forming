@@ -315,6 +315,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habit.archive.flag = self.habit.flag
             self.habit.archive.priority = self.habit.priority
             self.habit.archive.reminder = self.habit.reminder
+            self.habit.archive.goal = self.habit.goal
             self.habit.archive.habit = self.habit
             
             self.habitDelegate!.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
@@ -344,6 +345,7 @@ class HabitDetailTableViewController: UITableViewController {
             initialArchive.flag = self.habit.flag
             initialArchive.priority = self.habit.priority
             initialArchive.reminder = self.habit.reminder
+            initialArchive.goal = self.habit.goal
             initialArchive.active = true
             initialArchive.successRate = 1.0
             initialArchive.completedTotal = 0

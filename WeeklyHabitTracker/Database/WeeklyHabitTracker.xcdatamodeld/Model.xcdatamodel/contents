@@ -7,6 +7,7 @@
         <attribute name="currentWeekNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="failedTotal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="flag" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="goal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="incompleteTotal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="priority" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="reminder" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -39,7 +40,7 @@
         <relationship name="archive" maxCount="1" deletionRule="Nullify" destinationEntity="Archive" inverseName="habit" inverseEntity="Archive"/>
     </entity>
     <elements>
-        <element name="Archive" positionX="-63" positionY="54" width="128" height="238"/>
+        <element name="Archive" positionX="-63" positionY="54" width="128" height="253"/>
         <element name="ArchivedHabit" positionX="-261" positionY="153" width="128" height="133"/>
         <element name="Habit" positionX="-461.44140625" positionY="93.8671875" width="128" height="238"/>
     </elements>

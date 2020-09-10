@@ -29,6 +29,7 @@ extension Archive {
     @NSManaged public var flag: Bool
     @NSManaged public var priority: Int64
     @NSManaged public var reminder: Date?
+    @NSManaged public var goal: Int64
     @NSManaged public var currentWeekNumber: Int64
 
 }

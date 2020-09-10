@@ -112,6 +112,7 @@ public class Archive: NSManagedObject {
         newHabit.priority = self.priority
         newHabit.reminder = self.reminder
         newHabit.flag = self.flag
+        newHabit.goal = self.goal
         newHabit.dateCreated = CalUtility.getCurrentDate()
         newHabit.uniqueID = UUID().uuidString
         newHabit.archive = self
@@ -154,6 +155,7 @@ public class Archive: NSManagedObject {
         \tflag: \(self.flag)
         \tpriority: \(self.priority)
         \treminder: \(CalUtility.getTimeAsString(time: self.reminder))
+        \tgoal: \(self.goal)
         \tactive: \(self.active)
         \tsuccessRate: \(self.successRate)
         \tcompletedTotal: \(self.completedTotal)

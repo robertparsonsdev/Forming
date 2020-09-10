@@ -44,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        let habits = self.persistenceService.fetch(Habit.self)
 //        for habit in habits {
 //            habit.goal = -1
+//            habit.archive.goal = habit.goal
 //        }
 //        let archives = self.persistenceService.fetch(Archive.self)
 //        for archive in archives {
