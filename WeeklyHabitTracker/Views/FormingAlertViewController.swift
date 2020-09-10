@@ -9,17 +9,19 @@
 import UIKit
 
 class FormingAlertViewController: UIViewController {
+    private let habit: Habit
+    
     private let containerView = UIView()
     private let titleLabel = UILabel()
-    private let messageLabel = UILabel()
-    private let okayButton = UIButton()
+    private let messageOneLabel = UILabel()
+    private let messageTwoLabel = UILabel()
+    private let progressView = FormingProgressView()
+    private let finishHabitButton = UIButton()
+    private let adjustGoalButton = UIButton()
+    private let continueButton = UIButton()
     
-    private let alertTitle: String
-    private let message: String
-    
-    init(title: String, message: String) {
-        self.alertTitle = title
-        self.message = message
+    init(habit: Habit) {
+        self.habit = habit
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -28,15 +30,28 @@ class FormingAlertViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("alert view deinit")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+        
         configureContainer()
         configureTitleLabel()
-        configureMessageLabel()
-        configureOkayButton()
+        configure(label: messageOneLabel, withText: "Congratulations on reaching your goal!")
+        configure(label: messageTwoLabel, withText: "Please select how you would like to continue below.")
+        configureProgressView()
+        
+        configure(button: finishHabitButton, withTitle: "Finish Habit", andColor: .systemGreen)
+        configure(button: adjustGoalButton, withTitle: "Adjust Goal", andColor: .systemBlue)
+        configure(button: continueButton, withTitle: "Continue Habit As Is", andColor: .systemGray)
+        continueButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
+                
         configureConstraints()
+        
+        createAndStartParticles()
     }
     
     private func configureContainer() {
@@ -45,34 +60,59 @@ class FormingAlertViewController: UIViewController {
     }
     
     private func configureTitleLabel() {
-        titleLabel.text = self.alertTitle
+        titleLabel.text = "Goal Reached!"
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.boldSystemFont(ofSize: 30)
     }
     
-    private func configureMessageLabel() {
-        messageLabel.text = self.message
-        messageLabel.textAlignment = .center
+    private func configure(label: UILabel, withText text: String) {
+        label.text = text
+        label.textAlignment = .center
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.numberOfLines = 0
     }
     
-    private func configureOkayButton() {
-        okayButton.setTitle("Okay", for: .normal)
-        okayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-        okayButton.backgroundColor = .systemGreen
-        okayButton.layer.cornerRadius = 7
-        okayButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
+    private func configureProgressView() {
+        let endX = self.view.frame.width - 40 - 45
+        progressView.set(trackStartX: 5.0, trackEndX: endX)
+        progressView.set(progressRate: 1.0, startX: 5.0, endX: endX)
+        progressView.set(percentLabel: "100%")
+        progressView.set(description: "Goal Progress")
+        progressView.set(infoOne: "\(self.habit.archive.completedTotal) Completed")
+        progressView.set(infoTwo: "Goal: \(self.habit.goal)")
+        progressView.removeInfoButton()
+    }
+    
+    private func configure(button: UIButton, withTitle title: String, andColor color: UIColor) {
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        button.backgroundColor = color
+        button.layer.cornerRadius = 7
     }
     
     private func configureConstraints() {
+        let top = containerView.topAnchor, left = containerView.leftAnchor, bottom = containerView.bottomAnchor, right = containerView.rightAnchor
         containerView.addSubview(titleLabel)
-        titleLabel.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: nil, right: containerView.rightAnchor, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 30)
-        containerView.addSubview(okayButton)
-        okayButton.anchor(top: nil, left: containerView.leftAnchor, bottom: containerView.bottomAnchor, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 15, paddingRight: 15, width: 0, height: 40)
-        containerView.addSubview(messageLabel)
-        messageLabel.anchor(top: titleLabel.bottomAnchor, left: containerView.leftAnchor, bottom: okayButton.topAnchor, right: containerView.rightAnchor, paddingTop: 15, paddingLeft: 15, paddingBottom: 15, paddingRight: 15, width: 0, height: 0)
+        titleLabel.anchor(top: top, left: left, bottom: nil, right: right, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 30)
+        
+        containerView.addSubview(continueButton)
+        continueButton.anchor(top: nil, left: left, bottom: bottom, right: right, paddingTop: 15, paddingLeft: 15, paddingBottom: 15, paddingRight: 15, width: 0, height: 40)
+        containerView.addSubview(adjustGoalButton)
+        adjustGoalButton.anchor(top: nil, left: left, bottom: continueButton.topAnchor, right: right, paddingTop: 15, paddingLeft: 15, paddingBottom: 15, paddingRight: 15, width: 0, height: 40)
+        containerView.addSubview(finishHabitButton)
+        finishHabitButton.anchor(top: nil, left: left, bottom: adjustGoalButton.topAnchor, right: right, paddingTop: 0, paddingLeft: 15, paddingBottom: 15, paddingRight: 15, width: 0, height: 40)
+        
+        containerView.addSubview(messageOneLabel)
+        messageOneLabel.anchor(top: titleLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 0)
+        
+        containerView.addSubview(progressView)
+        progressView.anchor(top: messageOneLabel.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 20, paddingLeft: 15, paddingBottom: 15, paddingRight: 15, width: 0, height: 65)
+        
+        containerView.addSubview(messageTwoLabel)
+        messageTwoLabel.anchor(top: nil, left: left, bottom: finishHabitButton.topAnchor, right: right, paddingTop: 0, paddingLeft: 15, paddingBottom: 30, paddingRight: 15, width: 0, height: 0)
         
         view.addSubview(containerView)
-        containerView.anchor(top: nil, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, y: view.centerYAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 300)
+        containerView.anchor(top: nil, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, y: view.centerYAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 450)
     }
     
     @objc func dismissAlert() {
@@ -80,5 +120,4 @@ class FormingAlertViewController: UIViewController {
             self.dismiss(animated: true)
         }
     }
-
 }

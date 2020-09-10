@@ -82,7 +82,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func diagnostics() {
-        presentAlertController(withTitle: "Test", andMessage: "Test")
+//        presentAlertController(withTitle: "Test", andMessage: "Test")
 
 //        for habit in self.persistenceManager.fetch(Habit.self) {
 //            self.diagnosticsString.append(habit.stringRepresentation())
@@ -269,7 +269,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
         self.notificationCenter.reload(history: true, archiveDetail: true, archivedHabitDetail: true)
         
         if habit.archive.completedTotal == habit.goal {
-            presentAlertController(withTitle: "Goal Reached!", andMessage: "Yay!")
+            presentAlertController(withHabit: habit)
         }
     }
     

@@ -155,6 +155,10 @@ class FormingProgressView: UIView {
         layer.add(basicAnimation, forKey: "line")
     }
     
+    func removeInfoButton() {
+        self.infoButton.removeFromSuperview()
+    }
+    
     // MARK: - Selectors
     @objc func infoButtonPressed() {
         if let description = self.descriptionLabel.text {
