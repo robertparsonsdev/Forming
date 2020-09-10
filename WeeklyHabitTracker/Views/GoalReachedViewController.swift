@@ -34,7 +34,7 @@ class GoalReachedViewController: UIViewController {
     }
     
     deinit {
-        print("alert view deinit")
+        print("goal view deinit")
     }
     
     // MARK: - ViewController Functions

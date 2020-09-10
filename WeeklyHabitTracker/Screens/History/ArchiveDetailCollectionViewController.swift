@@ -61,7 +61,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         navigationItem.rightBarButtonItems = [menuButton, sortButton]
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = ArchiveDetailSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
+//        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
 
         // Register cell classes
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)

@@ -19,6 +19,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.endX = self.frame.width - 55
+        backgroundColor = .systemBackground
         
         configureStackView()
         configureConstraints()
@@ -94,11 +95,15 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     }
     
     private func configureConstraints() {
-        addSubview(completionProgressView)
-        completionProgressView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
-        addSubview(goalProgressView)
-        goalProgressView.anchor(top: completionProgressView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 30, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
+        let top = topAnchor, left = leftAnchor, right = rightAnchor
+        
         addSubview(stackView)
-        stackView.anchor(top: goalProgressView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 35, paddingLeft: 20, paddingBottom: 5, paddingRight: 20, width: 0, height: 0)
+        stackView.anchor(top: top, left: left, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
+
+        addSubview(completionProgressView)
+        completionProgressView.anchor(top: stackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
+
+        addSubview(goalProgressView)
+        goalProgressView.anchor(top: completionProgressView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 30, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
     }
 }
