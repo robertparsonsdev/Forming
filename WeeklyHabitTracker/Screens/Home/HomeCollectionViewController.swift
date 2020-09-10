@@ -188,9 +188,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         switch self.defaultSort {
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
         case .color: self.habits.sort { (hab1, hab2) -> Bool in hab1.color < hab2.color }
-        case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
+        case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in print("date created"); return hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
         case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.statuses[CalUtility.getCurrentDay()] < hab2.statuses[CalUtility.getCurrentDay()] }
-        case .flag: self.habits.sort { (hab1, hab2) -> Bool in hab1.flag && !hab2.flag}
+        case .flag: self.habits.sort { (hab1, hab2) -> Bool in hab1.flag && !hab2.flag }
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }
         case .reminderTime: self.habits.sort { (hab1, hab2) -> Bool in
             let reminder1 = hab1.reminder ?? CalUtility.getFutureDate()
@@ -199,6 +199,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             }
         }
         updateDataSource(on: self.habits)
+        
+        self.notificationCenter.reload(history: true)
     }
     
     // MARK: - Selectors
@@ -275,6 +277,8 @@ extension HomeCollectionViewController: HabitCellDelegate {
         if habit.archive.completedTotal == habit.goal {
             presentGoalReachedViewController(withHabit: habit, andDelegate: self)
         }
+        
+        // call sort?
     }
     
     func presentAlertController(with alert: UIAlertController) {

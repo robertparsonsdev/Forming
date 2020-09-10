@@ -151,7 +151,16 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
                 self.activeArchives.removeAll()
             } else {
                 self.activeArchives = archives.filter( { $0.active == true } )
-                self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+//                self.activeArchives.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title}
+                if let sorting = self.defaults.object(forKey: "homeSort") {
+                    if let homeSort = HomeSort(rawValue: sorting as! String) {
+                        sort(by: homeSort, on: &self.activeArchives)
+                    } else {
+                        sort(by: .alphabetical, on: &self.activeArchives)
+                    }
+                } else {
+                    sort(by: .alphabetical, on: &self.activeArchives)
+                }
                 self.activeArchivesCount = self.activeArchives.count
             }
             if isFinishedCollapsed {
@@ -175,6 +184,22 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
             DispatchQueue.main.async {
                 self.dataSource?.apply(snapshot, animatingDifferences: false)
                 self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")
+            }
+        }
+    }
+    
+    func sort(by sort: HomeSort, on array: inout [Archive]) {
+        switch sort {
+        case .alphabetical: array.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title }
+        case .color: array.sort { (archive1, archive2) -> Bool in archive1.color < archive2.color }
+        case .dateCreated: array.sort { (archive1, archive2) -> Bool in archive1.habit.dateCreated.compare(archive2.habit.dateCreated) == .orderedAscending }
+        case .dueToday: array.sort { (archive1, archive2) -> Bool in archive1.habit.statuses[CalUtility.getCurrentDay()] < archive2.habit.statuses[CalUtility.getCurrentDay()] }
+        case .flag: array.sort { (archive1, archive2) -> Bool in archive1.flag && !archive2.flag }
+        case .priority: array.sort { (archive1, archive2) -> Bool in archive1.priority > archive2.priority }
+        case .reminderTime: array.sort { (archive1, archive2) -> Bool in
+            let reminder1 = archive1.reminder ?? CalUtility.getFutureDate()
+            let reminder2 = archive2.reminder ?? CalUtility.getFutureDate()
+            return reminder1.compare(reminder2) == .orderedAscending
             }
         }
     }
