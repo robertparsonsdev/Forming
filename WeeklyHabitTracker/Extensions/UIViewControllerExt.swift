@@ -9,9 +9,9 @@
 import UIKit
 
 extension UIViewController {
-    func presentAlertController(withHabit habit: Habit) {
+    func presentGoalReachedViewController(withHabit habit: Habit, andDelegate delegate: GoalReachedDelegate) {
         DispatchQueue.main.async {
-            let alert = FormingAlertViewController(habit: habit)
+            let alert = GoalReachedViewController(habit: habit, delegate: delegate)
             alert.modalPresentationStyle = .overFullScreen
             alert.modalTransitionStyle = .crossDissolve
             self.present(alert, animated: true)

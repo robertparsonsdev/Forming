@@ -206,7 +206,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let newHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self)
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
-        present(navController, animated: true)
+        DispatchQueue.main.async {
+            self.present(navController, animated: true)
+        }
     }
     
     @objc func sortButtonTapped() {
@@ -260,7 +262,9 @@ extension HomeCollectionViewController: HabitCellDelegate {
         let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
         navController.navigationBar.tintColor = .systemGreen
-        DispatchQueue.main.async { self.present(navController, animated: true) }
+        DispatchQueue.main.async {
+            self.present(navController, animated: true)
+        }
     }
     
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
@@ -269,7 +273,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
         self.notificationCenter.reload(history: true, archiveDetail: true, archivedHabitDetail: true)
         
         if habit.archive.completedTotal == habit.goal {
-            presentAlertController(withHabit: habit)
+            presentGoalReachedViewController(withHabit: habit, andDelegate: self)
         }
     }
     
@@ -291,5 +295,27 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         updateDataSource(on: self.habits)
+    }
+}
+
+extension HomeCollectionViewController: GoalReachedDelegate {
+    func finishButtonTapped(forHabit habit: Habit) {
+        finish(habit: habit)
+    }
+    
+    func adjustButtonTapped(forHabit habit: Habit) {
+        let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self, habitToEdit: habit)
+        let navController = UINavigationController(rootViewController: editHabitVC)
+        navController.navigationBar.tintColor = .systemGreen
+        
+        let indexPath = IndexPath(row: FirstSection.goals.rawValue, section: SectionNumber.firstSection.rawValue)
+        DispatchQueue.main.async {
+            self.present(navController, animated: true)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            editHabitVC.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            editHabitVC.tableView.delegate?.tableView?(editHabitVC.tableView, didSelectRowAt: indexPath)
+        }
     }
 }

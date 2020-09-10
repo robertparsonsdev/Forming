@@ -10,7 +10,7 @@ import UIKit
 
 class GoalReachedViewController: UIViewController {
     private let habit: Habit
-    private weak var delegate: AlertViewDelegate?
+    private weak var delegate: GoalReachedDelegate?
     
     private let containerView = UIView()
     private let titleLabel = UILabel()
@@ -22,7 +22,7 @@ class GoalReachedViewController: UIViewController {
     private let continueButton = UIButton()
     
     // MARK: - Initializers
-    init(habit: Habit, delegate: AlertViewDelegate) {
+    init(habit: Habit, delegate: GoalReachedDelegate) {
         self.habit = habit
         self.delegate = delegate
         
@@ -129,11 +129,13 @@ class GoalReachedViewController: UIViewController {
     
     // MARK: - Selectors
     @objc func finishButtonTapped() {
-        
+        dismissAlert()
+        delegate?.finishButtonTapped(forHabit: self.habit)
     }
     
     @objc func adjustButtonTapped() {
-        
+        dismissAlert()
+        delegate?.adjustButtonTapped(forHabit: self.habit)
     }
     
     @objc func dismissAlert() {
@@ -144,6 +146,7 @@ class GoalReachedViewController: UIViewController {
 }
 
 // Protocols
-protocol AlertViewDelegate: class {
-    func finishButtonTapped()
+protocol GoalReachedDelegate: class {
+    func finishButtonTapped(forHabit habit: Habit)
+    func adjustButtonTapped(forHabit habit: Habit)
 }
