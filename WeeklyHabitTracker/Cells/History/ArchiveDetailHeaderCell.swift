@@ -15,6 +15,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     private let startX: CGFloat = 5.0
     private var endX: CGFloat = 0.0
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.endX = self.frame.width - 55
@@ -27,6 +28,11 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("archive detail header deinit")
+    }
+    
+    // MARK: - Setters
     func set(completed: Int64, failed: Int64, completionRate: Double, goal: Int64) {
         completionProgressView.set(compensate: true)
         completionProgressView.set(trackStartX: self.startX, trackEndX: self.endX)
@@ -75,6 +81,12 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         stackView.addArrangedSubview(totalStatView)
     }
     
+    func set(delegate: FormingProgressViewDelegate) {
+        completionProgressView.set(delegate: delegate)
+        goalProgressView.set(delegate: delegate)
+    }
+    
+    // MARK: - Configuration Functions
     private func configureStackView() {
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -82,7 +94,6 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     }
     
     private func configureConstraints() {
-        print("constraints")
         addSubview(completionProgressView)
         completionProgressView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
         addSubview(goalProgressView)

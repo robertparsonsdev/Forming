@@ -9,6 +9,8 @@
 import UIKit
 
 class FormingProgressView: UIView {
+    private weak var delegate: FormingProgressViewDelegate?
+    
     private let percentLabel = UILabel()
     private let descriptionLabel = FormingSecondaryLabel()
     private let infoButton = UIButton()
@@ -41,13 +43,18 @@ class FormingProgressView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Configuration Functions
+    deinit {
+        print("progress view deinit")
+    }
+    
+    // MARK: - Configuration Functions
     private func configurePercentLabel() {
         percentLabel.textAlignment = .center
         percentLabel.font = UIFont.systemFont(ofSize: 30, weight: .heavy)
     }
     
     private func configureInfoButton() {
+        infoButton.addTarget(nil, action: #selector(infoButtonPressed), for: .touchUpInside)
         infoButton.setImage(UIImage(named: "info.circle"), for: .normal)
         infoButton.tintColor = .label
     }
@@ -89,6 +96,10 @@ class FormingProgressView: UIView {
     }
     
     // MARK: - Setters
+    func set(delegate: FormingProgressViewDelegate) {
+        self.delegate = delegate
+    }
+    
     func set(percentLabel text: String) {
         self.percentLabel.text = text
     }
@@ -143,4 +154,19 @@ class FormingProgressView: UIView {
         basicAnimation.isRemovedOnCompletion = false
         layer.add(basicAnimation, forKey: "line")
     }
+    
+    // MARK: - Selectors
+    @objc func infoButtonPressed() {
+        if let description = self.descriptionLabel.text {
+            if description.contains("Completion") {
+                self.delegate?.showAlert(withTitle: "Completion Rate", andMessage: "Your completion rate is calculated by dividing the number of completed days by the sum of completed days and failed days. This is used to give you an idea of how successful you are at completing a habit.")
+            } else {
+                self.delegate?.showAlert(withTitle: "Goal Progress", andMessage: "Your goal progress is an indicator of how close you are to reaching your goal for a habit. When a goal is reached, you will be notified within the app and will be given options on how to continue your habit.")
+            }
+        }
+    }
+}
+
+protocol FormingProgressViewDelegate: class {
+    func showAlert(withTitle title: String, andMessage message: String)
 }

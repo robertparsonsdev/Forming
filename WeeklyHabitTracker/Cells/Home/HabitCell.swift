@@ -34,7 +34,6 @@ class HabitCell: UICollectionViewCell {
     
     // MARK: - Initializers
     override init(frame: CGRect) {
-        print("habit cell init")
         super.init(frame: frame)
         
         configureCell()

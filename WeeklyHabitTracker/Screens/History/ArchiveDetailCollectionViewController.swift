@@ -180,6 +180,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
             header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, completionRate: self.archive.successRate, goal: self.archive.habit.goal)
             header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, incomplete: self.archive.incompleteTotal)
+            header.set(delegate: self)
             return header
         }
     }
@@ -232,6 +233,14 @@ extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
         vc.set(archivedHabit: archivedHabit)
         vc.title = "Week \(archivedHabit.weekNumber)"
         navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+extension ArchiveDetailCollectionViewController: FormingProgressViewDelegate {
+    func showAlert(withTitle title: String, andMessage message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+        self.present(alert, animated: true)
     }
 }
 
