@@ -25,12 +25,8 @@ class FormingStatView: UIView {
     }
     
     func configureNumberLabel(withBackground color: UIColor, andTitle title: String) {
-        switch title {
-        case "Total": numberLabel.textColor = .systemBackground
-        default: numberLabel.textColor = .white
-        }
         numberLabel.textAlignment = .center
-        numberLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        numberLabel.font = UIFont.boldSystemFont(ofSize: 20)
         numberLabel.backgroundColor = color
         
         numberLabel.layer.masksToBounds = true
@@ -52,6 +48,9 @@ class FormingStatView: UIView {
     }
     
     func set(stat: Int64) {
+        if stat >= 100 {
+            numberLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        }
         numberLabel.text = "\(stat)"
     }
 }

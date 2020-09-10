@@ -11,6 +11,7 @@ import UIKit
 class ArchiveDetailHeaderCell: UICollectionReusableView {
     private var completionProgressView = FormingProgressView()
     private var goalProgressView = FormingProgressView()
+    private var stackView = UIStackView()
     private let startX: CGFloat = 5.0
     private var endX: CGFloat = 0.0
     
@@ -18,6 +19,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         super.init(frame: frame)
         self.endX = self.frame.width - 55
         
+        configureStackView()
         configureConstraints()
     }
     
@@ -30,7 +32,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         completionProgressView.set(trackStartX: self.startX, trackEndX: self.endX)
         completionProgressView.set(progressRate: CGFloat(completionRate), startX: self.startX, endX: self.endX)
         completionProgressView.set(failedRate: CGFloat(1.0 - completionRate), startX: self.endX, endX: self.startX)
-        completionProgressView.set(percentLabel: Int(completionRate * 100) % 100 == 0 ? String(format: "%.0f%%", completionRate * 100) : String(format: "%.1f%%", completionRate * 100))
+        completionProgressView.set(percentLabel: Int(completionRate * 100) % 100 == 0 ? String(format: "%.0f%%", completionRate * 100) : String(format: "%.2f%%", completionRate * 100))
         completionProgressView.set(description: "Completion Rate")
         completionProgressView.set(infoOne: "\(completed) Completed")
         completionProgressView.set(infoTwo: "\(failed) Failed")
@@ -45,15 +47,47 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         } else {
             let goalRate = CGFloat(completed) / CGFloat(goal)
             goalProgressView.set(progressRate: goalRate, startX: self.startX, endX: self.endX)
-            goalProgressView.set(percentLabel: Int(goalRate * 100) % 100 == 0 ? String(format: "%.0f%%", goalRate * 100) : String(format: "%.1f%%", goalRate * 100))
+            goalProgressView.set(percentLabel: Int(goalRate * 100) % 100 == 0 ? String(format: "%.0f%%", goalRate * 100) : String(format: "%.2f%%", goalRate * 100))
             goalProgressView.set(infoTwo: "Goal: \(goal)")
         }
     }
     
+    func set(completed: Int64, failed: Int64, incomplete: Int64) {
+        if let statViews = stackView.arrangedSubviews as? [FormingStatView] {
+            for view in statViews { view.removeFromSuperview() }
+        }
+        
+        let completedStatView = FormingStatView(title: "Completed", color: .systemFill)
+        completedStatView.set(stat: completed)
+        
+        let failedStatView = FormingStatView(title: "Failed", color: .systemFill)
+        failedStatView.set(stat: failed)
+        
+        let incompleteStatView = FormingStatView(title: "Incomplete", color: .systemFill)
+        incompleteStatView.set(stat: incomplete)
+        
+        let totalStatView = FormingStatView(title: "Total", color: .systemFill)
+        totalStatView.set(stat: completed + failed + incomplete)
+        
+        stackView.addArrangedSubview(completedStatView)
+        stackView.addArrangedSubview(failedStatView)
+        stackView.addArrangedSubview(incompleteStatView)
+        stackView.addArrangedSubview(totalStatView)
+    }
+    
+    private func configureStackView() {
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+    }
+    
     private func configureConstraints() {
+        print("constraints")
         addSubview(completionProgressView)
         completionProgressView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
         addSubview(goalProgressView)
         goalProgressView.anchor(top: completionProgressView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 30, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
+        addSubview(stackView)
+        stackView.anchor(top: goalProgressView.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 35, paddingLeft: 20, paddingBottom: 5, paddingRight: 20, width: 0, height: 0)
     }
 }

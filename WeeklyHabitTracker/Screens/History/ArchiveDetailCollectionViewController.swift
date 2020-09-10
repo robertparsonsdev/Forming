@@ -86,7 +86,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 //        withHorizontalFittingPriority: .required,
 //        verticalFittingPriority: .fittingSizeLevel)
 //        return CGSize(width: view.frame.width, height: collectionView.frame.width / 2 + 60)
-        return CGSize(width: view.frame.width, height: 200)
+        return CGSize(width: view.frame.width, height: 265)
     }
 
     override func willMove(toParent parent: UIViewController?) {
@@ -179,6 +179,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
             guard let self = self else { return nil }
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
             header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, completionRate: self.archive.successRate, goal: self.archive.habit.goal)
+            header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, incomplete: self.archive.incompleteTotal)
             return header
         }
     }
