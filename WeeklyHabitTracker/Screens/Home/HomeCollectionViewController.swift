@@ -52,7 +52,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
         let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         navigationItem.rightBarButtonItems = [newButton, sortButton]
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
 
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
@@ -82,12 +82,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func diagnostics() {
-//        presentAlertController(withTitle: "Test", andMessage: "Test")
-
-//        for habit in self.persistenceManager.fetch(Habit.self) {
-//            self.diagnosticsString.append(habit.stringRepresentation())
-//        }
-//        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
+        for habit in self.persistenceManager.fetch(Archive.self) {
+            self.diagnosticsString.append(habit.stringRepresentation())
+        }
+        print(self.diagnosticsString)
+//        self.userNotificationCenter.getPendingNotificationRequests { [weak self] (requests) in
+//            guard let self = self else { return }
 //            requests.forEach { (request) in
 //                self.diagnosticsString.append(request.description)
 //            }
