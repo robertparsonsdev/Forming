@@ -20,7 +20,7 @@ class HabitDetailTableViewController: UITableViewController {
     private var habitTitle: String?
     private var habitDays: [Bool] = [false, false, false, false, false, false, false]
     private var habitColor: Int64?
-    private var habitGoal: Int64 = 0
+    private var habitGoal: Int64 = -1
     private var habitTracking: Bool = true
     private var habitPriority: Int64 = 0
     private var habitFlag: Bool = false

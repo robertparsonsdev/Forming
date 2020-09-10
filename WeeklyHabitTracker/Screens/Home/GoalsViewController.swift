@@ -56,7 +56,7 @@ class GoalsViewController: UIViewController {
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
         if parent == nil {
-            self.delegate?.update(text: self.goal == 0 ? "Off" : "Complete \(self.goal)", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
+            self.delegate?.update(text: self.goal == -1 ? "Off" : "Complete \(self.goal)", data: self.goal, atSection: self.section.rawValue, andRow: self.row.rawValue)
         }
     }
     
@@ -113,7 +113,7 @@ class GoalsViewController: UIViewController {
         } else {
             setGoalPickerEnabled(false)
             goalLabel.text = "Off"
-            self.goal = 0
+            self.goal = -1
         }
     }
 }

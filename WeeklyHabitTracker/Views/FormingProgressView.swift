@@ -159,9 +159,9 @@ class FormingProgressView: UIView {
     @objc func infoButtonPressed() {
         if let description = self.descriptionLabel.text {
             if description.contains("Completion") {
-                self.delegate?.showAlert(withTitle: "Completion Rate", andMessage: "Your completion rate is calculated by dividing the number of completed days by the sum of completed days and failed days. This is used to give you an idea of how successful you are at completing a habit.")
+                self.delegate?.showAlert(withTitle: "Completion Rate", andMessage: "Your completion rate is calculated by dividing the number of completed days by the sum of completed days and failed days. \n\nThis is used to give you an idea of how successful you are at completing a habit.")
             } else {
-                self.delegate?.showAlert(withTitle: "Goal Progress", andMessage: "Your goal progress is an indicator of how close you are to reaching your goal for a habit. When a goal is reached, you will be notified within the app and will be given options on how to continue your habit.")
+                self.delegate?.showAlert(withTitle: "Goal Progress", andMessage: "Your goal progress is an indicator of how close you are to reaching your goal for a habit, if one is set. \n\nWhen a goal is reached, you will be notified within the app and will be given options on how to continue your habit.")
             }
         }
     }

@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // for next update
 //        let habits = self.persistenceService.fetch(Habit.self)
 //        for habit in habits {
-//            habit.goal = 0
+//            habit.goal = -1
 //        }
 //        let archives = self.persistenceService.fetch(Archive.self)
 //        for archive in archives {

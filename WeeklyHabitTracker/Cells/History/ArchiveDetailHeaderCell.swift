@@ -46,7 +46,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         goalProgressView.set(trackStartX: self.startX, trackEndX: self.endX)
         goalProgressView.set(description: "Goal Progress")
         goalProgressView.set(infoOne: "\(completed) Completed")
-        if goal == 0 {
+        if goal == -1 {
             goalProgressView.set(progressRate: CGFloat(goal), startX: self.startX, endX: self.endX)
             goalProgressView.set(percentLabel: "N/A")
             goalProgressView.set(infoTwo: "Goal: Off")
