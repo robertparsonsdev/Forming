@@ -54,6 +54,10 @@ class ArchivedHabitDetailViewController: UIViewController {
         configureNotesTextView()
         configureConstraints()
         
+        let deleteButton = UIBarButtonItem(title: "Reset Week", style: .done, target: self, action: nil)
+        deleteButton.tintColor = .systemRed
+        navigationItem.rightBarButtonItem = deleteButton
+        
         // Notification oberservers
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabit), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabit), name: NSNotification.Name(NotificationName.archivedHabitDetail.rawValue), object: nil)
@@ -70,7 +74,8 @@ class ArchivedHabitDetailViewController: UIViewController {
     // MARK: - Setters
     func set(archivedHabit: ArchivedHabit) {
         self.archivedHabit = archivedHabit
-        cell.set(archivedHabit: archivedHabit, attributed: false)
+        cell.set(archivedHabit: archivedHabit, attributed: false, buttonState: true)
+        cell.set(delegate: self)
     }
     
     // MARK: - Configuration Functions
@@ -166,7 +171,7 @@ class ArchivedHabitDetailViewController: UIViewController {
     }
     
     @objc func reloadArchivedHabit() {
-        DispatchQueue.main.async { self.cell.set(archivedHabit: self.archivedHabit, attributed: false) }
+        DispatchQueue.main.async { self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonState: true) }
     }
 }
 
@@ -174,5 +179,15 @@ class ArchivedHabitDetailViewController: UIViewController {
 extension ArchivedHabitDetailViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         self.archivedHabit?.notes = textView.text
+    }
+}
+
+extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
+    func pushViewController(with archivedHabit: ArchivedHabit) { }
+    
+    func presentAlertController(with alert: UIAlertController) {
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
     }
 }

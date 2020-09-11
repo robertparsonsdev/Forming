@@ -14,9 +14,11 @@ class ArchivedHabitCell: UICollectionViewCell {
     
     private let titleButton = UIButton()
     private let statusStackView = UIStackView()
-    
+    private var alertController: UIAlertController?
+
     private let regularConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .regular), scale: .large)
     private let boldConfig = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 17, weight: .bold), scale: .small)
+    private let impactGenerator = UIImpactFeedbackGenerator()
     private var attributed: Bool = true
     
     // MARK: - Initializers
@@ -29,13 +31,13 @@ class ArchivedHabitCell: UICollectionViewCell {
     }
     
     // MARK: - Setters
-    func set(archivedHabit: ArchivedHabit, attributed: Bool = true) {
+    func set(archivedHabit: ArchivedHabit, attributed: Bool = true, buttonState: Bool) {
         self.archivedHabit = archivedHabit
         self.attributed = attributed
         
         configureCell()
         configureTitleButton()
-        configureStatusStackView(withStatuses: archivedHabit.statuses)
+        configureStatusStackView(withStatuses: archivedHabit.statuses, andButtonState: buttonState)
         
         configureConstraints()
     }
@@ -74,23 +76,27 @@ class ArchivedHabitCell: UICollectionViewCell {
                 titleButton.setAttributedTitle(attributedTitle, for: .normal)
             }
         }
-        
     }
     
-    private func configureStatusStackView(withStatuses statuses: [Status]) {
+    private func configureStatusStackView(withStatuses statuses: [Status], andButtonState state: Bool) {
         if !statusStackView.arrangedSubviews.isEmpty { for view in statusStackView.arrangedSubviews { view.removeFromSuperview() } }
         statusStackView.axis = .horizontal
         statusStackView.alignment = .fill
         statusStackView.distribution = .fillEqually
         for status in statuses {
             let button = UIButton()
-            button.isEnabled = false
+            button.isEnabled = state
             switch status {
             case .incomplete: button.setImage(UIImage(named: "square", in: nil, with: regularConfig), for: .normal); button.imageView?.tintColor = .label
             case .completed: button.setImage(UIImage(named: "checkmark.square", in: nil, with: regularConfig), for: .normal); button.imageView?.tintColor = .systemGreen
             case .failed: button.setImage(UIImage(named: "xmark.square", in: nil, with: regularConfig), for: .normal); button.imageView?.tintColor = .systemRed
             case .empty: ()
             }
+            
+            if state {
+                button.addGestureRecognizer(createLongGesture())
+            }
+            
             statusStackView.addArrangedSubview(button)
         }
     }
@@ -102,14 +108,47 @@ class ArchivedHabitCell: UICollectionViewCell {
         statusStackView.anchor(top: titleButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
+    // MARK: - Functions
+    func createLongGesture() -> UILongPressGestureRecognizer {
+        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(checkboxLongPressed))
+        longGesture.minimumPressDuration = 0.5
+        return longGesture
+    }
+    
+    func createAlertActions(checkbox: UIButton) {
+        alertController?.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self] (_) in
+            guard let self = self else { return }
+        }))
+        alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
+            guard let self = self else { return }
+        }))
+        alertController?.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self] (_) in
+            guard let self = self else { return }
+        }))
+        alertController?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    }
+    
     // MARK: - Selectors
     @objc func titleTapped() {
         guard let archivedHabit = self.archivedHabit else { return }
         delegate?.pushViewController(with: archivedHabit)
     }
+    
+    @objc func checkboxLongPressed(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            DispatchQueue.main.async { self.impactGenerator.impactOccurred() }
+            guard let checkbox = gesture.view as? UIButton else { return }
+            alertController = UIAlertController()
+            alertController?.title = "Change status to:"
+            alertController?.view.tintColor = .systemGreen
+            createAlertActions(checkbox: checkbox)
+            delegate?.presentAlertController(with: alertController!)
+        }
+    }
 }
 
 // MARK: - Protocols
-protocol ArchivedHabitCellDelegate: class {
+@objc protocol ArchivedHabitCellDelegate: class {
     func pushViewController(with archivedHabit: ArchivedHabit)
+    func presentAlertController(with alert: UIAlertController)
 }

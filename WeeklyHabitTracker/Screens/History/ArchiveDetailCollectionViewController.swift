@@ -170,7 +170,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.dataSource = UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { [weak self] (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             guard let self = self else { return nil }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
-            cell?.set(archivedHabit: archivedHabit)
+            cell?.set(archivedHabit: archivedHabit, buttonState: false)
             cell?.set(delegate: self)
             return cell
         })
@@ -228,6 +228,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 
 // MARK: - Delegates
 extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
+    func presentAlertController(with alert: UIAlertController) { }
+    
     func pushViewController(with archivedHabit: ArchivedHabit) {
         let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
         vc.set(archivedHabit: archivedHabit)
