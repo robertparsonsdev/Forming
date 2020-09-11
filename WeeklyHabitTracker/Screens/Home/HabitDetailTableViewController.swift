@@ -385,7 +385,7 @@ class HabitDetailTableViewController: UITableViewController {
             deleteVC.view.tintColor = .systemGreen
             deleteVC.addAction(UIAlertAction(title: "Finish", style: .default) { [weak self] _ in
                 guard let self = self else { return }
-                self.habitDelegate!.finish(habit: self.habit)
+                self.habitDelegate!.finish(habit: self.habit, confetti: true)
                 self.dismiss(animated: true)
             })
             deleteVC.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -448,7 +448,7 @@ extension HabitDetailTableViewController: HabitDetailTableViewDelegate {
 protocol HabitDetailDelegate: AnyObject {
     func add(habit: Habit)
     func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool)
-    func finish(habit: Habit)
+    func finish(habit: Habit, confetti: Bool)
 }
 
 protocol HabitDetailTableViewDelegate: AnyObject {

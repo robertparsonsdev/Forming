@@ -247,7 +247,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         }
     }
     
-    func finish(habit: Habit) {
+    func finish(habit: Habit, confetti: Bool) {
         self.userNotificationCenter.deleteNotificationRequests(forDays: habit.days, andUniqueID: habit.uniqueID)
         habit.archive.updateActive(toState: false)
         self.persistenceManager.delete(habit)
@@ -255,6 +255,10 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         if let index = self.habits.firstIndex(of: habit) {
             self.habits.remove(at: index)
             updateDataSource(on: self.habits)
+        }
+        
+        if confetti {
+            createAndStartParticles()
         }
     }
 }
@@ -304,7 +308,7 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
 
 extension HomeCollectionViewController: GoalReachedDelegate {
     func finishButtonTapped(forHabit habit: Habit) {
-        finish(habit: habit)
+        finish(habit: habit, confetti: false)
     }
     
     func adjustButtonTapped(forHabit habit: Habit) {
