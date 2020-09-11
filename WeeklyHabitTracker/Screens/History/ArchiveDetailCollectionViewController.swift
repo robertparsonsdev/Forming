@@ -228,14 +228,16 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 
 // MARK: - Delegates
 extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
-    func presentAlertController(with alert: UIAlertController) { }
-    
     func pushViewController(with archivedHabit: ArchivedHabit) {
         let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
         vc.set(archivedHabit: archivedHabit)
         vc.title = "Week \(archivedHabit.weekNumber)"
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func save() { }
+    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
+    func presentAlertController(with alert: UIAlertController) { }
 }
 
 extension ArchiveDetailCollectionViewController: FormingProgressViewDelegate {

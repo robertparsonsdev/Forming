@@ -83,9 +83,10 @@ class ArchivedHabitCell: UICollectionViewCell {
         statusStackView.axis = .horizontal
         statusStackView.alignment = .fill
         statusStackView.distribution = .fillEqually
-        for status in statuses {
+        for (index, status) in statuses.enumerated() {
             let button = UIButton()
             button.isEnabled = state
+            button.tag = index
             switch status {
             case .incomplete: button.setImage(UIImage(named: "square", in: nil, with: regularConfig), for: .normal); button.imageView?.tintColor = .label
             case .completed: button.setImage(UIImage(named: "checkmark.square", in: nil, with: regularConfig), for: .normal); button.imageView?.tintColor = .systemGreen
@@ -118,13 +119,21 @@ class ArchivedHabitCell: UICollectionViewCell {
     func createAlertActions(checkbox: UIButton) {
         alertController?.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
-            print(self.archivedHabit?.weekNumber, self.archivedHabit?.archive.currentWeekNumber)
+            guard let oldStatus = self.archivedHabit?.statuses[checkbox.tag] else { return }
+            self.delegate?.selectionChanged(atIndex: checkbox.tag, fromStatus: oldStatus, toStatus: .completed, forState: checkbox.tag == CalUtility.getCurrentDay() ? true : nil)
+            self.delegate?.save()
         }))
         alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
             guard let self = self else { return }
+            guard let oldStatus = self.archivedHabit?.statuses[checkbox.tag] else { return }
+            self.delegate?.selectionChanged(atIndex: checkbox.tag, fromStatus: oldStatus, toStatus: .failed, forState: checkbox.tag == CalUtility.getCurrentDay() ? true : nil)
+            self.delegate?.save()
         }))
         alertController?.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
+            guard let oldStatus = self.archivedHabit?.statuses[checkbox.tag] else { return }
+            self.delegate?.selectionChanged(atIndex: checkbox.tag, fromStatus: oldStatus, toStatus: .incomplete, forState: checkbox.tag == CalUtility.getCurrentDay() ? false : nil)
+            self.delegate?.save()
         }))
         alertController?.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
@@ -149,7 +158,9 @@ class ArchivedHabitCell: UICollectionViewCell {
 }
 
 // MARK: - Protocols
-@objc protocol ArchivedHabitCellDelegate: class {
+protocol ArchivedHabitCellDelegate: class {
     func pushViewController(with archivedHabit: ArchivedHabit)
     func presentAlertController(with alert: UIAlertController)
+    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
+    func save()
 }

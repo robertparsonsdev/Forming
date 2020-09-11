@@ -54,9 +54,9 @@ class ArchivedHabitDetailViewController: UIViewController {
         configureNotesTextView()
         configureConstraints()
         
-        let deleteButton = UIBarButtonItem(title: "Reset Week", style: .done, target: self, action: nil)
-        deleteButton.tintColor = .systemRed
-        navigationItem.rightBarButtonItem = deleteButton
+        let resetButton = UIBarButtonItem(title: "Reset Week", style: .done, target: self, action: #selector(resetButtonTapped))
+        resetButton.tintColor = .systemRed
+        navigationItem.rightBarButtonItem = resetButton
         
         // Notification oberservers
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabit), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
@@ -149,6 +149,23 @@ class ArchivedHabitDetailViewController: UIViewController {
     }
     
     // MARK: - Selectors
+    @objc func resetButtonTapped() {
+        let alert = UIAlertController(title: "Are you sure you want to reset this week?", message: "Resetting a week sets all days of the week as incomplete.\n\n Hint: long press on any of the checkboxes to change the status for that day.", preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: "Reset", style: .default, handler: { [weak self] (alert: UIAlertAction) in
+            guard let self = self else { return }
+            for (index, status) in self.archivedHabit.statuses.enumerated() {
+                self.selectionChanged(atIndex: index, fromStatus: status, toStatus: .incomplete, forState: false)
+            }
+            self.save()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+    
     @objc func saveButtonTapped() {
         self.view.endEditing(true)
     }
@@ -171,7 +188,9 @@ class ArchivedHabitDetailViewController: UIViewController {
     }
     
     @objc func reloadArchivedHabit() {
-        DispatchQueue.main.async { self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonState: true) }
+        DispatchQueue.main.async {
+            self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonState: true)
+        }
     }
 }
 
@@ -183,6 +202,21 @@ extension ArchivedHabitDetailViewController: UITextViewDelegate {
 }
 
 extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
+    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
+        let currentWeek = self.archivedHabit?.archive.currentWeekNumber, week = self.archivedHabit?.weekNumber
+        if week == currentWeek {
+            self.archivedHabit?.archive.habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
+        } else {
+            // update archived habit, archive, reload
+        }
+    }
+    
+    func save() {
+        self.persistenceManager.save()
+        self.notificationCenter.reload(habits: true, history: true, archiveDetail: true, archivedHabitDetail: true)
+        // check for goal reached
+    }
+    
     func pushViewController(with archivedHabit: ArchivedHabit) { }
     
     func presentAlertController(with alert: UIAlertController) {
