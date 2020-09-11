@@ -49,7 +49,7 @@ class FormingStatView: UIView {
     
     func set(stat: Int64) {
         if stat >= 100 {
-            numberLabel.font = UIFont.boldSystemFont(ofSize: 18)
+            numberLabel.font = UIFont.boldSystemFont(ofSize: 16)
         }
         numberLabel.text = "\(stat)"
     }

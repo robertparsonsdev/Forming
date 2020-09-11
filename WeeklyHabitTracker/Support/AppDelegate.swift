@@ -73,6 +73,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.dateClosed = CalUtility.getCurrentDate()
                 self.defaults.set(self.dateClosed, forKey: self.dateClosedKey)
             }
+        } else {
+            self.dateClosed = CalUtility.getCurrentDate()
+            self.defaults.set(self.dateClosed, forKey: self.dateClosedKey)
         }
     }
 

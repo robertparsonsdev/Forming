@@ -118,6 +118,7 @@ class ArchivedHabitCell: UICollectionViewCell {
     func createAlertActions(checkbox: UIButton) {
         alertController?.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
+            print(self.archivedHabit?.weekNumber, self.archivedHabit?.archive.currentWeekNumber)
         }))
         alertController?.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self] (_) in
             guard let self = self else { return }
