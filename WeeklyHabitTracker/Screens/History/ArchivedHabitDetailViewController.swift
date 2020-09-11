@@ -207,7 +207,8 @@ extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
         if week == currentWeek {
             self.archivedHabit?.archive.habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
         } else {
-            // update archived habit, archive, reload
+            self.archivedHabit.updateStatus(toStatus: newStatus, atIndex: index)
+            self.archivedHabit.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
         }
     }
     
