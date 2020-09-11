@@ -54,9 +54,14 @@ class ArchivedHabitDetailViewController: UIViewController {
         configureNotesTextView()
         configureConstraints()
         
-        let resetButton = UIBarButtonItem(title: "Reset Week", style: .done, target: self, action: #selector(resetButtonTapped))
-        resetButton.tintColor = .systemRed
-        navigationItem.rightBarButtonItem = resetButton
+        if self.archivedHabit.archive.active {
+            let resetButton = UIBarButtonItem(title: "Reset Week", style: .done, target: self, action: #selector(resetButtonTapped))
+            resetButton.tintColor = .systemRed
+            navigationItem.rightBarButtonItem = resetButton
+        } else {
+            let infoButton = UIBarButtonItem(image: UIImage(named: "info.circle"), style: .plain, target: self, action: #selector(infoButtonTapped))
+            navigationItem.rightBarButtonItem = infoButton
+        }
         
         // Notification oberservers
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabit), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
@@ -74,7 +79,7 @@ class ArchivedHabitDetailViewController: UIViewController {
     // MARK: - Setters
     func set(archivedHabit: ArchivedHabit) {
         self.archivedHabit = archivedHabit
-        cell.set(archivedHabit: archivedHabit, attributed: false, buttonState: true)
+        cell.set(archivedHabit: archivedHabit, attributed: false, buttonEnabled: self.archivedHabit.archive.active)
         cell.set(delegate: self)
     }
     
@@ -166,6 +171,16 @@ class ArchivedHabitDetailViewController: UIViewController {
         }
     }
     
+    @objc func infoButtonTapped() {
+        let alert = UIAlertController(title: "Finished Habits Status Information", message: "You cannot edit finished habit status information. If you would like to update the status for a day of a finished habit, restore the archive for that habit.", preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+    
     @objc func saveButtonTapped() {
         self.view.endEditing(true)
     }
@@ -189,7 +204,7 @@ class ArchivedHabitDetailViewController: UIViewController {
     
     @objc func reloadArchivedHabit() {
         DispatchQueue.main.async {
-            self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonState: true)
+            self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonEnabled: self.archivedHabit.archive.active)
         }
     }
 }

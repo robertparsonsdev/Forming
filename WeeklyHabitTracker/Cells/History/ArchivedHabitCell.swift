@@ -31,13 +31,13 @@ class ArchivedHabitCell: UICollectionViewCell {
     }
     
     // MARK: - Setters
-    func set(archivedHabit: ArchivedHabit, attributed: Bool = true, buttonState: Bool) {
+    func set(archivedHabit: ArchivedHabit, attributed: Bool = true, buttonEnabled: Bool) {
         self.archivedHabit = archivedHabit
         self.attributed = attributed
         
         configureCell()
         configureTitleButton()
-        configureStatusStackView(withStatuses: archivedHabit.statuses, andButtonState: buttonState)
+        configureStatusStackView(withStatuses: archivedHabit.statuses, andButtonEnabled: buttonEnabled)
         
         configureConstraints()
     }
@@ -78,14 +78,14 @@ class ArchivedHabitCell: UICollectionViewCell {
         }
     }
     
-    private func configureStatusStackView(withStatuses statuses: [Status], andButtonState state: Bool) {
+    private func configureStatusStackView(withStatuses statuses: [Status], andButtonEnabled enabled: Bool) {
         if !statusStackView.arrangedSubviews.isEmpty { for view in statusStackView.arrangedSubviews { view.removeFromSuperview() } }
         statusStackView.axis = .horizontal
         statusStackView.alignment = .fill
         statusStackView.distribution = .fillEqually
         for (index, status) in statuses.enumerated() {
             let button = UIButton()
-            button.isEnabled = state
+            button.isEnabled = enabled
             button.tag = index
             switch status {
             case .incomplete: button.setImage(UIImage(named: "square", in: nil, with: regularConfig), for: .normal); button.imageView?.tintColor = .label
@@ -94,7 +94,7 @@ class ArchivedHabitCell: UICollectionViewCell {
             case .empty: ()
             }
             
-            if state {
+            if enabled {
                 button.addGestureRecognizer(createLongGesture())
             }
             
