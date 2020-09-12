@@ -27,6 +27,9 @@ class HabitDetailTableViewController: UITableViewController {
     private var habitReminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
     private var habitDateCreated: Date = CalUtility.getCurrentDate()
     
+    private let trackingView = UIStackView()
+    private let trackingInfoButton = UIButton()
+    private let trackingSwitch = UISwitch()
     private let priorityStepper = UIStepper()
     private let flagSwitch = UISwitch()
     
@@ -59,7 +62,8 @@ class HabitDetailTableViewController: UITableViewController {
         
         super.init(style: .insetGrouped)
         
-        configureStepper()
+        configureTrackingView()
+        configurePriorityStepper()
         configureFlagSwitch()
     }
     
@@ -163,12 +167,9 @@ class HabitDetailTableViewController: UITableViewController {
             case FirstSection.tracking.rawValue:
                 cell.textLabel?.text = "Tracking"
                 cell.imageView?.image = UIImage(named: "xmark.circle", in: nil, with: self.largeConfig)
-                if self.habitTracking {
-                    cell.detailTextLabel?.text = "On"
-                } else {
-                    cell.detailTextLabel?.text = "Off"
-                }
-                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .none
+                cell.contentView.addSubview(self.trackingView)
+                trackingView.anchor(top: cell.contentView.topAnchor, left: nil, bottom: cell.contentView.bottomAnchor, right: cell.contentView.rightAnchor, /*y: cell.contentView.centerYAnchor, */paddingTop: 6.5, paddingLeft: 0, paddingBottom: 6.5, paddingRight: 22, width: 0, height: 0)
             default: ()
             }
         case SectionNumber.secondSection.rawValue:
@@ -204,7 +205,6 @@ class HabitDetailTableViewController: UITableViewController {
             case FirstSection.goals.rawValue:
                 let goalView = GoalsViewController(goal: self.habitGoal, delegate: self, row: .goals, section: .firstSection)
                 self.navigationController?.pushViewController(goalView, animated: true)
-            case FirstSection.tracking.rawValue: print("tracking")
             default: ()
             }
         case SectionNumber.secondSection.rawValue:
@@ -219,7 +219,22 @@ class HabitDetailTableViewController: UITableViewController {
     }
     
     // MARK: - Configuration Functions
-    func configureStepper() {
+    func configureTrackingView() {
+        trackingView.axis = .horizontal
+        trackingView.alignment = .fill
+        trackingView.distribution = .fillEqually
+        
+        trackingSwitch.isOn = self.habitTracking
+        trackingSwitch.addTarget(self, action: #selector(trackingSwitchTapped), for: .valueChanged)
+        trackingInfoButton.setImage(UIImage(named: "info.circle"), for: .normal)
+        trackingInfoButton.tintColor = .label
+        trackingInfoButton.addTarget(self, action: #selector(trackingInfoButtonTapped), for: .touchUpInside)
+        
+        trackingView.addArrangedSubview(trackingInfoButton)
+        trackingView.addArrangedSubview(trackingSwitch)
+    }
+    
+    func configurePriorityStepper() {
         priorityStepper.minimumValue = 0
         priorityStepper.maximumValue = 3
         priorityStepper.value = Double(self.habitPriority)
@@ -400,6 +415,21 @@ class HabitDetailTableViewController: UITableViewController {
     
     @objc func cancelButtonTapped() {
         DispatchQueue.main.async { self.dismiss(animated: true) }
+    }
+    
+    @objc func trackingInfoButtonTapped() {
+        let alert = UIAlertController(title: "Habit Tracking", message: "If a habit is not marked as \"complete\" by the end of the current day, then it will automatically be marked as failed at midnight. This is to help keep you accountable for completing your habits. This can be turned off for any habit at any time.", preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+    
+    @objc func trackingSwitchTapped(sender: UISwitch) {
+        self.haptics.selectionChanged()
+        self.habitTracking = sender.isOn
     }
     
     @objc func stepperTapped(sender: UIStepper) {

@@ -20,10 +20,12 @@ public class Habit: NSManagedObject {
     }
     
     func dayChanged(toDay newDay: Int) {
-        if self.statuses[newDay - 1] == .incomplete {
-            updateStatus(toStatus: .failed, atIndex: newDay - 1)
-            self.archive.updateCurrentArchivedHabit(toStatus: .failed, atIndex: newDay - 1)
-            self.archive.updateStats(fromStatus: .incomplete, toStatus: .failed)
+        if self.tracking {
+            if self.statuses[newDay - 1] == .incomplete {
+                updateStatus(toStatus: .failed, atIndex: newDay - 1)
+                self.archive.updateCurrentArchivedHabit(toStatus: .failed, atIndex: newDay - 1)
+                self.archive.updateStats(fromStatus: .incomplete, toStatus: .failed)
+            }
         }
         
         if self.statuses[newDay] == .completed || self.statuses[newDay] == .failed {
@@ -34,10 +36,12 @@ public class Habit: NSManagedObject {
     }
     
     func weekChanged(toDate date: Date, andDay day: Int) {
-        if self.statuses[6] == .incomplete {
-            updateStatus(toStatus: .failed, atIndex: 6)
-            self.archive.updateCurrentArchivedHabit(toStatus: .failed, atIndex: 6)
-            self.archive.updateStats(fromStatus: .incomplete, toStatus: .failed)
+        if self.tracking {
+            if self.statuses[6] == .incomplete {
+                updateStatus(toStatus: .failed, atIndex: 6)
+                self.archive.updateCurrentArchivedHabit(toStatus: .failed, atIndex: 6)
+                self.archive.updateStats(fromStatus: .incomplete, toStatus: .failed)
+            }
         }
         
         resetStatuses()
