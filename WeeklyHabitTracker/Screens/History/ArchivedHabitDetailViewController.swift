@@ -160,7 +160,9 @@ class ArchivedHabitDetailViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Reset", style: .default, handler: { [weak self] (alert: UIAlertAction) in
             guard let self = self else { return }
             for (index, status) in self.archivedHabit.statuses.enumerated() {
-                self.selectionChanged(atIndex: index, fromStatus: status, toStatus: .incomplete, forState: false)
+                if status != .empty {
+                    self.selectionChanged(atIndex: index, fromStatus: status, toStatus: .incomplete, forState: false)
+                }
             }
             self.save()
         }))
