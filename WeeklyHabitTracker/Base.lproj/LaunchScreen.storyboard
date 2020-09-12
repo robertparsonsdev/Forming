@@ -15,13 +15,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="checkmark.square.fill" translatesAutoresizingMaskIntoConstraints="NO" id="yPq-fg-7FK">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forming" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FrV-Yr-j58">
+                                <rect key="frame" x="160" y="376" width="94" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Lpo-rL-yUa"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="25"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="keyPath" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark.square.fill" translatesAutoresizingMaskIntoConstraints="NO" id="yPq-fg-7FK">
                                 <rect key="frame" x="157" y="246" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="yPq-fg-7FK" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="202" id="KuO-9Q-JNE"/>
+                            <constraint firstItem="yPq-fg-7FK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="157" id="Nh5-0q-dIS"/>
+                            <constraint firstItem="FrV-Yr-j58" firstAttribute="top" secondItem="yPq-fg-7FK" secondAttribute="bottom" constant="30" id="Rcf-6T-abb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="FrV-Yr-j58" secondAttribute="bottom" constant="456" id="Wbk-4w-7pb"/>
+                            <constraint firstItem="yPq-fg-7FK" firstAttribute="centerX" secondItem="FrV-Yr-j58" secondAttribute="centerX" id="lmG-fL-fA8"/>
+                            <constraint firstItem="yPq-fg-7FK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="upn-zk-tMe"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
