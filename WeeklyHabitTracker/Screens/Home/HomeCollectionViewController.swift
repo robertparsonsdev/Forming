@@ -71,6 +71,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         // Notifications observers
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(finishFromNotes), name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil)
     }
     
     @objc func printNofifications() {
@@ -222,6 +223,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         DispatchQueue.main.async { self.collectionView.reloadData() }
     }
     
+    @objc func finishFromNotes(_ notification: NSNotification) {
+        if let habit = notification.userInfo?["habit"] as? Habit {
+            finish(habit: habit, confetti: false)
+        }
+    }
+    
 }
 
 // MARK: - Delegates
@@ -312,18 +319,10 @@ extension HomeCollectionViewController: GoalReachedDelegate {
     }
     
     func adjustButtonTapped(forHabit habit: Habit) {
-        let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self, habitToEdit: habit)
-        let navController = UINavigationController(rootViewController: editHabitVC)
-        navController.navigationBar.tintColor = .systemGreen
-        
-        let indexPath = IndexPath(row: FirstSection.goals.rawValue, section: SectionNumber.firstSection.rawValue)
+        let goalViewController = GoalsViewController(habit: habit, persistenceManager: self.persistenceManager)
+        let navController = UINavigationController(rootViewController: goalViewController)
         DispatchQueue.main.async {
             self.present(navController, animated: true)
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            editHabitVC.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
-            editHabitVC.tableView.delegate?.tableView?(editHabitVC.tableView, didSelectRowAt: indexPath)
         }
     }
 }

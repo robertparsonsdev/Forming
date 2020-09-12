@@ -11,8 +11,11 @@ import UIKit
 class GoalsViewController: UIViewController {
     private var goal: Int64
     private weak var delegate: HabitDetailTableViewDelegate?
-    private let row: FirstSection
-    private let section: SectionNumber
+    private var row: FirstSection!
+    private var section: SectionNumber!
+    
+    private var habitToAdjust: Habit!
+    private var persistenceManager: PersistenceService!
     
     private let goalLabel = FormingPickerLabel()
     private let goalToggle = UISwitch()
@@ -38,8 +41,30 @@ class GoalsViewController: UIViewController {
         }
     }
     
+    init(habit: Habit, persistenceManager: PersistenceService) {
+        self.goal = habit.goal
+        self.habitToAdjust = habit
+        self.persistenceManager = persistenceManager
+        super.init(nibName: nil, bundle: nil)
+        
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
+        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+        cancelButton.tintColor = .systemGreen
+        saveButton.tintColor = .systemGreen
+        
+        self.navigationItem.leftBarButtonItem = cancelButton
+        self.navigationItem.rightBarButtonItem = saveButton
+        
+        goalLabel.text = "\(goal)"
+        goalToggle.isOn = true
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("goal deinit")
     }
     
     override func viewDidLoad() {
@@ -114,6 +139,22 @@ class GoalsViewController: UIViewController {
             setGoalPickerEnabled(false)
             goalLabel.text = "Off"
             self.goal = -1
+        }
+    }
+    
+    @objc func saveButtonTapped() {
+        self.habitToAdjust.goal = self.goal
+        self.habitToAdjust.archive.goal = self.goal
+        self.persistenceManager.save()
+        
+        DispatchQueue.main.async {
+            self.dismiss(animated: true)
+        }
+    }
+    
+    @objc func cancelButtonTapped() {
+        DispatchQueue.main.async {
+            self.dismiss(animated: true)
         }
     }
 }

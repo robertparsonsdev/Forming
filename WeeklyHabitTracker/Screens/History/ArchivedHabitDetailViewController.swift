@@ -231,6 +231,11 @@ extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
         self.persistenceManager.save()
         self.notificationCenter.reload(habits: true, history: true, archiveDetail: true, archivedHabitDetail: true)
         // check for goal reached
+        let goal = self.archivedHabit.archive.habit.goal
+        let completed = self.archivedHabit.archive.completedTotal
+        if goal == completed {
+            presentGoalReachedViewController(withHabit: self.archivedHabit.archive.habit, andDelegate: self)
+        }
     }
     
     func pushViewController(with archivedHabit: ArchivedHabit) { }
@@ -238,6 +243,22 @@ extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
     func presentAlertController(with alert: UIAlertController) {
         DispatchQueue.main.async {
             self.present(alert, animated: true)
+        }
+    }
+}
+
+extension ArchivedHabitDetailViewController: GoalReachedDelegate {
+    func finishButtonTapped(forHabit habit: Habit) {
+        let dict = ["habit": habit]
+        self.notificationCenter.post(name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil, userInfo: dict)
+        self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func adjustButtonTapped(forHabit habit: Habit) {
+        let goalViewController = GoalsViewController(habit: habit, persistenceManager: self.persistenceManager)
+        let navController = UINavigationController(rootViewController: goalViewController)
+        DispatchQueue.main.async {
+            self.present(navController, animated: true)
         }
     }
 }
