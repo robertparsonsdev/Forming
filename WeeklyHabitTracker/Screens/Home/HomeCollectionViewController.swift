@@ -189,7 +189,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         switch self.defaultSort {
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
         case .color: self.habits.sort { (hab1, hab2) -> Bool in hab1.color < hab2.color }
-        case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in print("date created"); return hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
+        case .dateCreated: self.habits.sort { (hab1, hab2) -> Bool in return hab1.dateCreated.compare(hab2.dateCreated) == .orderedAscending }
         case .dueToday: self.habits.sort { (hab1, hab2) -> Bool in hab1.statuses[CalUtility.getCurrentDay()] < hab2.statuses[CalUtility.getCurrentDay()] }
         case .flag: self.habits.sort { (hab1, hab2) -> Bool in hab1.flag && !hab2.flag }
         case .priority: self.habits.sort { (hab1, hab2) -> Bool in hab1.priority > hab2.priority }

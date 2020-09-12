@@ -93,6 +93,13 @@ class CalUtility {
         return date
     }
     
+    static func getDateCreated() -> Date {
+        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: Date())) else {
+            fatalError("Get date created error.")
+        }
+        return date
+    }
+    
     static func getReminderComps(time: Date, weekday: Int) -> DateComponents {
         let calendar = Calendar.current
         var components = DateComponents()

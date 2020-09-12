@@ -113,7 +113,7 @@ public class Archive: NSManagedObject {
         newHabit.reminder = self.reminder
         newHabit.flag = self.flag
         newHabit.goal = self.goal
-        newHabit.dateCreated = CalUtility.getCurrentDate()
+        newHabit.dateCreated = CalUtility.getDateCreated()
         newHabit.uniqueID = UUID().uuidString
         newHabit.archive = self
         

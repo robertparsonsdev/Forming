@@ -25,7 +25,7 @@ class HabitDetailTableViewController: UITableViewController {
     private var habitPriority: Int64 = 0
     private var habitFlag: Bool = false
     private var habitReminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
-    private var habitDateCreated: Date = CalUtility.getCurrentDate()
+    private var habitDateCreated: Date = CalUtility.getDateCreated()
     
     private let trackingView = UIStackView()
     private let trackingInfoButton = UIButton()
@@ -353,7 +353,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
-            self.habit.dateCreated = CalUtility.getCurrentDate()
+            self.habit.dateCreated = self.habitDateCreated
             self.habit.buttonState = false
             self.habit.uniqueID = UUID().uuidString
             
