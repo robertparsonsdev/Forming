@@ -31,6 +31,7 @@ extension Archive {
     @NSManaged public var reminder: Date?
     @NSManaged public var goal: Int64
     @NSManaged public var currentWeekNumber: Int64
+    @NSManaged public var tracking: Bool
 
 }
 

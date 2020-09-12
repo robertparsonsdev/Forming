@@ -46,7 +46,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habitDays = editingHabit.days
             self.habitColor = editingHabit.color
             self.habitGoal = editingHabit.goal
-//            self.habitTracking =
+            self.habitTracking = editingHabit.tracking
             self.habitPriority = editingHabit.priority
             self.habitFlag = editingHabit.flag
             self.habitReminder = editingHabit.reminder
@@ -306,6 +306,7 @@ class HabitDetailTableViewController: UITableViewController {
             }
             
             self.habit.goal = self.habitGoal
+            self.habit.tracking = self.habitTracking
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
@@ -316,6 +317,7 @@ class HabitDetailTableViewController: UITableViewController {
             self.habit.archive.priority = self.habit.priority
             self.habit.archive.reminder = self.habit.reminder
             self.habit.archive.goal = self.habit.goal
+            self.habit.archive.tracking = self.habit.tracking
             self.habit.archive.habit = self.habit
             
             self.habitDelegate!.update(habit: self.habit, deleteNotifications: deleteNotifications, updateNotifications: updateNotifications)
@@ -330,7 +332,9 @@ class HabitDetailTableViewController: UITableViewController {
                 }
             }
             self.habit.statuses = statuses
+            
             self.habit.goal = self.habitGoal
+            self.habit.tracking = self.habitTracking
             self.habit.priority = self.habitPriority
             self.habit.reminder = self.habitReminder
             self.habit.flag = self.habitFlag
@@ -346,6 +350,7 @@ class HabitDetailTableViewController: UITableViewController {
             initialArchive.priority = self.habit.priority
             initialArchive.reminder = self.habit.reminder
             initialArchive.goal = self.habit.goal
+            initialArchive.tracking = self.habit.tracking
             initialArchive.active = true
             initialArchive.successRate = 1.0
             initialArchive.completedTotal = 0
