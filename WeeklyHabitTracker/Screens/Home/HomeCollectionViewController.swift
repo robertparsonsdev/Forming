@@ -200,8 +200,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
             }
         }
         updateDataSource(on: self.habits)
-        
-        self.notificationCenter.reload(history: true)
     }
     
     // MARK: - Selectors
@@ -215,12 +213,16 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func sortButtonTapped() {
-        present(sortAC, animated: true)
+        DispatchQueue.main.async {
+            self.present(self.sortAC, animated: true)
+        }
     }
     
     @objc func reloadHabits() {
-        fetchHabits()
-        DispatchQueue.main.async { self.collectionView.reloadData() }
+        DispatchQueue.main.async {
+            self.configureDataSource()
+            self.fetchHabits()
+        }
     }
     
     @objc func finishFromNotes(_ notification: NSNotification) {
@@ -289,7 +291,9 @@ extension HomeCollectionViewController: HabitCellDelegate {
             presentGoalReachedViewController(withHabit: habit, andDelegate: self)
         }
         
-        // call sort?
+        if index == CalUtility.getCurrentDay() && self.defaultSort == .dueToday {
+            sortHabits()
+        }
     }
     
     func presentAlertController(with alert: UIAlertController) {

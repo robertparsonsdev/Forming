@@ -36,7 +36,7 @@ class EmptyStateView: UIView {
             symbolAttachment.image = UIImage(named: "plus", in: nil, with: config)
             symbolAttachment.image = symbolAttachment.image?.withTintColor(.secondaryLabel)
             let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .semibold), .foregroundColor: UIColor.secondaryLabel]
-            let title = NSMutableAttributedString(string: "Press the ", attributes: attributes)
+            let title = NSMutableAttributedString(string: "Tap the ", attributes: attributes)
             title.append(NSAttributedString(attachment: symbolAttachment))
             title.append(NSAttributedString(string: " to add a new habit.", attributes: attributes))
             label.attributedText = title

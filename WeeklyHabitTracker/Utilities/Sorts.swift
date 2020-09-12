@@ -18,6 +18,14 @@ enum HomeSort: String, CaseIterable {
     case reminderTime = "Reminder Time"
 }
 
+enum HistorySort: String, CaseIterable {
+    case alphabetical = "Alphabetical"
+    case color = "Color"
+    case completionAscending = "Completion Ascending"
+    case completionDescending = "Completion Descending"
+    case goal = "Goal"
+}
+
 enum ArchiveDetailSort: String, CaseIterable {
     case dateAscending = "Date Ascending"
     case dateDescending = "Date Descending"
