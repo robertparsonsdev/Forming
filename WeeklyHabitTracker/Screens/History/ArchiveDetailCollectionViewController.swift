@@ -243,6 +243,7 @@ extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
 extension ArchiveDetailCollectionViewController: FormingProgressViewDelegate {
     func showAlert(withTitle title: String, andMessage message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = .systemGreen
         alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
         self.present(alert, animated: true)
     }
