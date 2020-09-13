@@ -49,6 +49,7 @@
 		EEC926C8249E767B009C960A /* FormingStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC926C7249E767B009C960A /* FormingStatView.swift */; };
 		EECBF3DF2457CBBE0050DFB8 /* CVSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */; };
 		EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */; };
+		EEE50EFF250D7C4F00D0B77F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */; };
 		EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */; };
 		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
@@ -108,6 +109,7 @@
 		EEC926C7249E767B009C960A /* FormingStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingStatView.swift; sourceTree = "<group>"; };
 		EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVSection.swift; sourceTree = "<group>"; };
 		EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNUserNotificationCenterExt.swift; sourceTree = "<group>"; };
+		EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailCollectionViewController.swift; sourceTree = "<group>"; };
 		EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedHabitCell.swift; sourceTree = "<group>"; };
 		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEE50EFF250D7C4F00D0B77F /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +187,7 @@
 			children = (
 				EEC0FE72244646E500FC618F /* WeeklyHabitTracker */,
 				EEC0FE71244646E500FC618F /* Products */,
+				EEE50EFD250D7C4F00D0B77F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -254,6 +258,14 @@
 				EE51D1CF24D4F947009079A4 /* UIViewControllerExt.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		EEE50EFD250D7C4F00D0B77F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		EEEB97CB24941EC0006DE24D /* Home */ = {
