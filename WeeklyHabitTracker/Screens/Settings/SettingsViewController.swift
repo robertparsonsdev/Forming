@@ -51,9 +51,9 @@ class SettingsActions: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
     
     // MARK: Delegates
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        for product in response.products {
-
-        }
+//        for product in response.products {
+//
+//        }
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {

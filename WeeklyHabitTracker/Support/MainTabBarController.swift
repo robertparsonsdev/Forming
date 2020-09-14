@@ -45,12 +45,14 @@ class MainTabBarController: UITabBarController {
                                                                                                      notifCenter: self.appDelegate.getNotificationCenter(),
                                                                                                      userNotifCenter: self.appDelegate.getUserNotificationCenter()))
 
-        let settingsHostController = SettingsViewController(rootView: SettingsSwiftUI())
-        settingsHostController.title = "Settings"
-        settingsHostController.tabBarItem.title = "Settings"
-        settingsHostController.tabBarItem.image = UIImage(named: "gear", in: nil, with: boldConfig)!
+//        let settingsHostController = SettingsViewController(rootView: SettingsSwiftUI())
+//        settingsHostController.title = "Settings"
+//        settingsHostController.tabBarItem.title = "Settings"
+//        settingsHostController.tabBarItem.image = UIImage(named: "gear", in: nil, with: boldConfig)!
+        
+        let settingsNavController = buildTabBarControllers(withTitle: "Settings", andImage: UIImage(named: "gear", in: nil, with: boldConfig)!, andRootVC: NewSettingsTableViewController())
 
-        viewControllers = [homeNavController, historyNavController, settingsHostController]
+        viewControllers = [homeNavController, historyNavController, settingsNavController]
     }
         
     fileprivate func buildTabBarControllers(withTitle title: String, andImage image: UIImage, andRootVC vc: UIViewController = UIViewController()) -> UINavigationController {
