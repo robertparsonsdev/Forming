@@ -24,7 +24,6 @@ class NewSettingsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         
         tableView.register(SettingsHeaderView.self, forHeaderFooterViewReuseIdentifier: self.headerIdentifier)
@@ -51,6 +50,7 @@ class NewSettingsTableViewController: UITableViewController {
         switch section {
         case 0:
             let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.headerIdentifier) as! SettingsHeaderView
+            headerCell.set(delegate: self)
             return headerCell
         default: return UIView()
         }
@@ -65,7 +65,11 @@ class NewSettingsTableViewController: UITableViewController {
 
 // MARK: - Delegates
 extension NewSettingsTableViewController: SettingsHeaderDelegate {
-    func tipButtonTapped() {
-        
+    func tipButtonTapped(tip: Tip) {
+        print(tip)
     }
+}
+
+enum Tip {
+    case small, medium, large
 }

@@ -63,6 +63,7 @@
 		EEEB97E7249452FB006DE24D /* Habit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */; };
 		EEF25A6524C2781A00C1CBFA /* HabitDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF25A6424C2781A00C1CBFA /* HabitDetailTableViewController.swift */; };
 		EEF25A6724C27A7100C1CBFA /* HabitDetailHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */; };
+		EEF820B6250FF05D007A0BB9 /* FormingTipButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -125,6 +126,7 @@
 		EEEB97E1249452FB006DE24D /* Habit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EEF25A6424C2781A00C1CBFA /* HabitDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailTableViewController.swift; sourceTree = "<group>"; };
 		EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailHeader.swift; sourceTree = "<group>"; };
+		EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTipButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +154,7 @@
 				EE33081B24A3005B006C8D0A /* FormingProgressView.swift */,
 				EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */,
 				EE51D1CD24D4F76C009079A4 /* GoalReachedViewController.swift */,
+				EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -418,6 +421,7 @@
 				EEEB97E4249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift in Sources */,
 				EE33081C24A3005B006C8D0A /* FormingProgressView.swift in Sources */,
 				EEC926C8249E767B009C960A /* FormingStatView.swift in Sources */,
+				EEF820B6250FF05D007A0BB9 /* FormingTipButton.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
 				EE1B61C2250F1A0300B4D2EE /* SettingsHeaderView.swift in Sources */,

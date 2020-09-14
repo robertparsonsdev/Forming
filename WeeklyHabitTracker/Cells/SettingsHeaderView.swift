@@ -32,17 +32,16 @@ class SettingsHeaderView: UITableViewHeaderFooterView {
         stackView.distribution = .fillEqually
         stackView.spacing = 15
         
-        // tip buttons:
-        let redView = UIView()
-        redView.backgroundColor = .systemRed
-        let indigoView = UIView()
-        indigoView.backgroundColor = .systemIndigo
-        let blueView = UIView()
-        blueView.backgroundColor = .systemBlue
+        let smallTipButton = FormingTipButton(tip: .small, color: .systemTeal, title: "$0.99 Tip", leftImage: UIImage(named: "thumbsup-left")!, rightImage: UIImage(named: "thumbsup-right")!, message: "Thank you so much for your support!")
+        smallTipButton.addTarget(self, action: #selector(tipButtonTapped), for: .touchUpInside)
+        let mediumTipButton = FormingTipButton(tip: .medium, color: .systemGreen, title: "$2.99 Tip", leftImage: UIImage(named: "celebration-left")!, rightImage: UIImage(named: "celebration-right")!, message: "You're awesome! Thank you so much!")
+        mediumTipButton.addTarget(self, action: #selector(tipButtonTapped), for: .touchUpInside)
+        let largeTipButton = FormingTipButton(tip: .large, color: .systemOrange, title: "$4.99 Tip", leftImage: UIImage(named: "explosion-left")!, rightImage: UIImage(named: "explosion-right")!, message: "Wow! I really appreciate it! Thanks!")
+        largeTipButton.addTarget(self, action: #selector(tipButtonTapped), for: .touchUpInside)
         
-        stackView.addArrangedSubview(redView)
-        stackView.addArrangedSubview(indigoView)
-        stackView.addArrangedSubview(blueView)
+        stackView.addArrangedSubview(smallTipButton)
+        stackView.addArrangedSubview(mediumTipButton)
+        stackView.addArrangedSubview(largeTipButton)
     }
     
     func configureConstraints() {
@@ -55,9 +54,16 @@ class SettingsHeaderView: UITableViewHeaderFooterView {
         self.delegate = delegate
     }
     
+    // MARK: - Selectors
+    @objc func tipButtonTapped(sender: UIButton) {
+        if let tipButton = sender as? FormingTipButton {
+            self.delegate?.tipButtonTapped(tip: tipButton.tip)
+        }
+    }
+    
 }
 
 // MARK: - Protocols
 protocol SettingsHeaderDelegate: class {
-    func tipButtonTapped()
+    func tipButtonTapped(tip: Tip)
 }
