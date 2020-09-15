@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -16,27 +16,26 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forming" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FrV-Yr-j58">
-                                <rect key="frame" x="160" y="376" width="94" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="Lpo-rL-yUa"/>
-                                </constraints>
+                                <rect key="frame" x="140" y="338" width="94" height="30"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark.square.fill" translatesAutoresizingMaskIntoConstraints="NO" id="yPq-fg-7FK">
-                                <rect key="frame" x="157" y="246" width="100" height="100"/>
+                                <rect key="frame" x="242" y="343" width="15.333333333333314" height="20"/>
                                 <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="aeK-5k-JJi"/>
+                                </constraints>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="yPq-fg-7FK" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="202" id="KuO-9Q-JNE"/>
-                            <constraint firstItem="yPq-fg-7FK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="157" id="Nh5-0q-dIS"/>
-                            <constraint firstItem="FrV-Yr-j58" firstAttribute="top" secondItem="yPq-fg-7FK" secondAttribute="bottom" constant="30" id="Rcf-6T-abb"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="FrV-Yr-j58" secondAttribute="bottom" constant="456" id="Wbk-4w-7pb"/>
-                            <constraint firstItem="yPq-fg-7FK" firstAttribute="centerX" secondItem="FrV-Yr-j58" secondAttribute="centerX" id="lmG-fL-fA8"/>
-                            <constraint firstItem="yPq-fg-7FK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="upn-zk-tMe"/>
+                            <constraint firstItem="yPq-fg-7FK" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="-100" id="I4S-do-9Qd"/>
+                            <constraint firstItem="FrV-Yr-j58" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="-100" id="boj-SV-bfJ"/>
+                            <constraint firstItem="yPq-fg-7FK" firstAttribute="leading" secondItem="FrV-Yr-j58" secondAttribute="trailing" constant="8" id="nsY-il-qsn"/>
+                            <constraint firstItem="FrV-Yr-j58" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" constant="-20" id="xJy-wv-iDY"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
