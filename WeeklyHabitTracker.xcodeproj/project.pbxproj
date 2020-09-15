@@ -64,6 +64,7 @@
 		EEF25A6524C2781A00C1CBFA /* HabitDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF25A6424C2781A00C1CBFA /* HabitDetailTableViewController.swift */; };
 		EEF25A6724C27A7100C1CBFA /* HabitDetailHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */; };
 		EEF820B6250FF05D007A0BB9 /* FormingTipButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */; };
+		EEF820B82510092E007A0BB9 /* IAPProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF820B72510092E007A0BB9 /* IAPProduct.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -127,6 +128,7 @@
 		EEF25A6424C2781A00C1CBFA /* HabitDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailTableViewController.swift; sourceTree = "<group>"; };
 		EEF25A6624C27A7100C1CBFA /* HabitDetailHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailHeader.swift; sourceTree = "<group>"; };
 		EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingTipButton.swift; sourceTree = "<group>"; };
+		EEF820B72510092E007A0BB9 /* IAPProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPProduct.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 				EE91108424623F730021190C /* UIHelper.swift */,
 				EE3A59F12495C720009E5D25 /* HistorySection.swift */,
 				EE19344D24B7B8720005AE8E /* NotificationName.swift */,
+				EEF820B72510092E007A0BB9 /* IAPProduct.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				EEF820B6250FF05D007A0BB9 /* FormingTipButton.swift in Sources */,
 				EEA64ED32447D5CF008202D0 /* FormingColorButton.swift in Sources */,
 				EEA64ECE2447AD4A008202D0 /* FormingTitleLabel.swift in Sources */,
+				EEF820B82510092E007A0BB9 /* IAPProduct.swift in Sources */,
 				EE1B61C2250F1A0300B4D2EE /* SettingsHeaderView.swift in Sources */,
 				EEC0FE8C24464D7600FC618F /* HistoryCollectionViewController.swift in Sources */,
 				EE1036A1245122DF00AFFBEB /* FormingPickerLabel.swift in Sources */,

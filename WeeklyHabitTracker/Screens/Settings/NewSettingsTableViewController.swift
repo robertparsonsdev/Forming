@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import StoreKit
 
 class NewSettingsTableViewController: UITableViewController {
     private let cellIdentifier = "settingsCellIdentifier"
     private let headerIdentifier = "settingsHeaderIdentifier"
+    
+    private var products = [SKProduct]()
+    private let paymentQueue = SKPaymentQueue.default()
         
     // MARK: - Initializers
     init() {
@@ -28,6 +32,8 @@ class NewSettingsTableViewController: UITableViewController {
         
         tableView.register(SettingsHeaderView.self, forHeaderFooterViewReuseIdentifier: self.headerIdentifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
+        
+        fetchProducts()
     }
 
     // MARK: - Table view data source
@@ -61,15 +67,71 @@ class NewSettingsTableViewController: UITableViewController {
 
         return cell
     }
+    
+    // MARK: - Functions
+    private func fetchProducts() {
+        let products: Set = [IAPProduct.smallTip.rawValue, IAPProduct.mediumTip.rawValue, IAPProduct.largeTip.rawValue]
+        let request = SKProductsRequest(productIdentifiers: products)
+        request.delegate = self
+        request.start()
+        
+        self.paymentQueue.add(self)
+    }
+    
+    private func purchase(product: IAPProduct) {
+        guard let productToPurchase = self.products.filter({ $0.productIdentifier == product.rawValue }).first else { return }
+        let payment = SKPayment(product: productToPurchase)
+        self.paymentQueue.add(payment)
+    }
 }
 
 // MARK: - Delegates
 extension NewSettingsTableViewController: SettingsHeaderDelegate {
-    func tipButtonTapped(tip: Tip) {
-        print(tip)
+    func tipButtonTapped(product: IAPProduct) {
+        switch product {
+        case .smallTip: purchase(product: .smallTip)
+        case .mediumTip: purchase(product: .mediumTip)
+        case .largeTip: purchase(product: .largeTip)
+        }
     }
 }
 
-enum Tip {
-    case small, medium, large
+extension NewSettingsTableViewController: SKProductsRequestDelegate {
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        self.products = response.products
+        
+        for product in response.products {
+            print(product.localizedTitle)
+        }
+    }
+    
+    func request(_ request: SKRequest, didFailWithError error: Error) {
+        print(error.localizedDescription)
+    }
+}
+
+extension NewSettingsTableViewController: SKPaymentTransactionObserver {
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        for transaction in transactions {
+            print(transaction.transactionState.status(), transaction.payment.productIdentifier)
+            
+            switch transaction.transactionState {
+            case .purchasing: break
+            default: queue.finishTransaction(transaction); print("finished")
+            }
+        }
+    }
+}
+
+extension SKPaymentTransactionState {
+    func status() -> String {
+        switch self {
+        case .deferred: return "deferred"
+        case .failed: return "failed"
+        case .purchased: return "purchaed"
+        case .purchasing: return "purchasing"
+        case .restored: return "restored"
+        default: return "error"
+        }
+    }
 }

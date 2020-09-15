@@ -9,15 +9,15 @@
 import UIKit
 
 class FormingTipButton: UIButton {
-    let tip: Tip
+    let product: IAPProduct
     
     private let tipLabel = UILabel()
     private let leftImageView = UIImageView()
     private let rightImageView = UIImageView()
     private let messageLabel = UILabel()
     
-    init(tip: Tip, color: UIColor, title: String, leftImage: UIImage, rightImage: UIImage, message: String) {
-        self.tip = tip
+    init(product: IAPProduct, color: UIColor, title: String, leftImage: UIImage, rightImage: UIImage, message: String) {
+        self.product = product
         
         super.init(frame: .zero)
         
