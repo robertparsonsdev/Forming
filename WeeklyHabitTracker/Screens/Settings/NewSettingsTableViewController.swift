@@ -63,8 +63,26 @@ class NewSettingsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath)
-
+        var cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath)
+        cell = UITableViewCell(style: .value1, reuseIdentifier: self.cellIdentifier)
+        cell.imageView?.tintColor = .label
+        switch indexPath.row {
+        case 0:
+            cell.textLabel?.text = "Default Reminder Time"
+            cell.imageView?.image = UIImage(named: "clock")
+            cell.detailTextLabel?.text = "9:00 AM"
+        case 1:
+            cell.textLabel?.text = "Due Today Badge"
+            cell.imageView?.image = UIImage(named: "app.badge")
+            cell.accessoryView = UISwitch()
+            cell.selectionStyle = .none
+        case 2:
+            cell.textLabel?.text = "Show Tutorial"
+            cell.accessoryType = .disclosureIndicator
+            cell.imageView?.image = UIImage(named: "info.circle")
+            
+        default: ()
+        }
         return cell
     }
     
