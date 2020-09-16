@@ -22,6 +22,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, Habit>!
     private var diagnosticsString = String()
     
+    private var sortMenu: UIMenu!
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     private let sortKey = "homeSort"
     private var defaultSort: HomeSort = .dateCreated
@@ -48,12 +49,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
-        navigationController?.navigationBar.prefersLargeTitles = true
-        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
-        let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
-        navigationItem.rightBarButtonItems = [newButton, sortButton]
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
 
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
@@ -62,6 +57,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
+        configureNavigationBar()
         configureSearchController()
         configureSortAlertController()
         configureDataSource()
@@ -116,6 +112,60 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     // MARK: - Configuration Functions
+    func configureNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
+        let sortButton: UIBarButtonItem
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
+        
+        if #available(iOS 14, *) {
+//            var children = [UIAction]()
+//            HomeSort.allCases.forEach { (sort) in
+//                children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
+//                    guard let self = self else { return }
+//                    self.sortActionTriggered(sort: sort)
+////                    self.defaultSort = HomeSort(rawValue: sort.rawValue)!
+////                    self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
+////                    guard !self.habits.isEmpty else { return }
+////                    self.sortHabits()
+//                }))
+//            }
+            self.sortMenu = UIMenu(title: "Sort by:", children: createMenuChildren())
+            sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: self.sortMenu)
+            
+        } else {
+            sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        }
+        
+        navigationItem.rightBarButtonItems = [newButton, sortButton]
+    }
+    
+    func createMenuChildren() -> [UIMenuElement] {
+        print("update")
+        var children = [UIAction]()
+        HomeSort.allCases.forEach { (sort) in
+            children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
+                guard let self = self else { return }
+                self.sortActionTriggered(sort: sort)
+                self.updateMenu()
+            }))
+        }
+        return children
+    }
+    
+    func updateMenu() {
+        self.sortMenu.replacingChildren(createMenuChildren())
+    }
+    
+    func sortActionTriggered(sort: HomeSort) {
+        self.defaultSort = HomeSort(rawValue: sort.rawValue)!
+        self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
+        guard !self.habits.isEmpty else { return }
+        self.sortHabits()
+        self.updateMenu()
+    }
+    
     func configureSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
