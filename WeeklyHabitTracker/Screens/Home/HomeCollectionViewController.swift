@@ -22,6 +22,8 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, Habit>!
     private var diagnosticsString = String()
     
+    private let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
+    private var sortButton: UIBarButtonItem?
     private var sortMenu: UIMenu!
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
     private let sortKey = "homeSort"
@@ -114,56 +116,44 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - Configuration Functions
     func configureNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
-        let sortButton: UIBarButtonItem
+//        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
+//        let sortButton: UIBarButtonItem
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
         
         if #available(iOS 14, *) {
-//            var children = [UIAction]()
-//            HomeSort.allCases.forEach { (sort) in
-//                children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
-//                    guard let self = self else { return }
-//                    self.sortActionTriggered(sort: sort)
-////                    self.defaultSort = HomeSort(rawValue: sort.rawValue)!
-////                    self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
-////                    guard !self.habits.isEmpty else { return }
-////                    self.sortHabits()
-//                }))
-//            }
-            self.sortMenu = UIMenu(title: "Sort by:", children: createMenuChildren())
-            sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: self.sortMenu)
+            configureSortMenu()
             
         } else {
             sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         }
         
-        navigationItem.rightBarButtonItems = [newButton, sortButton]
+        navigationItem.rightBarButtonItems = [newButton, sortButton!]
     }
     
-    func createMenuChildren() -> [UIMenuElement] {
-        print("update")
+    private func configureSortMenu() {
         var children = [UIAction]()
         HomeSort.allCases.forEach { (sort) in
             children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
                 guard let self = self else { return }
                 self.sortActionTriggered(sort: sort)
-                self.updateMenu()
             }))
         }
-        return children
-    }
-    
-    func updateMenu() {
-        self.sortMenu.replacingChildren(createMenuChildren())
+        self.sortMenu = UIMenu(title: "Sort by:", children: children)
+        self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: self.sortMenu)
     }
     
     func sortActionTriggered(sort: HomeSort) {
         self.defaultSort = HomeSort(rawValue: sort.rawValue)!
         self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
         guard !self.habits.isEmpty else { return }
-        self.sortHabits()
-        self.updateMenu()
+        sortHabits()
+        configureSortMenu()
+    }
+    
+    override func validate(_ command: UICommand) {
+        print("pizza")
+        command.
     }
     
     func configureSearchController() {
