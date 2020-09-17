@@ -153,7 +153,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     override func validate(_ command: UICommand) {
         print("pizza")
-        command.
     }
     
     func configureSearchController() {
