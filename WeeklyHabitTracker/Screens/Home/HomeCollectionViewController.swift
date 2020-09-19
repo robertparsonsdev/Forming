@@ -22,9 +22,9 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, Habit>!
     private var diagnosticsString = String()
     
-    private var sortButton: UIBarButtonItem?
-    private var sortMenu: UIMenu!
-    private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+    private var newButton: UIBarButtonItem!
+    private var sortButton: UIBarButtonItem!
+    private var sortAlertController: UIAlertController!
     private let sortKey = "homeSort"
     private var defaultSort: HomeSort = .dateCreated
     
@@ -50,8 +50,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
-
-        if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HomeSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
         
@@ -60,101 +58,43 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         
         configureNavigationBar()
         configureSearchController()
-        configureSortAlertController()
         configureDataSource()
         
         fetchHabits()
                 
-        // Notifications observers
+        // Notification observers
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(finishFromNotes), name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil)
     }
     
-    @objc func printNofifications() {
-        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
-            requests.forEach { (request) in
-                print(request)
-            }
-        }
-    }
-    
-    @objc func diagnostics() {
-        for habit in self.persistenceManager.fetch(Archive.self) {
-            self.diagnosticsString.append(habit.stringRepresentation())
-        }
-        print(self.diagnosticsString)
-//        self.userNotificationCenter.getPendingNotificationRequests { [weak self] (requests) in
-//            guard let self = self else { return }
-//            requests.forEach { (request) in
-//                self.diagnosticsString.append(request.description)
-//            }
-//            DispatchQueue.main.async {
-//                let diagnosticsFile = self.getDocumentsDirectory().appendingPathComponent("diagnostics.txt")
-//                do {
-//                    try self.diagnosticsString.write(to: diagnosticsFile, atomically: true, encoding: String.Encoding.utf8)
-//                } catch {
-//                    return
-//                }
-//                let activityController = UIActivityViewController(activityItems: [diagnosticsFile], applicationActivities: nil)
-//                self.present(activityController, animated: true)
-//                self.diagnosticsString = String()
-//            }
-//        }
-    }
-    
-    func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 80)
     }
     
     // MARK: - Configuration Functions
-    func configureNavigationBar() {
+    private func configureNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
-//        let sortButton: UIBarButtonItem
+        self.newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
         
-        if #available(iOS 14, *) {
-            configureSortMenu()
-            
-        } else {
-            sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        if let sort = self.defaults.object(forKey: self.sortKey) {
+            self.defaultSort = HomeSort(rawValue: sort as! String)!
         }
         
-        navigationItem.rightBarButtonItems = [newButton, sortButton!]
-    }
-    
-    @available(iOS 14, *)
-    private func configureSortMenu() {
-        var children = [UIAction]()
-        HomeSort.allCases.forEach { (sort) in
-            children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
-                guard let self = self else { return }
-                self.sortActionTriggered(sort: sort)
-            }))
+        if #available(iOS 14, *) {
+            self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: createSortMenu())
+        } else {
+            self.sortAlertController = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+            configureSortAlertController()
+            self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         }
-        self.sortMenu = UIMenu(title: "Sort by:", children: children)
-        self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: self.sortMenu)
+        
+        navigationItem.rightBarButtonItems = [newButton, sortButton]
     }
     
-    func sortActionTriggered(sort: HomeSort) {
-        self.defaultSort = HomeSort(rawValue: sort.rawValue)!
-        self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
-        guard !self.habits.isEmpty else { return }
-        sortHabits()
-    }
-    
-    override func validate(_ command: UICommand) {
-        print("pizza")
-    }
-    
-    func configureSearchController() {
+    private func configureSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search habits"
@@ -162,25 +102,22 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.searchController = searchController
     }
     
-    func configureSortAlertController() {
-        sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-        sortAC.view.tintColor = .systemGreen
+    private func configureSortAlertController() {
+        sortAlertController.message = "Current sort: \(self.defaultSort.rawValue)"
+        sortAlertController.view.tintColor = .systemGreen
         HomeSort.allCases.forEach { (sort) in
-            sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
+            sortAlertController.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
                 guard let self = self else { return }
                 if let sortTitle = alert.title {
-                    self.defaultSort = HomeSort(rawValue: sortTitle)!
-                    self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
-                    self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-                    guard !self.habits.isEmpty else { return }
-                    self.sortHabits()
+                    self.sortActionTriggered(sort: HomeSort(rawValue: sortTitle)!)
+                    self.sortAlertController.message = "Current sort: \(sortTitle)"
                 }
             }))
         }
-        sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        sortAlertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
-    func configureDataSource() {
+    private func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<CVSection, Habit>(collectionView: self.collectionView, cellProvider: { [weak self] (collectionView, indexPath, habit) -> UICollectionViewCell? in
             guard let self = self else { return nil }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! HabitCell
@@ -196,7 +133,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     // MARK: - Functions
-    func updateDataSource(on habits: [Habit]) {
+    private func updateDataSource(on habits: [Habit]) {
         var snapshot = NSDiffableDataSourceSnapshot<CVSection, Habit>()
         if !self.habits.isEmpty {
             snapshot.appendSections([.main])
@@ -214,7 +151,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
-    func fetchHabits() {
+    private func fetchHabits() {
         self.habits = persistenceManager.fetch(Habit.self)
         if !self.habits.isEmpty {
             sortHabits()
@@ -223,7 +160,27 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
-    func sortHabits() {
+    @available(iOS 14, *)
+    private func createSortMenu() -> UIMenu {
+        var children = [UIAction]()
+        HomeSort.allCases.forEach { (sort) in
+            children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
+                guard let self = self else { return }
+                self.sortActionTriggered(sort: sort)
+                self.sortButton.menu = self.createSortMenu()
+            }))
+        }
+        return UIMenu(title: "Sort by:", children: children)
+    }
+    
+    private func sortActionTriggered(sort: HomeSort) {
+        self.defaultSort = sort
+        self.defaults.set(sort.rawValue, forKey: self.sortKey)
+        guard !self.habits.isEmpty else { return }
+        sortHabits()
+    }
+    
+    private func sortHabits() {
         switch self.defaultSort {
         case .alphabetical: self.habits.sort { (hab1, hab2) -> Bool in hab1.title! < hab2.title! }
         case .color: self.habits.sort { (hab1, hab2) -> Bool in hab1.color < hab2.color }
@@ -252,7 +209,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     @objc func sortButtonTapped() {
         DispatchQueue.main.async {
-            self.present(self.sortAC, animated: true)
+            self.present(self.sortAlertController, animated: true)
         }
     }
     
@@ -366,5 +323,44 @@ extension HomeCollectionViewController: GoalReachedDelegate {
         DispatchQueue.main.async {
             self.present(navController, animated: true)
         }
+    }
+}
+
+extension HomeCollectionViewController {
+    @objc func printNofifications() {
+        self.userNotificationCenter.getPendingNotificationRequests { (requests) in
+            requests.forEach { (request) in
+                print(request)
+            }
+        }
+    }
+    
+    @objc func diagnostics() {
+        for habit in self.persistenceManager.fetch(Archive.self) {
+            self.diagnosticsString.append(habit.stringRepresentation())
+        }
+        print(self.diagnosticsString)
+//        self.userNotificationCenter.getPendingNotificationRequests { [weak self] (requests) in
+//            guard let self = self else { return }
+//            requests.forEach { (request) in
+//                self.diagnosticsString.append(request.description)
+//            }
+//            DispatchQueue.main.async {
+//                let diagnosticsFile = self.getDocumentsDirectory().appendingPathComponent("diagnostics.txt")
+//                do {
+//                    try self.diagnosticsString.write(to: diagnosticsFile, atomically: true, encoding: String.Encoding.utf8)
+//                } catch {
+//                    return
+//                }
+//                let activityController = UIActivityViewController(activityItems: [diagnosticsFile], applicationActivities: nil)
+//                self.present(activityController, animated: true)
+//                self.diagnosticsString = String()
+//            }
+//        }
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
 }
