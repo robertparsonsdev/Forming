@@ -56,16 +56,15 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.collectionView.register(HomeHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
+        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(finishFromNotes), name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil)
+        
         configureNavigationBar()
         configureSearchController()
         configureDataSource()
         
         fetchHabits()
-                
-        // Notification observers
-        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(finishFromNotes), name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

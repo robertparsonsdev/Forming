@@ -23,7 +23,8 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     private let userNotificationCenter: UNUserNotificationCenter
     private var dataSource: UICollectionViewDiffableDataSource<HistorySection, Archive>?
     
-    private let sortAC = UIAlertController(title: "Sort active habits by:", message: nil, preferredStyle: .actionSheet)
+    private var sortButton: UIBarButtonItem!
+    private var sortAlertController: UIAlertController!
     private let sortKey = "historySort"
     private var defaultSort: HistorySort = .alphabetical
     
@@ -60,28 +61,22 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         super.viewDidLoad()
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
-        navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.collectionViewLayout = UIHelper.createHistoryFlowLayout(in: collectionView)
-        let sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
-        navigationItem.rightBarButtonItem = sortButton
 
         self.collectionView.register(HistoryTitleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(HistorySectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionReuseIdentifier)
         
-        configureSearchController()
-        configureSortAlertController()
-        configureDataSource()
-        
         if let activeCollapsed = self.defaults.object(forKey: self.activeCollapsedKey) as? Bool { self.isActiveCollapsed = activeCollapsed }
         if let finishedCollapsed = self.defaults.object(forKey: self.finishedCollapsedKey) as? Bool { self.isFinishedCollapsed = finishedCollapsed }
         
-        if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = HistorySort(rawValue: sort as! String)! }
-        
-        fetchArchives()
-        
-        // Notification oberservers
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(NotificationName.history.rawValue), object: nil)
+        
+        configureNavigationBar()
+        configureSearchController()
+        configureDataSource()
+                
+        fetchArchives()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -89,6 +84,24 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     }
     
     // MARK: - Configuration Functions
+    func configureNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+
+        if let sort = self.defaults.object(forKey: self.sortKey) {
+            self.defaultSort = HistorySort(rawValue: sort as! String)!
+        }
+
+        if #available(iOS 14, *) {
+            self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: createSortMenu())
+        } else {
+            self.sortAlertController = UIAlertController(title: "Sort active habits by:", message: nil, preferredStyle: .actionSheet)
+            configureSortAlertController()
+            self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        }
+        
+        self.navigationItem.rightBarButtonItem = self.sortButton
+    }
+    
     func configureSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -98,21 +111,18 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     }
     
     func configureSortAlertController() {
-        sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-        sortAC.view.tintColor = .systemGreen
+        sortAlertController.message = "Current sort: \(self.defaultSort.rawValue)"
+        sortAlertController.view.tintColor = .systemGreen
         HistorySort.allCases.forEach { (sort) in
-            sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
+            sortAlertController.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
                 guard let self = self else { return }
                 if let sortTitle = alert.title {
-                    self.defaultSort = HistorySort(rawValue: sortTitle)!
-                    self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
-                    self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-                    guard !self.activeArchives.isEmpty else { return }
-                    self.updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
+                    self.sortActionTriggered(sort: HistorySort(rawValue: sortTitle)!)
+                    self.sortAlertController.message = "Current sort: \(sortTitle)"
                 }
             }))
         }
-        sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        sortAlertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
     
     func configureDataSource() {
@@ -206,7 +216,27 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
         }
     }
     
-    func sort(by sort: HistorySort, on array: inout [Archive]) {
+    @available(iOS 14, *)
+    private func createSortMenu() -> UIMenu {
+        var children = [UIAction]()
+        HistorySort.allCases.forEach { (sort) in
+            children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
+                guard let self = self else { return }
+                self.sortActionTriggered(sort: sort)
+                self.sortButton.menu = self.createSortMenu()
+            }))
+        }
+        return UIMenu(title: "Sort active habits by:", children: children)
+    }
+    
+    private func sortActionTriggered(sort: HistorySort) {
+        self.defaultSort = sort
+        self.defaults.set(sort.rawValue, forKey: self.sortKey)
+        guard !self.activeArchives.isEmpty else { return }
+        self.updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
+    }
+    
+    private func sort(by sort: HistorySort, on array: inout [Archive]) {
         switch sort {
         case .alphabetical: array.sort { (archive1, archive2) -> Bool in archive1.title < archive2.title }
         case .color: array.sort { (archive1, archive2) -> Bool in archive1.color < archive2.color }
@@ -226,7 +256,7 @@ class HistoryCollectionViewController: UICollectionViewController, UICollectionV
     
     @objc func sortButtonTapped() {
         DispatchQueue.main.async {
-            self.present(self.sortAC, animated: true)
+            self.present(self.sortAlertController, animated: true)
         }
     }
 }

@@ -53,7 +53,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         super.viewDidLoad()
         self.title = self.archive.title
         collectionView.backgroundColor = .systemBackground
-        navigationController?.navigationBar.prefersLargeTitles = true
         collectionView.alwaysBounceVertical = true
 
         let sortButton = UIBarButtonItem(image: UIImage(named:"arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonPressed))
@@ -61,7 +60,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         navigationItem.rightBarButtonItems = [menuButton, sortButton]
         if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = ArchiveDetailSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
-//        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout { layout.sectionHeadersPinToVisibleBounds = true }
 
         // Register cell classes
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -98,6 +96,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
 
     // MARK: - Configuration Functions
+    func configureNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+
+    }
+    
     func configureSortAlertController() {
         sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
         sortAC.view.tintColor = .systemGreen
