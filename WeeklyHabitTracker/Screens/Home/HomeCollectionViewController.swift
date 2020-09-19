@@ -85,12 +85,12 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         if #available(iOS 14, *) {
             self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: createSortMenu())
         } else {
-            self.sortAlertController = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+            self.sortAlertController = UIAlertController(title: "Sort by:", message: nil, preferredStyle: .actionSheet)
             configureSortAlertController()
             self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
         }
         
-        navigationItem.rightBarButtonItems = [newButton, sortButton]
+        navigationItem.rightBarButtonItems = [self.newButton, self.sortButton]
     }
     
     private func configureSearchController() {

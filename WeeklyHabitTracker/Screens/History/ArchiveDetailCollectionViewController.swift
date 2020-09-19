@@ -20,10 +20,12 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private weak var delegate: ArchiveDetailDelegate?
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>!
 
-    private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
+    private var sortButton: UIBarButtonItem!
+    private var menuButton: UIBarButtonItem!
+    private var sortAlertController: UIAlertController!
     private let sortKey = "archivedHabitSort"
     private var defaultSort: ArchiveDetailSort = .dateDescending
-    private let menuAC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    private let menuAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
     private let confirmDeleteAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     private let confirmResetAC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
@@ -54,27 +56,20 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.title = self.archive.title
         collectionView.backgroundColor = .systemBackground
         collectionView.alwaysBounceVertical = true
-
-        let sortButton = UIBarButtonItem(image: UIImage(named:"arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonPressed))
-        let menuButton = UIBarButtonItem(image: UIImage(named:"ellipsis.circle"), style: .plain, target: self, action: #selector(menuButtonPressed))
-        navigationItem.rightBarButtonItems = [menuButton, sortButton]
-        if let sort = self.defaults.object(forKey: self.sortKey) { self.defaultSort = ArchiveDetailSort(rawValue: sort as! String)! }
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
 
-        // Register cell classes
         self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
+        
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.archiveDetail.rawValue), object: nil)
 
-        configureSortAlertController()
+        configureNavigationBar()
         configureMenuAlertController()
         configureConfirmationAlertControllers()
         configureDataSource()
 
         fetchArchivedHabits()
-
-        // Notification oberservers
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
-        self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.archiveDetail.rawValue), object: nil)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -96,49 +91,61 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
 
     // MARK: - Configuration Functions
-    func configureNavigationBar() {
+    private func configureNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
+        self.menuButton = UIBarButtonItem(image: UIImage(named:"ellipsis.circle"), style: .plain, target: self, action: #selector(menuButtonTapped))
+        
+        if let sort = self.defaults.object(forKey: self.sortKey) {
+            self.defaultSort = ArchiveDetailSort(rawValue: sort as! String)!
+        }
 
+        if #available(iOS 14, *) {
+            self.sortButton = UIBarButtonItem(image: UIImage(named: "arrow.up.arrow.down"), menu: createSortMenu())
+        } else {
+            self.sortAlertController = UIAlertController(title: "Sort by:", message: nil, preferredStyle: .actionSheet)
+            configureSortAlertController()
+            self.sortButton = UIBarButtonItem(image: UIImage(named:"arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        }
+        
+        self.navigationItem.rightBarButtonItems = [self.menuButton, self.sortButton]
     }
     
-    func configureSortAlertController() {
-        sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-        sortAC.view.tintColor = .systemGreen
+    private func configureSortAlertController() {
+        sortAlertController.message = "Current sort: \(self.defaultSort.rawValue)"
+        sortAlertController.view.tintColor = .systemGreen
         ArchiveDetailSort.allCases.forEach { (sort) in
-            sortAC.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
+            sortAlertController.addAction(UIAlertAction(title: sort.rawValue, style: .default, handler: { [weak self] (alert: UIAlertAction) in
                 guard let self = self else { return }
                 if let sortTitle = alert.title {
-                    self.defaultSort = ArchiveDetailSort(rawValue: sortTitle)!
-                    self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
-                    self.sortAC.message = "Current sort: \(self.defaultSort.rawValue)"
-                    self.sortArchivedHabits()
+                    self.sortActionTriggered(sort: ArchiveDetailSort(rawValue: sortTitle)!)
+                    self.sortAlertController.message = "Current sort: \(sortTitle)"
                 }
             }))
         }
-        sortAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        sortAlertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
 
-    func configureMenuAlertController() {
-        menuAC.view.tintColor = .systemGreen
-        menuAC.addAction(UIAlertAction(title: "Delete Archive", style: .default, handler: { [weak self] (alert: UIAlertAction) in
+    private func configureMenuAlertController() {
+        menuAlertController.view.tintColor = .systemGreen
+        menuAlertController.addAction(UIAlertAction(title: "Delete Archive", style: .default, handler: { [weak self] (alert: UIAlertAction) in
             guard let self = self else { return }
             self.present(self.confirmDeleteAC, animated: true)
         }))
         if self.archive.active {
-            menuAC.addAction(UIAlertAction(title: "Reset Archive", style: .default, handler: { [weak self] (alert: UIAlertAction) in
+            menuAlertController.addAction(UIAlertAction(title: "Reset Archive", style: .default, handler: { [weak self] (alert: UIAlertAction) in
                 guard let self = self else { return }
                 self.present(self.confirmResetAC, animated: true)
             }))
         } else {
-            menuAC.addAction(UIAlertAction(title: "Restore Archive", style: .default, handler: { [weak self] (alert: UIAlertAction) in
+            menuAlertController.addAction(UIAlertAction(title: "Restore Archive", style: .default, handler: { [weak self] (alert: UIAlertAction) in
                 guard let self = self else { return }
                 self.present(self.confirmRestoreAC, animated: true)
             }))
         }
-        menuAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        menuAlertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
 
-    func configureConfirmationAlertControllers() {
+    private func configureConfirmationAlertControllers() {
         confirmDeleteAC.view.tintColor = .systemGreen
         confirmDeleteAC.title = "Are you sure you want to delete this archive?"
         confirmDeleteAC.message = "Deleting an archive permanently deletes all habit history, statistics, and the current habit. This action can't be undone."
@@ -169,7 +176,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         confirmRestoreAC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
     }
 
-    func configureDataSource() {
+    private func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { [weak self] (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             guard let self = self else { return nil }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
@@ -189,12 +196,12 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     }
 
     // MARK: - Functions
-    func fetchArchivedHabits() {
+    private func fetchArchivedHabits() {
         if let array = self.archive.archivedHabits?.array as? [ArchivedHabit] { self.archivedHabits = array }
         sortArchivedHabits()
     }
 
-    func updateDataSource(on archivedHabits: [ArchivedHabit]) {
+    private func updateDataSource(on archivedHabits: [ArchivedHabit]) {
         var snapshot = NSDiffableDataSourceSnapshot<CVSection, ArchivedHabit>()
         snapshot.appendSections([.main])
         snapshot.appendItems(archivedHabits)
@@ -202,8 +209,27 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
     }
+    
+    @available(iOS 14, *)
+    private func createSortMenu() -> UIMenu {
+        var children = [UIAction]()
+        ArchiveDetailSort.allCases.forEach { (sort) in
+            children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
+                guard let self = self else { return }
+                self.sortActionTriggered(sort: sort)
+                self.sortButton.menu = self.createSortMenu()
+            }))
+        }
+        return UIMenu(title: "Sort by:", children: children)
+    }
+    
+    private func sortActionTriggered(sort: ArchiveDetailSort) {
+        self.defaultSort = sort
+        self.defaults.set(sort.rawValue, forKey: self.sortKey)
+        sortArchivedHabits()
+    }
 
-    func sortArchivedHabits() {
+    private func sortArchivedHabits() {
         switch self.defaultSort {
         case .dateAscending: self.archivedHabits.sort { (one, two) -> Bool in one.startDate.compare(two.startDate) == .orderedAscending }
         case .dateDescending: self.archivedHabits.sort { (one, two) -> Bool in one.startDate.compare(two.startDate) == .orderedDescending }
@@ -220,12 +246,16 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         }
     }
 
-    @objc func sortButtonPressed() {
-        present(sortAC, animated: true)
+    @objc func sortButtonTapped() {
+        DispatchQueue.main.async {
+            self.present(self.sortAlertController, animated: true)
+        }
     }
 
-    @objc func menuButtonPressed() {
-        present(menuAC, animated: true)
+    @objc func menuButtonTapped() {
+        DispatchQueue.main.async {
+            self.present(self.menuAlertController, animated: true)
+        }
     }
 }
 
