@@ -190,7 +190,7 @@ class HabitDetailTableViewController: UITableViewController {
                     let dateSwtich = UISwitch(frame: .zero, primaryAction: UIAction(handler: { [weak datePicker, weak self] action in
                         guard let self = self else { return }
                         let dateSwitch = action.sender as! UISwitch
-                        datePicker?.isEnabled = dateSwitch.isOn ? true : false
+                        datePicker?.isHidden = dateSwitch.isOn ? false : true
                         self.habitReminder = dateSwitch.isOn ? datePicker?.date : nil
                     }))
                     
@@ -199,7 +199,7 @@ class HabitDetailTableViewController: UITableViewController {
                         dateSwtich.isOn = true
                     } else {
                         datePicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
-                        datePicker.isEnabled = false
+                        datePicker.isHidden = true
                         dateSwtich.isOn = false
                     }
                     
