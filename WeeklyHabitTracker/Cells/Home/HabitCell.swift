@@ -248,22 +248,6 @@ class HabitCell: UICollectionViewCell {
         }
     }
     
-    func createAlertActions(checkbox: UIButton, alertController: UIAlertController) {
-        alertController.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self, checkbox] (_) in
-            guard let self = self else { return }
-            self.actionTriggered(fromCheckbox: checkbox, forStatus: .completed, andTodayButtonState: true)
-        }))
-        alertController.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self, checkbox] (_) in
-            guard let self = self else { return }
-            self.actionTriggered(fromCheckbox: checkbox, forStatus: .failed, andTodayButtonState: true)
-        }))
-        alertController.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self, checkbox] (_) in
-            guard let self = self else { return }
-            self.actionTriggered(fromCheckbox: checkbox, forStatus: .incomplete, andTodayButtonState: false)
-        }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-    }
-    
     func createAttributedText(withTitle title: String) -> NSAttributedString {
         let symbolAttachment = NSTextAttachment()
         symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: self.boldConfig)
@@ -308,11 +292,25 @@ class HabitCell: UICollectionViewCell {
         if gesture.state == .began {
             DispatchQueue.main.async { self.impactGenerator.impactOccurred() }
             guard let checkbox = gesture.view as? UIButton else { return }
+            
             let alertController = UIAlertController()
             alertController.title = "Change \(dayNames[checkbox.tag])'s status?"
             alertController.message = "Knowing the correct status of what you've done (e.g. completing or failing a habit) helps you to form better habits."
             alertController.view.tintColor = .systemGreen
-            createAlertActions(checkbox: checkbox, alertController: alertController)
+            alertController.addAction(UIAlertAction(title: "Complete", style: .default, handler: { [weak self, checkbox] (_) in
+                guard let self = self else { return }
+                self.actionTriggered(fromCheckbox: checkbox, forStatus: .completed, andTodayButtonState: true)
+            }))
+            alertController.addAction(UIAlertAction(title: "Failed", style: .default, handler:{ [weak self, checkbox] (_) in
+                guard let self = self else { return }
+                self.actionTriggered(fromCheckbox: checkbox, forStatus: .failed, andTodayButtonState: true)
+            }))
+            alertController.addAction(UIAlertAction(title: "Incomplete", style: .default, handler: { [weak self, checkbox] (_) in
+                guard let self = self else { return }
+                self.actionTriggered(fromCheckbox: checkbox, forStatus: .incomplete, andTodayButtonState: false)
+            }))
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
             delegate?.presentAlertController(with: alertController)
         }
     }

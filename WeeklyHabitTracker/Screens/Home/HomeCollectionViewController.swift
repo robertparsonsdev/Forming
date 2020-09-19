@@ -22,7 +22,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     private var dataSource: UICollectionViewDiffableDataSource<CVSection, Habit>!
     private var diagnosticsString = String()
     
-    private let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
     private var sortButton: UIBarButtonItem?
     private var sortMenu: UIMenu!
     private let sortAC = UIAlertController(title: "Sort By:", message: nil, preferredStyle: .actionSheet)
@@ -116,7 +115,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     // MARK: - Configuration Functions
     func configureNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
-//        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
+        let newButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newTapped))
 //        let sortButton: UIBarButtonItem
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Diagnostics", style: .plain, target: self, action: #selector(diagnostics))
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Notifications", style: .plain, target: self, action: #selector(printNofifications))
@@ -131,6 +130,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         navigationItem.rightBarButtonItems = [newButton, sortButton!]
     }
     
+    @available(iOS 14, *)
     private func configureSortMenu() {
         var children = [UIAction]()
         HomeSort.allCases.forEach { (sort) in
@@ -148,7 +148,6 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.defaults.set(self.defaultSort.rawValue, forKey: self.sortKey)
         guard !self.habits.isEmpty else { return }
         sortHabits()
-        configureSortMenu()
     }
     
     override func validate(_ command: UICommand) {

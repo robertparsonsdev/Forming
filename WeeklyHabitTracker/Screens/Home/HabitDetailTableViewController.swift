@@ -176,10 +176,43 @@ class HabitDetailTableViewController: UITableViewController {
             switch indexPath.row {
             case SecondSection.reminder.rawValue:
                 cell.textLabel?.text = "Reminder"
-                if let reminder = self.habitReminder { cell.detailTextLabel?.text = CalUtility.getTimeAsString(time: reminder) }
-                else { cell.detailTextLabel?.text = "None" }
                 cell.imageView?.image = UIImage(named: "clock", in: nil, with: self.largeConfig)
-                cell.accessoryType = .disclosureIndicator
+                
+                if #available(iOS 14.0, *) {
+                    let datePicker = UIDatePicker(frame: .zero, primaryAction: UIAction(handler: { [weak self] action in
+                        guard let self = self else { return }
+                        let datePicker = action.sender as! UIDatePicker
+                        self.habitReminder = datePicker.date
+                    }))
+                    datePicker.datePickerMode = .time
+                    datePicker.tintColor = .systemGreen
+                    
+                    let dateSwtich = UISwitch(frame: .zero, primaryAction: UIAction(handler: { [weak datePicker, weak self] action in
+                        guard let self = self else { return }
+                        let dateSwitch = action.sender as! UISwitch
+                        datePicker?.isEnabled = dateSwitch.isOn ? true : false
+                        self.habitReminder = dateSwitch.isOn ? datePicker?.date : nil
+                    }))
+                    
+                    if let reminder = self.habitReminder {
+                        datePicker.date = reminder
+                        dateSwtich.isOn = true
+                    } else {
+                        datePicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
+                        datePicker.isEnabled = false
+                        dateSwtich.isOn = false
+                    }
+                    
+                    cell.selectionStyle = .none
+                    let top = cell.contentView.topAnchor, bottom = cell.contentView.bottomAnchor, right = cell.contentView.rightAnchor
+                    cell.contentView.addSubview(dateSwtich)
+                    dateSwtich.anchor(top: top, left: nil, bottom: bottom, right: right, paddingTop: 6.5, paddingLeft: 0, paddingBottom: 6.5, paddingRight: 22, width: 50, height: 0)
+                    cell.contentView.addSubview(datePicker)
+                    datePicker.anchor(top: top, left: nil, bottom: bottom, right: dateSwtich.leftAnchor, paddingTop: 6.5, paddingLeft: 0, paddingBottom: 6.5, paddingRight: 10, width: 100, height: 0)
+                } else {
+                    cell.detailTextLabel?.text = self.habitReminder != nil ? CalUtility.getTimeAsString(time: self.habitReminder!) : "None"
+                    cell.accessoryType = .disclosureIndicator
+                }
             case SecondSection.priority.rawValue:
                 cell.textLabel?.text = "Priority"
                 cell.detailTextLabel?.attributedText = createExclamation(fromPriority: self.habitPriority)
@@ -209,8 +242,11 @@ class HabitDetailTableViewController: UITableViewController {
             }
         case SectionNumber.secondSection.rawValue:
             if indexPath.row == SecondSection.reminder.rawValue {
-                let reminderView = ReminderViewController(reminder: self.habitReminder, delegate: self, row: .reminder, section: .secondSection)
-                self.navigationController?.pushViewController(reminderView, animated: true)
+                if #available(iOS 14, *) { }
+                else {
+                    let reminderView = ReminderViewController(reminder: self.habitReminder, delegate: self, row: .reminder, section: .secondSection)
+                    self.navigationController?.pushViewController(reminderView, animated: true)
+                }
             }
         default: ()
         }
