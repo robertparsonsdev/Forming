@@ -18,3 +18,7 @@ enum NotificationName: String {
     case historyStoppedSearching = "historyStoppedSearching"
     case finishHabitFromNotes = "finishHabitFromNotes"
 }
+
+enum Setting: String {
+    case badgeAppIcon = "badgeAppIconSetting"
+}

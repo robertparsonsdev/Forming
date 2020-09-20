@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func getUserNotificationCenter() -> UNUserNotificationCenter { return self.userNotificationCenter }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+        self.userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
             if granted { print("granted") }
             else { print("not granted") }
         }

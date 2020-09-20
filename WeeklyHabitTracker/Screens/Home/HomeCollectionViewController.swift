@@ -59,6 +59,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(reloadHabits), name: NSNotification.Name(NotificationName.habits.rawValue), object: nil)
         self.notificationCenter.addObserver(self, selector: #selector(finishFromNotes), name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(updateAppIconBadge), name: NSNotification.Name(rawValue: Setting.badgeAppIcon.rawValue), object: nil)
         
         configureNavigationBar()
         configureSearchController()
@@ -216,6 +217,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         DispatchQueue.main.async {
             self.configureDataSource()
             self.fetchHabits()
+            self.updateAppIconBadge()
         }
     }
     
@@ -225,6 +227,11 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         }
     }
     
+    @objc func updateAppIconBadge() {
+        DispatchQueue.main.async {
+            UIApplication.shared.applicationIconBadgeNumber = self.defaults.bool(forKey: Setting.badgeAppIcon.rawValue) ? self.habits.filter({ $0.statuses[CalUtility.getCurrentDay()] == .incomplete }).count : 0
+        }
+    }
 }
 
 // MARK: - Delegates
@@ -235,6 +242,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         self.notificationCenter.reload(history: true)
         self.habits.append(habit)
         sortHabits()
+        updateAppIconBadge()
     }
     
     func update(habit: Habit, deleteNotifications: (Bool, [Bool]), updateNotifications: Bool) {
@@ -248,6 +256,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
             self.dataSource.apply(snapshot, animatingDifferences: true)
             self.sortHabits()
         }
+        updateAppIconBadge()
     }
     
     func finish(habit: Habit, confetti: Bool) {
@@ -263,6 +272,8 @@ extension HomeCollectionViewController: HabitDetailDelegate {
         if confetti {
             createAndStartParticles()
         }
+        
+        updateAppIconBadge()
     }
 }
 
@@ -287,6 +298,10 @@ extension HomeCollectionViewController: HabitCellDelegate {
         
         if index == CalUtility.getCurrentDay() && self.defaultSort == .dueToday {
             sortHabits()
+        }
+        
+        if index == CalUtility.getCurrentDay() {
+            updateAppIconBadge()
         }
     }
     

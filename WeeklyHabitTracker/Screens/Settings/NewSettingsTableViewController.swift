@@ -9,15 +9,25 @@
 import UIKit
 import StoreKit
 
+private let cellIdentifier = "settingsCellIdentifier"
+private let headerIdentifier = "settingsHeaderIdentifier"
+
 class NewSettingsTableViewController: UITableViewController {
-    private let cellIdentifier = "settingsCellIdentifier"
-    private let headerIdentifier = "settingsHeaderIdentifier"
-    
     private var products = [SKProduct]()
     private let paymentQueue = SKPaymentQueue.default()
+    
+    private let notificationCenter: NotificationCenter
+    private let defaults: UserDefaults
+    private let userNotificationCenter: UNUserNotificationCenter
+    
+    private let badgeSwitch = UISwitch()
         
     // MARK: - Initializers
-    init() {
+    init(notifCenter: NotificationCenter, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter) {
+        self.notificationCenter = notifCenter
+        self.defaults = defaults
+        self.userNotificationCenter = userNotifCenter
+        
         super.init(style: .insetGrouped)
     }
     
@@ -30,8 +40,10 @@ class NewSettingsTableViewController: UITableViewController {
 
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        tableView.register(SettingsHeaderView.self, forHeaderFooterViewReuseIdentifier: self.headerIdentifier)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
+        self.tableView.register(SettingsHeaderView.self, forHeaderFooterViewReuseIdentifier: headerIdentifier)
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        
+        configureBadgeSwitch()
         
         fetchProducts()
     }
@@ -55,7 +67,7 @@ class NewSettingsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch section {
         case 0:
-            let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.headerIdentifier) as! SettingsHeaderView
+            let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerIdentifier) as! SettingsHeaderView
             headerCell.set(delegate: self)
             return headerCell
         default: return UIView()
@@ -63,8 +75,8 @@ class NewSettingsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath)
-        cell = UITableViewCell(style: .value1, reuseIdentifier: self.cellIdentifier)
+        var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        cell = UITableViewCell(style: .value1, reuseIdentifier: cellIdentifier)
         cell.imageView?.tintColor = .label
         switch indexPath.row {
         case 0:
@@ -74,7 +86,7 @@ class NewSettingsTableViewController: UITableViewController {
         case 1:
             cell.textLabel?.text = "Due Today Badge"
             cell.imageView?.image = UIImage(named: "app.badge")
-            cell.accessoryView = UISwitch()
+            cell.accessoryView = self.badgeSwitch
             cell.selectionStyle = .none
         case 2:
             cell.textLabel?.text = "Show Tutorial"
@@ -84,6 +96,21 @@ class NewSettingsTableViewController: UITableViewController {
         default: ()
         }
         return cell
+    }
+    
+    // MARK: - Configuration Functions
+    func configureBadgeSwitch() {
+        self.userNotificationCenter.getNotificationSettings { [weak self] (settings) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch settings.authorizationStatus {
+                case .denied, .notDetermined: self.badgeSwitch.isOn = false
+                default: self.badgeSwitch.isOn = self.defaults.bool(forKey: Setting.badgeAppIcon.rawValue)
+                }
+            }
+        }
+        
+        badgeSwitch.addTarget(self, action: #selector(badgeSwitchTapped), for: .valueChanged)
     }
     
     // MARK: - Functions
@@ -100,6 +127,33 @@ class NewSettingsTableViewController: UITableViewController {
         guard let productToPurchase = self.products.filter({ $0.productIdentifier == product.rawValue }).first else { return }
         let payment = SKPayment(product: productToPurchase)
         self.paymentQueue.add(payment)
+    }
+    
+    // MARK: - Selectors
+    @objc func badgeSwitchTapped(sender: UISwitch) {
+        self.userNotificationCenter.getNotificationSettings { [weak self, weak sender] (settings) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch settings.authorizationStatus {
+                case .denied, .notDetermined:
+                    let alertController = UIAlertController(title: "Notifications Disabled", message: "Notifications for Forming are currently disabled. You need to go to the Settings app and enable them.", preferredStyle: .alert)
+                    alertController.view.tintColor = .systemGreen
+                    alertController.addAction(UIAlertAction(title: "Open Settings", style: .default, handler: { _ in
+                        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+                        if UIApplication.shared.canOpenURL(settingsUrl) {
+                            UIApplication.shared.open(settingsUrl, completionHandler: nil)
+                        }
+                    }))
+                    alertController.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: nil))
+                    self.present(alertController, animated: true)
+                    sender?.isOn = false
+                default:
+                    let settingName = Setting.badgeAppIcon.rawValue
+                    self.defaults.set(sender?.isOn, forKey: settingName)
+                    self.notificationCenter.post(name: NSNotification.Name(rawValue: settingName), object: nil, userInfo: nil)
+                }
+            }
+        }
     }
 }
 
