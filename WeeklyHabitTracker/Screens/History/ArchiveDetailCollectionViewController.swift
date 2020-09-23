@@ -58,7 +58,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         collectionView.alwaysBounceVertical = true
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
 
-        self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+//        self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
         self.notificationCenter.addObserver(self, selector: #selector(reloadArchivedHabits), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
@@ -179,9 +180,11 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { [weak self] (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             guard let self = self else { return nil }
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
-            cell?.set(archivedHabit: archivedHabit, buttonEnabled: false)
-            cell?.set(delegate: self)
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
+//            cell?.set(archivedHabit: archivedHabit, buttonEnabled: false)
+//            cell?.set(delegate: self)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HabitCell
+            cell?.set(archivedHabit: archivedHabit, selectable: true)
             return cell
         })
 

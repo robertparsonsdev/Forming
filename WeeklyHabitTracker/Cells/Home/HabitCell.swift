@@ -10,6 +10,7 @@ import UIKit
 
 class HabitCell: UICollectionViewCell {
     private var habit: Habit!
+    private var archivedHabit: ArchivedHabit!
     private weak var delegate: HabitCellDelegate?
     private var currentDay = CalUtility.getCurrentDay()
     private let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -57,14 +58,23 @@ class HabitCell: UICollectionViewCell {
         
         configureTitleButton(withColor: FormingColors.getColor(fromValue: habit.color))
         if let title = habit.title { configureTitleLabel(withTitle: title) }
-        configureTitleButton(withColor: FormingColors.getColor(fromValue: habit.color))
         configureFlagLabel(withFlag: habit.flag)
         configurePriorityLabel(withPriority: habit.priority)
         configureReminderLabel(withReminder: habit.reminder)
         
         configureStackView()
-        setupCheckboxes(withDays: habit.days, withState: habit.buttonState, andStatuses: habit.statuses)
-        configureConstraints()
+        setupHabitCheckboxes(withDays: habit.days, withState: habit.buttonState, andStatuses: habit.statuses)
+        configureConstraints(forHabitCell: true)
+    }
+    
+    func set(archivedHabit: ArchivedHabit, selectable: Bool) {
+        self.archivedHabit = archivedHabit
+        
+        configureTitleButton(withColor: FormingColors.getColor(fromValue: archivedHabit.archive.color))
+        configureTitleLabel(withTitle: "\(CalUtility.getDateAsString(date: archivedHabit.startDate)) - \(CalUtility.getDateAsString(date: archivedHabit.endDate))", attributed: selectable)
+        configureStackView()
+        setupArchivedHabitCheckboxes(withStatuses: archivedHabit.statuses)
+        configureConstraints(forHabitCell: false)
     }
     
     // MARK: - Configuration Functions
@@ -79,8 +89,12 @@ class HabitCell: UICollectionViewCell {
         titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
     }
     
-    func configureTitleLabel(withTitle title: String) {
-        titleLabel.attributedText = createAttributedText(withTitle: title)
+    func configureTitleLabel(withTitle title: String, attributed: Bool = true) {
+        if attributed {
+            titleLabel.attributedText = createAttributedText(withTitle: title)
+        } else {
+            titleLabel.text = title
+        }
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.textColor = .white
@@ -132,29 +146,47 @@ class HabitCell: UICollectionViewCell {
         checkboxStackView.distribution = .fillEqually
     }
     
-    func configureConstraints() {
+    func configureConstraints(forHabitCell habitCell: Bool) {
         addSubview(titleButton)
         titleButton.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
-        addSubview(reminderLabel)
-        reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 70, height: 25)
-        addSubview(priorityLabel)
-        priorityLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: reminderLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
-        addSubview(flagLabel)
-        flagLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: priorityLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
-        addSubview(titleLabel)
-        titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: flagLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
+        
+        if habitCell {
+            addSubview(reminderLabel)
+            reminderLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 70, height: 25)
+            addSubview(priorityLabel)
+            priorityLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: reminderLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
+            addSubview(flagLabel)
+            flagLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: priorityLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
+            addSubview(titleLabel)
+            titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: flagLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
+        } else {
+            addSubview(titleLabel)
+            titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
+        }
+        
         addSubview(checkboxStackView)
         checkboxStackView.anchor(top: titleButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
     // MARK: - Functions
-    func setupCheckboxes(withDays days: [Bool], withState state: Bool, andStatuses statuses: [Status]) {
+    func setupHabitCheckboxes(withDays days: [Bool], withState state: Bool, andStatuses statuses: [Status]) {
         if !checkboxStackView.arrangedSubviews.isEmpty { for view in checkboxStackView.arrangedSubviews { view.removeFromSuperview() } }
         
         for (index, day) in days.enumerated() {
             if day && index == self.currentDay { checkboxStackView.addArrangedSubview(createTodayCheckbox(withTag: index, withState: state, andStatuses: statuses)) }
-            else if day { checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatuses: statuses)) }
+            else if day { checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatus: statuses[index])) }
             else { checkboxStackView.addArrangedSubview(UIView()) }
+        }
+    }
+    
+    func setupArchivedHabitCheckboxes(withStatuses statuses: [Status]) {
+        if !checkboxStackView.arrangedSubviews.isEmpty { for view in checkboxStackView.arrangedSubviews { view.removeFromSuperview() } }
+
+        for (index, status) in statuses.enumerated() {
+            switch status {
+            case .empty: checkboxStackView.addArrangedSubview(UIView())
+            default: checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatus: status, andLongPressEnabled: false))
+            }
         }
     }
     
@@ -164,7 +196,7 @@ class HabitCell: UICollectionViewCell {
         button.tag = tag
         button.addTarget(self, action: #selector(todayCheckboxTapped), for: .touchUpInside)
         button.setImage(UIImage(named: "square", in: nil, with: self.blackConfig), for: .normal)
-        checkOSVersion(checkbox: button)
+        createLongPressBasedOnOS(checkbox: button)
 
         switch statuses[tag] {
         case .incomplete: button.imageView?.tintColor = .label
@@ -180,13 +212,15 @@ class HabitCell: UICollectionViewCell {
         return button
     }
     
-    func createCheckbox(withTag tag: Int, andStatuses statuses: [Status]) -> UIButton {
+    func createCheckbox(withTag tag: Int, andStatus statuse: Status, andLongPressEnabled enabled: Bool = true) -> UIButton {
         let button = UIButton()
         button.tag = tag
         button.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
-        checkOSVersion(checkbox: button)
+        if enabled {
+            createLongPressBasedOnOS(checkbox: button)
+        }
         
-        switch statuses[tag] {
+        switch statuse {
         case .incomplete:
             button.setImage(UIImage(named: "square", in: nil, with: self.thinConfig), for: .normal)
             button.imageView?.tintColor = .label
@@ -202,7 +236,7 @@ class HabitCell: UICollectionViewCell {
         return button
     }
     
-    func checkOSVersion(checkbox: UIButton) {
+    func createLongPressBasedOnOS(checkbox: UIButton) {
         if #available(iOS 14, *) {
             let completeElement = UIAction(title: "Complete", image: UIImage(named: "checkmark.square"), handler: { [weak self, checkbox] _ in
                 guard let self = self else { return }
@@ -243,7 +277,7 @@ class HabitCell: UICollectionViewCell {
             if index == self.currentDay {
                 self.checkboxStackView.insertArrangedSubview(self.createTodayCheckbox(withTag: checkbox.tag, withState: state, andStatuses: self.habit!.statuses), at: index)
             } else {
-                self.checkboxStackView.insertArrangedSubview(self.createCheckbox(withTag: checkbox.tag, andStatuses: self.habit!.statuses), at: index)
+                self.checkboxStackView.insertArrangedSubview(self.createCheckbox(withTag: checkbox.tag, andStatus: self.habit!.statuses[index]), at: index)
             }
         }
     }
