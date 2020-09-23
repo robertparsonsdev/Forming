@@ -101,15 +101,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-//    func scheduleLocalNotification(withTitle title: String) {
-//        let content = UNMutableNotificationContent()
-//        content.title = title
-//        content.body = "Notification"
-//        content.sound = UNNotificationSound.default
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-//        self.userNotificationCenter.add(request)
-//    }
+    func scheduleLocalNotification(withTitle title: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = "Notification"
+        content.sound = UNNotificationSound.default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        self.userNotificationCenter.add(request)
+    }
 
     // MARK: UISceneSession Lifecycle
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -143,6 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         queue.maxConcurrentOperationCount = 1
         queue.addOperation {
             self.didBecomeActive()
+            self.scheduleLocalNotification(withTitle: "Background Test")
         }
 
         task.expirationHandler = {

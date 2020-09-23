@@ -8,8 +8,8 @@
 
 import UIKit
 
-private let reuseIdentifier = "History Title Cell"
-private let sectionReuseIdentifier = "History Section Header"
+private let reuseIdentifier = "historyTitleCell"
+private let sectionReuseIdentifier = "historySectionHeader"
 
 class HistoryCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var archives: [Archive] = []

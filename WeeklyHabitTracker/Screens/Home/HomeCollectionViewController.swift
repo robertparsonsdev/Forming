@@ -10,8 +10,8 @@ import UIKit
 import CoreData
 import UserNotifications
 
-private let reuseIdentifier = "Habit Cell"
-private let headerReuseIdentifier = "Header Cell"
+private let reuseIdentifier = "homeHabitCell"
+private let headerReuseIdentifier = "homeHeaderCell"
 
 class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var habits = [Habit]()
@@ -38,7 +38,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
         
-        super.init(collectionViewLayout: layout)
+        super.init(collectionViewLayout: layout)        
     }
     
     required init?(coder: NSCoder) {

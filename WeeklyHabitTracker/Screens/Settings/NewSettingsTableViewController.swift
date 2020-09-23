@@ -9,8 +9,8 @@
 import UIKit
 import StoreKit
 
-private let cellIdentifier = "settingsCellIdentifier"
-private let headerIdentifier = "settingsHeaderIdentifier"
+private let cellIdentifier = "settingsCell"
+private let headerIdentifier = "settingsHeader"
 
 class NewSettingsTableViewController: UITableViewController {
     private var products = [SKProduct]()
@@ -20,6 +20,9 @@ class NewSettingsTableViewController: UITableViewController {
     private let defaults: UserDefaults
     private let userNotificationCenter: UNUserNotificationCenter
     
+    private let reminderTextField = UITextField()
+    private let reminderToolBar = UIToolbar()
+    private let reminderPicker = UIDatePicker()
     private let badgeSwitch = UISwitch()
         
     // MARK: - Initializers
@@ -43,6 +46,7 @@ class NewSettingsTableViewController: UITableViewController {
         self.tableView.register(SettingsHeaderView.self, forHeaderFooterViewReuseIdentifier: headerIdentifier)
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
+        configureReminderPicker()
         configureBadgeSwitch()
         
         fetchProducts()
@@ -82,7 +86,10 @@ class NewSettingsTableViewController: UITableViewController {
         case 0:
             cell.textLabel?.text = "Default Reminder Time"
             cell.imageView?.image = UIImage(named: "clock")
-            cell.detailTextLabel?.text = "9:00 AM"
+            cell.selectionStyle = .none
+            
+            cell.addSubview(self.reminderTextField)
+            self.reminderTextField.anchor(top: nil, left: cell.leftAnchor, bottom: nil, right: cell.rightAnchor, y: cell.centerYAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 22, width: 0, height: cell.frame.height)
         case 1:
             cell.textLabel?.text = "Due Today Badge"
             cell.imageView?.image = UIImage(named: "app.badge")
@@ -98,7 +105,40 @@ class NewSettingsTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0: print("reminder")
+        default: break
+        }
+    }
+    
     // MARK: - Configuration Functions
+    func configureReminderPicker() {
+        reminderPicker.datePickerMode = .time
+        reminderPicker.preferredDatePickerStyle = .wheels
+        reminderPicker.date = Calendar.current.date(byAdding: .nanosecond, value: 0, to: Date())!
+        
+        reminderToolBar.sizeToFit()
+        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(reminderSaveButtonTapped))
+        saveButton.tintColor = .systemGreen
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(reminderCancelButtonTapped))
+        cancelButton.tintColor = .systemGreen
+        let reminderSwitch = UISwitch()
+        reminderSwitch.addTarget(self, action: #selector(reminderSwitchTapped), for: .valueChanged)
+        let reminderSwitchButton = UIBarButtonItem(customView: reminderSwitch)
+        let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixedSpace.width = 10
+        reminderToolBar.setItems([cancelButton, UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil), reminderSwitchButton, fixedSpace, saveButton], animated: true)
+        
+        reminderTextField.text = "9:00 AM"
+        reminderTextField.tintColor = .clear
+        reminderTextField.textAlignment = .right
+        reminderTextField.textColor = .secondaryLabel
+        
+        reminderTextField.inputView = reminderPicker
+        reminderTextField.inputAccessoryView = reminderToolBar
+    }
+    
     func configureBadgeSwitch() {
         self.userNotificationCenter.getNotificationSettings { [weak self] (settings) in
             guard let self = self else { return }
@@ -130,6 +170,20 @@ class NewSettingsTableViewController: UITableViewController {
     }
     
     // MARK: - Selectors
+    @objc func reminderSaveButtonTapped() {
+        self.tableView.endEditing(true)
+        let reminderString = CalUtility.getTimeAsString(time: self.reminderPicker.date)
+        self.reminderTextField.text = reminderString
+    }
+    
+    @objc func reminderCancelButtonTapped() {
+        self.tableView.endEditing(true)
+    }
+    
+    @objc func reminderSwitchTapped(sender: UISwitch) {
+        self.reminderPicker.isEnabled = sender.isOn
+    }
+    
     @objc func badgeSwitchTapped(sender: UISwitch) {
         self.userNotificationCenter.getNotificationSettings { [weak self, weak sender] (settings) in
             guard let self = self else { return }

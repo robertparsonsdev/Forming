@@ -9,8 +9,8 @@
 import UIKit
 
 class HabitDetailTableViewController: UITableViewController {
-    private let headerReuseIdentifier = "header"
-    private let cellReuseIdentifier = "cell"
+    private let headerReuseIdentifier = "habitDetailHeader"
+    private let cellReuseIdentifier = "habitDetailHeaderCell"
     
     private let persistenceManager: PersistenceService
     private weak var habitDelegate: HabitDetailDelegate?

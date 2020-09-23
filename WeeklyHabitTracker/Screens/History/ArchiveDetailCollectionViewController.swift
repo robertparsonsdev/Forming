@@ -8,8 +8,8 @@
 
 import UIKit
 
-private let reuseIdentifier = "Archived Habit Cell"
-private let headerReuseIdentifier = "Archived Detail Header"
+private let reuseIdentifier = "archivedHabitCell"
+private let headerReuseIdentifier = "archivedHabitHeader"
 
 class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var archive: Archive!
