@@ -199,7 +199,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self)
+        let newHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self)
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         DispatchQueue.main.async {
@@ -279,7 +279,7 @@ extension HomeCollectionViewController: HabitDetailDelegate {
 
 extension HomeCollectionViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, delegate: self, habitToEdit: habit)
+        let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         DispatchQueue.main.async {

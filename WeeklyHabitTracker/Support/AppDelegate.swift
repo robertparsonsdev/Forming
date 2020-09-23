@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let persistenceService = PersistenceService.shared
     private let notificationCenter = NotificationCenter.default
     private let userNotificationCenter = UNUserNotificationCenter.current()
+    private let firstLaunch = "FormingFirstLaunch"
     
     func getUserDefaults() -> UserDefaults { return self.defaults }
     func getPersistenceService() -> PersistenceService { return self.persistenceService }
@@ -56,6 +57,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            print(archive.successRate)
 //        }
 //        persistenceService.save()
+        
+        if !self.defaults.bool(forKey: self.firstLaunch) {
+            print("first launch")
+            self.defaults.set(true, forKey: self.firstLaunch)
+            configureDefaultSettings()
+        } else {
+            print("not first launch")
+            // next update
+//            configureDefaultSettings()
+        }
         
         return true
     }
@@ -162,5 +173,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case 0: for habit in self.habits { habit.weekChanged(toDate: newDate, andDay: newDay) }
         default: for habit in self.habits { habit.dayChanged(toDay: newDay) }
         }
+    }
+    
+    func configureDefaultSettings() {
+        self.defaults.set(CalUtility.getTimeAsDate(time: "9:00 AM"), forKey: Setting.defaultReminder.rawValue)
     }
 }

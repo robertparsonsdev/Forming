@@ -73,7 +73,7 @@ class ReminderViewController: UIViewController {
     
     func configurePicker() {
         picker.datePickerMode = .time
-        picker.minuteInterval = 5
+        picker.minuteInterval = 1
         if let reminder = self.reminderDate {
             picker.date = reminder
         } else {

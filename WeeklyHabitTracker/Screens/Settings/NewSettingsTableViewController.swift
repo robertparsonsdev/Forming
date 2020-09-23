@@ -22,6 +22,7 @@ class NewSettingsTableViewController: UITableViewController {
     
     private let reminderTextField = UITextField()
     private let reminderToolBar = UIToolbar()
+    private let reminderSwitch = UISwitch()
     private let reminderPicker = UIDatePicker()
     private let badgeSwitch = UISwitch()
         
@@ -114,23 +115,37 @@ class NewSettingsTableViewController: UITableViewController {
     
     // MARK: - Configuration Functions
     func configureReminderPicker() {
+        if let defaultReminder = self.defaults.object(forKey: Setting.defaultReminder.rawValue) as? Date? {
+            if let reminder = defaultReminder {
+                reminderTextField.text = CalUtility.getTimeAsString(time: reminder)
+                reminderPicker.date = reminder
+                self.reminderSwitch.isOn = true
+            } else {
+                reminderTextField.text = "None"
+                reminderPicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
+                reminderPicker.isEnabled = false
+                reminderSwitch.isOn = false
+            }
+        } else {
+            reminderTextField.text = "9:00 AM"
+            reminderPicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
+            reminderSwitch.isOn = true
+        }
+        
         reminderPicker.datePickerMode = .time
         reminderPicker.preferredDatePickerStyle = .wheels
-        reminderPicker.date = Calendar.current.date(byAdding: .nanosecond, value: 0, to: Date())!
         
         reminderToolBar.sizeToFit()
         let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(reminderSaveButtonTapped))
         saveButton.tintColor = .systemGreen
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(reminderCancelButtonTapped))
         cancelButton.tintColor = .systemGreen
-        let reminderSwitch = UISwitch()
-        reminderSwitch.addTarget(self, action: #selector(reminderSwitchTapped), for: .valueChanged)
+        self.reminderSwitch.addTarget(self, action: #selector(reminderSwitchTapped), for: .valueChanged)
         let reminderSwitchButton = UIBarButtonItem(customView: reminderSwitch)
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixedSpace.width = 10
         reminderToolBar.setItems([cancelButton, UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil), reminderSwitchButton, fixedSpace, saveButton], animated: true)
         
-        reminderTextField.text = "9:00 AM"
         reminderTextField.tintColor = .clear
         reminderTextField.textAlignment = .right
         reminderTextField.textColor = .secondaryLabel
@@ -171,13 +186,37 @@ class NewSettingsTableViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func reminderSaveButtonTapped() {
-        self.tableView.endEditing(true)
-        let reminderString = CalUtility.getTimeAsString(time: self.reminderPicker.date)
+        let reminderString: String
+        if self.reminderSwitch.isOn {
+            let reminder = self.reminderPicker.date
+            reminderString = CalUtility.getTimeAsString(time: reminder)
+            self.defaults.set(reminder, forKey: Setting.defaultReminder.rawValue)
+        } else {
+            reminderString = "None"
+            self.reminderPicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
+            self.defaults.set(nil, forKey: Setting.defaultReminder.rawValue)
+        }
         self.reminderTextField.text = reminderString
+        
+        self.tableView.endEditing(true)
     }
     
     @objc func reminderCancelButtonTapped() {
         self.tableView.endEditing(true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if let defaultReminder = self.defaults.object(forKey: Setting.defaultReminder.rawValue) as? Date? {
+                if let reminder = defaultReminder {
+                    self.reminderPicker.date = reminder
+                    self.reminderPicker.isEnabled = true
+                    self.reminderSwitch.isOn = true
+                } else {
+                    self.reminderPicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
+                    self.reminderPicker.isEnabled = false
+                    self.reminderSwitch.isOn = false
+                }
+            }
+        }
     }
     
     @objc func reminderSwitchTapped(sender: UISwitch) {

@@ -13,6 +13,7 @@ class HabitDetailTableViewController: UITableViewController {
     private let cellReuseIdentifier = "habitDetailHeaderCell"
     
     private let persistenceManager: PersistenceService
+    private let defaults: UserDefaults
     private weak var habitDelegate: HabitDetailDelegate?
     private var editMode: Bool
     private var habit: Habit!
@@ -24,7 +25,7 @@ class HabitDetailTableViewController: UITableViewController {
     private var habitTracking: Bool = true
     private var habitPriority: Int64 = 0
     private var habitFlag: Bool = false
-    private var habitReminder: Date? = CalUtility.getTimeAsDate(time: "9:00 AM")
+    private var habitReminder: Date?
     private var habitDateCreated: Date = CalUtility.getDateCreated()
     
     private let trackingView = UIStackView()
@@ -39,8 +40,9 @@ class HabitDetailTableViewController: UITableViewController {
     private let exclamationAttachment = NSTextAttachment()
     
     // MARK: - Initializers
-    init(persistenceManager: PersistenceService, delegate: HabitDetailDelegate, habitToEdit: Habit? = nil) {
+    init(persistenceManager: PersistenceService, defaults: UserDefaults, delegate: HabitDetailDelegate, habitToEdit: Habit? = nil) {
         self.persistenceManager = persistenceManager
+        self.defaults = defaults
         self.habitDelegate = delegate
         if let editingHabit = habitToEdit {
             self.habit = editingHabit
@@ -55,6 +57,11 @@ class HabitDetailTableViewController: UITableViewController {
             self.habitReminder = editingHabit.reminder
         } else {
             self.editMode = false
+            if let defaultReminder = defaults.object(forKey: Setting.defaultReminder.rawValue) as? Date? {
+                self.habitReminder = defaultReminder
+            } else {
+                self.habitReminder = CalUtility.getTimeAsDate(time: "9:00 AM")
+            }
         }
         
         self.exclamationAttachment.image = UIImage(named: "exclamationmark", in: nil, with: regularConfig)
