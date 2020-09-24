@@ -70,10 +70,10 @@ class HabitCell: UICollectionViewCell {
     func set(archivedHabit: ArchivedHabit, selectable: Bool) {
         self.archivedHabit = archivedHabit
         
-        configureTitleButton(withColor: FormingColors.getColor(fromValue: archivedHabit.archive.color))
+        configureTitleButton(withColor: FormingColors.getColor(fromValue: archivedHabit.archive.color), tappable: selectable)
         configureTitleLabel(withTitle: "\(CalUtility.getDateAsString(date: archivedHabit.startDate)) - \(CalUtility.getDateAsString(date: archivedHabit.endDate))", attributed: selectable)
         configureStackView()
-        setupArchivedHabitCheckboxes(withStatuses: archivedHabit.statuses)
+        setupArchivedHabitCheckboxes(withStatuses: archivedHabit.statuses, andEnabled: !selectable)
         configureConstraints(forHabitCell: false)
     }
     
@@ -84,9 +84,11 @@ class HabitCell: UICollectionViewCell {
         clipsToBounds = true
     }
     
-    func configureTitleButton(withColor color: UIColor) {
+    func configureTitleButton(withColor color: UIColor, tappable: Bool = true) {
         titleButton.backgroundColor = color
-        titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+        if tappable {
+            titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+        }
     }
     
     func configureTitleLabel(withTitle title: String, attributed: Bool = true) {
@@ -158,10 +160,10 @@ class HabitCell: UICollectionViewCell {
             addSubview(flagLabel)
             flagLabel.anchor(top: topAnchor, left: nil, bottom: nil, right: priorityLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 10, width: 20, height: 25)
             addSubview(titleLabel)
-            titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: flagLabel.leftAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
+            titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: flagLabel.leftAnchor, paddingTop: 0, paddingLeft: 7.5, paddingBottom: 0, paddingRight: 5, width: 0, height: 25)
         } else {
             addSubview(titleLabel)
-            titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
+            titleLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 7.5, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
         }
         
         addSubview(checkboxStackView)
@@ -179,13 +181,13 @@ class HabitCell: UICollectionViewCell {
         }
     }
     
-    func setupArchivedHabitCheckboxes(withStatuses statuses: [Status]) {
+    func setupArchivedHabitCheckboxes(withStatuses statuses: [Status], andEnabled enabled: Bool) {
         if !checkboxStackView.arrangedSubviews.isEmpty { for view in checkboxStackView.arrangedSubviews { view.removeFromSuperview() } }
 
         for (index, status) in statuses.enumerated() {
             switch status {
             case .empty: checkboxStackView.addArrangedSubview(UIView())
-            default: checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatus: status, andLongPressEnabled: false))
+            default: checkboxStackView.addArrangedSubview(createCheckbox(withTag: index, andStatus: status, andLongPressEnabled: enabled))
             }
         }
     }
@@ -286,7 +288,7 @@ class HabitCell: UICollectionViewCell {
         let symbolAttachment = NSTextAttachment()
         symbolAttachment.image = UIImage(named: "chevron.right", in: nil, with: self.boldConfig)
         symbolAttachment.image = symbolAttachment.image?.withTintColor(.white)
-        let attributedTitle = NSMutableAttributedString(string: "  \(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
+        let attributedTitle = NSMutableAttributedString(string: "\(title) ", attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .bold), .foregroundColor: UIColor.white])
         attributedTitle.append(NSAttributedString(attachment: symbolAttachment))
         return attributedTitle
     }
@@ -295,6 +297,8 @@ class HabitCell: UICollectionViewCell {
     @objc func titleTapped() {
         if let habit = self.habit {
             delegate?.presentNewHabitViewController(with: habit)
+        } else if let archivedHabit = self.archivedHabit {
+            delegate?.pushViewController(archivedHabit: archivedHabit)
         }
     }
     
@@ -356,4 +360,5 @@ protocol HabitCellDelegate: class {
     func presentNewHabitViewController(with habit: Habit)
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
+    func pushViewController(archivedHabit: ArchivedHabit)
 }

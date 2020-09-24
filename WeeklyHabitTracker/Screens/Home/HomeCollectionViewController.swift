@@ -278,6 +278,8 @@ extension HomeCollectionViewController: HabitDetailDelegate {
 }
 
 extension HomeCollectionViewController: HabitCellDelegate {
+    func pushViewController(archivedHabit: ArchivedHabit) { }
+    
     func presentNewHabitViewController(with habit: Habit) {
         let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)

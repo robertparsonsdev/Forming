@@ -185,6 +185,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 //            cell?.set(delegate: self)
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HabitCell
             cell?.set(archivedHabit: archivedHabit, selectable: true)
+            cell?.set(delegate: self)
             return cell
         })
 
@@ -263,17 +264,29 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 }
 
 // MARK: - Delegates
-extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
-    func pushViewController(with archivedHabit: ArchivedHabit) {
+//extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
+//    func pushViewController(with archivedHabit: ArchivedHabit) {
+//        let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
+//        vc.set(archivedHabit: archivedHabit)
+//        vc.title = "Week \(archivedHabit.weekNumber)"
+//        navigationController?.pushViewController(vc, animated: true)
+//    }
+//
+//    func save() { }
+//    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
+//    func presentAlertController(with alert: UIAlertController) { }
+//}
+
+extension ArchiveDetailCollectionViewController: HabitCellDelegate {
+    func presentAlertController(with alert: UIAlertController) { }
+    func presentNewHabitViewController(with habit: Habit) { }
+    func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
+    func pushViewController(archivedHabit: ArchivedHabit) {
         let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
         vc.set(archivedHabit: archivedHabit)
         vc.title = "Week \(archivedHabit.weekNumber)"
         navigationController?.pushViewController(vc, animated: true)
     }
-    
-    func save() { }
-    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
-    func presentAlertController(with alert: UIAlertController) { }
 }
 
 extension ArchiveDetailCollectionViewController: FormingProgressViewDelegate {

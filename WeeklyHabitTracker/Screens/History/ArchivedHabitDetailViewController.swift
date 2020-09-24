@@ -15,7 +15,9 @@ class ArchivedHabitDetailViewController: UIViewController {
     private var containerHeight = 300
     
     private let scrollView = UIScrollView()
-    private let cell = ArchivedHabitCell()
+//    private let cell = ArchivedHabitCell()
+    private let cell = HabitCell()
+    private let cellContainer = UIView()
     private let container = UIView()
     private let notesLabel = UILabel()
     private let notesTextView = UITextView()
@@ -79,7 +81,9 @@ class ArchivedHabitDetailViewController: UIViewController {
     // MARK: - Setters
     func set(archivedHabit: ArchivedHabit) {
         self.archivedHabit = archivedHabit
-        cell.set(archivedHabit: archivedHabit, attributed: false, buttonEnabled: self.archivedHabit.archive.active)
+//        cell.set(archivedHabit: archivedHabit, attributed: false, buttonEnabled: self.archivedHabit.archive.active)
+//        cell.set(delegate: self)
+        cell.set(archivedHabit: archivedHabit, selectable: false)
         cell.set(delegate: self)
     }
     
@@ -125,8 +129,12 @@ class ArchivedHabitDetailViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
         
-        scrollView.addSubview(cell)
-        cell.anchor(top: scrollView.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 90)
+        cellContainer.clipsToBounds = true
+        cellContainer.layer.cornerRadius = 14
+        cellContainer.addSubview(cell)
+        cell.anchor(top: cellContainer.topAnchor, left: cellContainer.leftAnchor, bottom: cellContainer.bottomAnchor, right: cellContainer.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        scrollView.addSubview(cellContainer)
+        cellContainer.anchor(top: scrollView.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: 90)
         
         scrollView.addSubview(container)
         container.anchor(top: cell.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 15, paddingLeft: 15, paddingBottom: 0, paddingRight: 15, width: 0, height: CGFloat(self.containerHeight))
@@ -161,10 +169,11 @@ class ArchivedHabitDetailViewController: UIViewController {
             guard let self = self else { return }
             for (index, status) in self.archivedHabit.statuses.enumerated() {
                 if status != .empty {
-                    self.selectionChanged(atIndex: index, fromStatus: status, toStatus: .incomplete, forState: false)
+//                    self.selectionChanged(atIndex: index, fromStatus: status, toStatus: .incomplete, forState: false)
+//                    self.checkboxSelectionChanged(atIndex: index, forHabit: <#T##Habit#>, fromStatus: <#T##Status#>, toStatus: <#T##Status#>, forState: <#T##Bool?#>)
                 }
             }
-            self.save()
+//            self.save()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
@@ -206,7 +215,8 @@ class ArchivedHabitDetailViewController: UIViewController {
     
     @objc func reloadArchivedHabit() {
         DispatchQueue.main.async {
-            self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonEnabled: self.archivedHabit.archive.active)
+//            self.cell.set(archivedHabit: self.archivedHabit, attributed: false, buttonEnabled: self.archivedHabit.archive.active)
+            self.cell.set(archivedHabit: self.archivedHabit, selectable: false)
         }
     }
 }
@@ -218,34 +228,52 @@ extension ArchivedHabitDetailViewController: UITextViewDelegate {
     }
 }
 
-extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
-    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
-        let currentWeek = self.archivedHabit?.archive.currentWeekNumber, week = self.archivedHabit?.weekNumber
-        if week == currentWeek {
-            self.archivedHabit?.archive.habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
-        } else {
-            self.archivedHabit.updateStatus(toStatus: newStatus, atIndex: index)
-            self.archivedHabit.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
-        }
-    }
-    
-    func save() {
-        self.persistenceManager.save()
-        self.notificationCenter.reload(habits: true, history: true, archiveDetail: true, archivedHabitDetail: true)
-        // check for goal reached
-        let goal = self.archivedHabit.archive.habit.goal
-        let completed = self.archivedHabit.archive.completedTotal
-        if goal == completed {
-            presentGoalReachedViewController(withHabit: self.archivedHabit.archive.habit, andDelegate: self)
-        }
-    }
-    
-    func pushViewController(with archivedHabit: ArchivedHabit) { }
-    
+//extension ArchivedHabitDetailViewController: ArchivedHabitCellDelegate {
+//    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
+//        let currentWeek = self.archivedHabit?.archive.currentWeekNumber, week = self.archivedHabit?.weekNumber
+//        if week == currentWeek {
+//            self.archivedHabit?.archive.habit.checkBoxPressed(fromStatus: oldStatus, toStatus: newStatus, atIndex: index, withState: state)
+//        } else {
+//            self.archivedHabit.updateStatus(toStatus: newStatus, atIndex: index)
+//            self.archivedHabit.archive.updateStats(fromStatus: oldStatus, toStatus: newStatus)
+//        }
+//    }
+//
+//    func save() {
+//        self.persistenceManager.save()
+//        self.notificationCenter.reload(habits: true, history: true, archiveDetail: true, archivedHabitDetail: true)
+//        // check for goal reached
+//        let goal = self.archivedHabit.archive.habit.goal
+//        let completed = self.archivedHabit.archive.completedTotal
+//        if goal == completed {
+//            presentGoalReachedViewController(withHabit: self.archivedHabit.archive.habit, andDelegate: self)
+//        }
+//    }
+//
+//    func pushViewController(with archivedHabit: ArchivedHabit) { }
+//
+//    func presentAlertController(with alert: UIAlertController) {
+//        DispatchQueue.main.async {
+//            self.present(alert, animated: true)
+//        }
+//    }
+//}
+
+extension ArchivedHabitDetailViewController: HabitCellDelegate {
     func presentAlertController(with alert: UIAlertController) {
-        DispatchQueue.main.async {
-            self.present(alert, animated: true)
-        }
+        
+    }
+    
+    func pushViewController(archivedHabit: ArchivedHabit) {
+        
+    }
+    
+    func presentNewHabitViewController(with habit: Habit) {
+        
+    }
+    
+    func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
+        
     }
 }
 
