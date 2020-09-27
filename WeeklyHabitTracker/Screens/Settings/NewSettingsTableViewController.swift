@@ -25,6 +25,7 @@ class NewSettingsTableViewController: UITableViewController {
     private let reminderSwitch = UISwitch()
     private let reminderPicker = UIDatePicker()
     private let badgeSwitch = UISwitch()
+    private var activityViewController: ActivityViewController?
         
     // MARK: - Initializers
     init(notifCenter: NotificationCenter, defaults: UserDefaults, userNotifCenter: UNUserNotificationCenter) {
@@ -180,7 +181,9 @@ class NewSettingsTableViewController: UITableViewController {
     
     private func purchase(product: IAPProduct) {
         guard let productToPurchase = self.products.filter({ $0.productIdentifier == product.rawValue }).first else { return }
-//        presentActivityViewController()
+        self.activityViewController = ActivityViewController()
+        self.activityViewController?.startAnimating()
+        presentActivityViewController(self.activityViewController!)
         let payment = SKPayment(product: productToPurchase)
         self.paymentQueue.add(payment)
     }
@@ -285,6 +288,10 @@ extension NewSettingsTableViewController: SKPaymentTransactionObserver {
             case .purchasing: break
             default: queue.finishTransaction(transaction); print("finished")
             }
+        }
+        
+        if let activityVC = self.activityViewController {
+            dismissActivityViewController(activityVC)
         }
     }
 }

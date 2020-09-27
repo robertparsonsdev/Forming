@@ -59,12 +59,17 @@ extension UIViewController {
         return cell
     }
     
-    func presentActivityViewController() {
+    func presentActivityViewController(_ activityVC: ActivityViewController) {
         DispatchQueue.main.async {
-            let activityVC = ActivityViewController()
             activityVC.modalPresentationStyle = .overFullScreen
             activityVC.modalTransitionStyle = .crossDissolve
             self.present(activityVC, animated: true, completion: nil)
+        }
+    }
+    
+    func dismissActivityViewController(_ activityVC: ActivityViewController) {
+        DispatchQueue.main.async {
+            activityVC.dismiss(animated: true, completion: nil)
         }
     }
 }
