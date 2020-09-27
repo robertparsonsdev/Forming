@@ -58,7 +58,6 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         collectionView.alwaysBounceVertical = true
         collectionView.collectionViewLayout = UIHelper.createHabitsFlowLayout(in: collectionView)
 
-//        self.collectionView.register(ArchivedHabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(HabitCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         self.collectionView.register(ArchiveDetailHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         
@@ -180,11 +179,8 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
     private func configureDataSource() {
         self.dataSource = UICollectionViewDiffableDataSource<CVSection, ArchivedHabit>(collectionView: self.collectionView, cellProvider: { [weak self] (collectionView, indexPath, archivedHabit) -> UICollectionViewCell? in
             guard let self = self else { return nil }
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ArchivedHabitCell
-//            cell?.set(archivedHabit: archivedHabit, buttonEnabled: false)
-//            cell?.set(delegate: self)
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? HabitCell
-            cell?.set(archivedHabit: archivedHabit, selectable: true)
+            cell?.set(archivedHabit: archivedHabit, forCollectionView: true)
             cell?.set(delegate: self)
             return cell
         })
@@ -264,29 +260,18 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 }
 
 // MARK: - Delegates
-//extension ArchiveDetailCollectionViewController: ArchivedHabitCellDelegate {
-//    func pushViewController(with archivedHabit: ArchivedHabit) {
-//        let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
-//        vc.set(archivedHabit: archivedHabit)
-//        vc.title = "Week \(archivedHabit.weekNumber)"
-//        navigationController?.pushViewController(vc, animated: true)
-//    }
-//
-//    func save() { }
-//    func selectionChanged(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
-//    func presentAlertController(with alert: UIAlertController) { }
-//}
-
 extension ArchiveDetailCollectionViewController: HabitCellDelegate {
-    func presentAlertController(with alert: UIAlertController) { }
-    func presentNewHabitViewController(with habit: Habit) { }
-    func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
     func pushViewController(archivedHabit: ArchivedHabit) {
         let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
         vc.set(archivedHabit: archivedHabit)
         vc.title = "Week \(archivedHabit.weekNumber)"
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func checkboxSelectionChangedForArchivedHabit(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
+    func presentAlertController(with alert: UIAlertController) { }
+    func presentNewHabitViewController(with habit: Habit) { }
+    func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
 }
 
 extension ArchiveDetailCollectionViewController: FormingProgressViewDelegate {

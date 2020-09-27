@@ -222,7 +222,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     }
     
     @objc func finishFromNotes(_ notification: NSNotification) {
-        if let habit = notification.userInfo?["habit"] as? Habit {
+        if let habit = notification.userInfo?[NotificationName.finishHabitFromNotes.rawValue] as? Habit {
             finish(habit: habit, confetti: false)
         }
     }
@@ -278,8 +278,6 @@ extension HomeCollectionViewController: HabitDetailDelegate {
 }
 
 extension HomeCollectionViewController: HabitCellDelegate {
-    func pushViewController(archivedHabit: ArchivedHabit) { }
-    
     func presentNewHabitViewController(with habit: Habit) {
         let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
@@ -312,6 +310,9 @@ extension HomeCollectionViewController: HabitCellDelegate {
             self.present(alert, animated: true)
         }
     }
+    
+    func pushViewController(archivedHabit: ArchivedHabit) { }
+    func checkboxSelectionChangedForArchivedHabit(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
 }
 
 extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {

@@ -67,7 +67,7 @@ class HabitCell: UICollectionViewCell {
         configureConstraints(forHabitCell: true)
     }
     
-    func set(archivedHabit: ArchivedHabit, selectable: Bool) {
+    func set(archivedHabit: ArchivedHabit, forCollectionView selectable: Bool) {
         self.archivedHabit = archivedHabit
         
         configureTitleButton(withColor: FormingColors.getColor(fromValue: archivedHabit.archive.color), tappable: selectable)
@@ -264,8 +264,12 @@ class HabitCell: UICollectionViewCell {
     
     func actionTriggered(fromCheckbox checkbox: UIButton, forStatus status: Status, andTodayButtonState state: Bool) {
         let tag = checkbox.tag
-        self.updateHabit(forIndex: tag, andStatus: status, forState: tag == self.currentDay ? state : nil)
-        self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: state)
+        if self.habit != nil {
+            self.updateHabit(forIndex: tag, andStatus: status, forState: tag == self.currentDay ? state : nil)
+            self.replace(withCheckbox: checkbox, atIndex: checkbox.tag, withState: state)
+        } else if self.archivedHabit != nil {
+            self.delegate?.checkboxSelectionChangedForArchivedHabit(atIndex: tag, fromStatus: self.archivedHabit.statuses[tag], toStatus: status, forState: tag == self.currentDay ? state : nil)
+        }
     }
     
     func updateHabit(forIndex index: Int, andStatus status: Status, forState state: Bool?) {
@@ -277,9 +281,9 @@ class HabitCell: UICollectionViewCell {
         DispatchQueue.main.async {
             checkbox.removeFromSuperview()
             if index == self.currentDay {
-                self.checkboxStackView.insertArrangedSubview(self.createTodayCheckbox(withTag: checkbox.tag, withState: state, andStatuses: self.habit!.statuses), at: index)
+                self.checkboxStackView.insertArrangedSubview(self.createTodayCheckbox(withTag: checkbox.tag, withState: state, andStatuses: self.habit.statuses), at: index)
             } else {
-                self.checkboxStackView.insertArrangedSubview(self.createCheckbox(withTag: checkbox.tag, andStatus: self.habit!.statuses[index]), at: index)
+                self.checkboxStackView.insertArrangedSubview(self.createCheckbox(withTag: checkbox.tag, andStatus: self.habit.statuses[index]), at: index)
             }
         }
     }
@@ -361,4 +365,5 @@ protocol HabitCellDelegate: class {
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
     func pushViewController(archivedHabit: ArchivedHabit)
+    func checkboxSelectionChangedForArchivedHabit(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
 }
