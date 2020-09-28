@@ -180,6 +180,7 @@ class NewSettingsTableViewController: UITableViewController {
     
     private func purchase(product: IAPProduct) {
         guard let productToPurchase = self.products.filter({ $0.productIdentifier == product.rawValue }).first else { return }
+//        presentActivityViewController()
         let payment = SKPayment(product: productToPurchase)
         self.paymentQueue.add(payment)
     }

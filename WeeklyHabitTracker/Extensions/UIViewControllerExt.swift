@@ -58,4 +58,13 @@ extension UIViewController {
         cell.contents = UIImage(named: "white-star")?.cgImage
         return cell
     }
+    
+    func presentActivityViewController() {
+        DispatchQueue.main.async {
+            let activityVC = ActivityViewController()
+            activityVC.modalPresentationStyle = .overFullScreen
+            activityVC.modalTransitionStyle = .crossDissolve
+            self.present(activityVC, animated: true, completion: nil)
+        }
+    }
 }

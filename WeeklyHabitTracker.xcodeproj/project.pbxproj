@@ -26,6 +26,7 @@
 		EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */; };
 		EE79D83724B3EF5600B46008 /* ViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */; };
 		EE7C151C24917B9000194EA9 /* HabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C151A24917B9000194EA9 /* HabitCell.swift */; };
+		EE7F7E70252181E8009644CB /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7F7E6F252181E8009644CB /* ActivityViewController.swift */; };
 		EE8CD26924B7D8880042FA46 /* NotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */; };
 		EE91108524623F730021190C /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91108424623F730021190C /* UIHelper.swift */; };
 		EE911087246242660021190C /* HistoryTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE911086246242660021190C /* HistoryTitleCell.swift */; };
@@ -53,7 +54,6 @@
 		EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */; };
 		EEE50EFF250D7C4F00D0B77F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */; };
-		EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */; };
 		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
 		EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */; };
 		EEEB97E3249452FB006DE24D /* Archive+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DD249452FB006DE24D /* Archive+CoreDataProperties.swift */; };
@@ -88,6 +88,7 @@
 		EE5E33FB24561CC500DC2EC3 /* UIButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExt.swift; sourceTree = "<group>"; };
 		EE79D83624B3EF5600B46008 /* ViewControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExt.swift; sourceTree = "<group>"; };
 		EE7C151A24917B9000194EA9 /* HabitCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitCell.swift; sourceTree = "<group>"; };
+		EE7F7E6F252181E8009644CB /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
 		EE8CD26824B7D8880042FA46 /* NotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterExt.swift; sourceTree = "<group>"; };
 		EE91108424623F730021190C /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE911086246242660021190C /* HistoryTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTitleCell.swift; sourceTree = "<group>"; };
@@ -117,7 +118,6 @@
 		EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNUserNotificationCenterExt.swift; sourceTree = "<group>"; };
 		EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailCollectionViewController.swift; sourceTree = "<group>"; };
-		EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedHabitCell.swift; sourceTree = "<group>"; };
 		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
 		EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
 		EEEB97DD249452FB006DE24D /* Archive+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -157,6 +157,7 @@
 				EE4C55C624AE9176000AD61C /* FormingSecondaryLabel.swift */,
 				EE51D1CD24D4F76C009079A4 /* GoalReachedViewController.swift */,
 				EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */,
+				EE7F7E6F252181E8009644CB /* ActivityViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -324,7 +325,6 @@
 			children = (
 				EE911086246242660021190C /* HistoryTitleCell.swift */,
 				EE3A59F32495C8B6009E5D25 /* HistorySectionHeader.swift */,
-				EEEB97D2249424D7006DE24D /* ArchivedHabitCell.swift */,
 				EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */,
 			);
 			path = History;
@@ -362,6 +362,7 @@
 				TargetAttributes = {
 					EEC0FE6F244646E500FC618F = {
 						CreatedOnToolsVersion = 11.4;
+						LastSwiftMigration = 1200;
 					};
 				};
 			};
@@ -419,7 +420,6 @@
 				EE3A59F22495C720009E5D25 /* HistorySection.swift in Sources */,
 				EE3A59F42495C8B6009E5D25 /* HistorySectionHeader.swift in Sources */,
 				EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */,
-				EEEB97D3249424D7006DE24D /* ArchivedHabitCell.swift in Sources */,
 				EECBF3DF2457CBBE0050DFB8 /* CVSection.swift in Sources */,
 				EEEB97E4249452FB006DE24D /* ArchivedHabit+CoreDataClass.swift in Sources */,
 				EE33081C24A3005B006C8D0A /* FormingProgressView.swift in Sources */,
@@ -444,6 +444,7 @@
 				EE5E33FC24561CC500DC2EC3 /* UIButtonExt.swift in Sources */,
 				EEA64ED52448E050008202D0 /* FormingDayButton.swift in Sources */,
 				EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */,
+				EE7F7E70252181E8009644CB /* ActivityViewController.swift in Sources */,
 				EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */,
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
 				EEEB97CF24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift in Sources */,
@@ -592,6 +593,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = WeeklyHabitTracker/Forming.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
@@ -604,6 +606,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.robertparsons4.WeeklyHabitTracker;
 				PRODUCT_NAME = Forming;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -613,6 +616,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = WeeklyHabitTracker/Forming.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
