@@ -47,7 +47,7 @@ class MainTabBarController: UITabBarController {
         
         let settingsNavController = buildTabBarControllers(withTitle: "Settings",
                                                            andImage: UIImage(named: "gear", in: nil, with: boldConfig)!,
-                                                           andRootVC: NewSettingsTableViewController(notifCenter: self.appDelegate.getNotificationCenter(),
+                                                           andRootVC: SettingsTableViewController(notifCenter: self.appDelegate.getNotificationCenter(),
                                                                                                      defaults: self.appDelegate.getUserDefaults(),
                                                                                                      userNotifCenter: self.appDelegate.getUserNotificationCenter()))
 

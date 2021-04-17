@@ -38,7 +38,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
         self.notificationCenter = notifCenter
         self.userNotificationCenter = userNotifCenter
         
-        super.init(collectionViewLayout: layout)        
+        super.init(collectionViewLayout: layout)
     }
     
     required init?(coder: NSCoder) {
