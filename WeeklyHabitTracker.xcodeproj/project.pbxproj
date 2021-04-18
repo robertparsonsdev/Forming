@@ -39,6 +39,7 @@
 		EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EDB244BA3BF002225F8 /* Status.swift */; };
 		EEAD7EDF244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EDD244BB4BB002225F8 /* WeeklyHabitTracker.xcdatamodeld */; };
 		EEAD7EE1244BB4FC002225F8 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */; };
+		EEBBF1AA262BB0FC0084230F /* NewHisotryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBBF1A9262BB0FC0084230F /* NewHisotryVC.swift */; };
 		EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE73244646E500FC618F /* AppDelegate.swift */; };
 		EEC0FE76244646E500FC618F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0FE75244646E500FC618F /* SceneDelegate.swift */; };
 		EEC0FE7D244646EA00FC618F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEC0FE7C244646EA00FC618F /* Assets.xcassets */; };
@@ -101,6 +102,7 @@
 		EEAD7EDB244BA3BF002225F8 /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
 		EEAD7EDE244BB4BB002225F8 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		EEAD7EE0244BB4FC002225F8 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
+		EEBBF1A9262BB0FC0084230F /* NewHisotryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHisotryVC.swift; sourceTree = "<group>"; };
 		EEC0FE70244646E500FC618F /* Forming.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forming.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEC0FE73244646E500FC618F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EEC0FE75244646E500FC618F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 				EEC0FE8B24464D7600FC618F /* HistoryCollectionViewController.swift */,
 				EEEB97CE24941FAE006DE24D /* ArchiveDetailCollectionViewController.swift */,
 				EE3A59EF249578ED009E5D25 /* ArchivedHabitDetailViewController.swift */,
+				EEBBF1A9262BB0FC0084230F /* NewHisotryVC.swift */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -451,6 +454,7 @@
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE51D1D024D4F947009079A4 /* UIViewControllerExt.swift in Sources */,
 				EE3A59F0249578ED009E5D25 /* ArchivedHabitDetailViewController.swift in Sources */,
+				EEBBF1AA262BB0FC0084230F /* NewHisotryVC.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderViewController.swift in Sources */,
 				EEC0FE8A24464A8300FC618F /* MainTabBarController.swift in Sources */,
 				EEEB97E5249452FB006DE24D /* ArchivedHabit+CoreDataProperties.swift in Sources */,
@@ -524,7 +528,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -579,7 +583,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -599,7 +603,7 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 2PZN25HHY7;
 				INFOPLIST_FILE = WeeklyHabitTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -622,7 +626,7 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 2PZN25HHY7;
 				INFOPLIST_FILE = WeeklyHabitTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -6,9 +6,31 @@
 //  Copyright © 2020 Robert Parsons. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-enum HistorySection {
+enum HistorySection: CaseIterable {
     case activeHabits
     case finishedHabits
+    
+    var description: String {
+        switch self {
+        case .activeHabits:
+            return "Active Habits"
+        default:
+            return "Finished Habits"
+        }
+    }
+}
+
+struct HistoryItem: Hashable {
+    private let id = UUID()
+    let type: HistoryItemType
+    
+    let title: String
+    let subtitle: String
+    let symbol: UIImage?
+}
+
+enum HistoryItemType: Int {
+    case header, row
 }

@@ -39,7 +39,7 @@ class MainTabBarController: UITabBarController {
 
         let historyNavController = buildTabBarControllers(withTitle: "History",
                                                           andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!,
-                                                          andRootVC: HistoryCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(),
+                                                          andRootVC: NewHisotryVC(/*collectionViewLayout: UICollectionViewFlowLayout(),*/
                                                                                                      persistenceManager: self.appDelegate.getPersistenceService(),
                                                                                                      defaults: self.appDelegate.getUserDefaults(),
                                                                                                      notifCenter: self.appDelegate.getNotificationCenter(),
