@@ -23,7 +23,6 @@ class NewHisotryVC: UICollectionViewController {
     private var dataSource: DataSource?
     
     private var sortButton: UIBarButtonItem!
-    private var defaultSort: HistorySort = .alphabetical
     
     private let searchController = UISearchController()
     private var filteredArchives: [Archive] = []
@@ -49,9 +48,16 @@ class NewHisotryVC: UICollectionViewController {
         configureCollectionView()
         configureNavigationBar()
         configureSearchController()
+        configureNotifications()
         configureDataSource()
         
         fetchArchives()
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = self.dataSource?.itemIdentifier(for: indexPath), let archive = item.archive else { print("selection error"); return }
+        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, notifCenter: self.notificationCenter, archive: archive, delegate: self)
+        navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
     // MARK: - Configuration Functions
@@ -75,6 +81,11 @@ class NewHisotryVC: UICollectionViewController {
         navigationItem.searchController = searchController
     }
     
+    private func configureNotifications() {
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(NotificationName.newDay.rawValue), object: nil)
+        self.notificationCenter.addObserver(self, selector: #selector(reloadArchives), name: NSNotification.Name(NotificationName.history.rawValue), object: nil)
+    }
+    
     private func configureDataSource() {
         let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, HistoryItem> { (cell, _, item) in
             var configuration = cell.defaultContentConfiguration()
@@ -91,14 +102,14 @@ class NewHisotryVC: UICollectionViewController {
         let rowRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, HistoryItem> { (cell, _, item) in
             var configuration = cell.defaultContentConfiguration()
             configuration.text = item.title
+            configuration.secondaryText = item.subtitle
             configuration.image = item.symbol
-            configuration.imageProperties.maximumSize = CGSize(width: 25, height: 25)
+            configuration.imageProperties.maximumSize = CGSize(width: 40, height: 40)
             cell.contentConfiguration = configuration
             
             let options = UICellAccessory.OutlineDisclosureOptions(style: .cell, tintColor: .label)
             let disclosureAccessory = UICellAccessory.outlineDisclosure(options: options)
-            let textAccessory = UICellAccessory.label(text: item.subtitle)
-            cell.accessories = [textAccessory, disclosureAccessory]
+            cell.accessories = [disclosureAccessory]
         }
         
         self.dataSource = DataSource(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, item) -> UICollectionViewCell? in
@@ -117,10 +128,10 @@ class NewHisotryVC: UICollectionViewController {
         
         self.finishedArchives = self.archives.filter { !$0.active }
         self.finishedArchives.sort { $0.title < $1.title }
-        applyInitialSnapshot()
+        applySnapshot()
     }
     
-    private func applyInitialSnapshot() {
+    private func applySnapshot() {
         for section in HistorySection.allCases {
             var snapshot = NSDiffableDataSourceSectionSnapshot<HistoryItem>()
             let headerSubtitle: String, archives: [Archive], symbol: UIImage?
@@ -136,9 +147,9 @@ class NewHisotryVC: UICollectionViewController {
                 symbol = UIImage(named: "star.circle")
             }
             
-            let header = HistoryItem(type: .header, title: section.description, subtitle: headerSubtitle, symbol: nil)
-            let rows = archives.map { HistoryItem(type: .row, title: $0.title,
-                                                  subtitle: $0.goal == -1 ? "No Goal" : String(format: "%.0f%%", $0.successRate * 100),
+            let header = HistoryItem(archive: nil, type: .header, title: section.description, subtitle: headerSubtitle, symbol: nil)
+            let rows = archives.map { HistoryItem(archive: $0, type: .row, title: $0.title,
+                                                  subtitle: self.subtitle(success: $0.successRate, completed: $0.completedTotal, goal: $0.goal),
                                                   symbol: symbol?.withTintColor(FormingColors.getColor(fromValue: $0.color), renderingMode: .alwaysOriginal)) }
             
             snapshot.append([header])
@@ -146,6 +157,37 @@ class NewHisotryVC: UICollectionViewController {
             snapshot.append(rows, to: header)
             self.dataSource?.apply(snapshot, to: section, animatingDifferences: false, completion: nil)
         }
+    }
+    
+    private func subtitle(success rate: Double, completed: Int64, goal: Int64) -> String {
+        var string = String(format: "Success: %.0f%%, ", rate * 100)
+        if goal == -1 {
+            string.append("No Goal")
+        } else {
+            string.append(String(format: "Goal: %.0f%%", (Double(completed) / Double(goal)) * 100.0))
+        }
+        return string
+    }
+    
+    // MARK: - Selectors
+    @objc func reloadArchives() {
+        DispatchQueue.main.async {
+            self.fetchArchives()
+        }
+    }
+}
+
+extension NewHisotryVC: ArchiveDetailDelegate {
+    func delete(archive: Archive) {
+        
+    }
+    
+    func reset(archive: Archive) {
+        
+    }
+    
+    func restore(archive: Archive) {
+        
     }
 }
 

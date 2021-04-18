@@ -9,7 +9,7 @@
 import UIKit
 
 class ArchiveDetailHeaderCell: UICollectionReusableView {
-    private var completionProgressView = FormingProgressView()
+    private var successProgressView = FormingProgressView()
     private var goalProgressView = FormingProgressView()
     private var stackView = UIStackView()
     private let startX: CGFloat = 5.0
@@ -34,15 +34,15 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     }
     
     // MARK: - Setters
-    func set(completed: Int64, failed: Int64, completionRate: Double, goal: Int64) {
-        completionProgressView.set(compensate: true)
-        completionProgressView.set(trackStartX: self.startX, trackEndX: self.endX)
-        completionProgressView.set(progressRate: CGFloat(completionRate), startX: self.startX, endX: self.endX)
-        completionProgressView.set(failedRate: CGFloat(1.0 - completionRate), startX: self.endX, endX: self.startX)
-        completionProgressView.set(percentLabel: Int(completionRate * 100) % 100 == 0 ? String(format: "%.0f%%", completionRate * 100) : String(format: "%.2f%%", completionRate * 100))
-        completionProgressView.set(description: "Completion Rate")
-        completionProgressView.set(infoOne: "\(completed) Completed")
-        completionProgressView.set(infoTwo: "\(failed) Failed")
+    func set(completed: Int64, failed: Int64, successRate: Double, goal: Int64) {
+        successProgressView.set(compensate: true)
+        successProgressView.set(trackStartX: self.startX, trackEndX: self.endX)
+        successProgressView.set(progressRate: CGFloat(successRate), startX: self.startX, endX: self.endX)
+        successProgressView.set(failedRate: CGFloat(1.0 - successRate), startX: self.endX, endX: self.startX)
+        successProgressView.set(percentLabel: Int(successRate * 100) % 100 == 0 ? String(format: "%.0f%%", successRate * 100) : String(format: "%.2f%%", successRate * 100))
+        successProgressView.set(description: "Success Rate")
+        successProgressView.set(infoOne: "\(completed) Completed")
+        successProgressView.set(infoTwo: "\(failed) Failed")
         
         goalProgressView.set(trackStartX: self.startX, trackEndX: self.endX)
         goalProgressView.set(description: "Goal Progress")
@@ -83,7 +83,7 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
     }
     
     func set(delegate: FormingProgressViewDelegate) {
-        completionProgressView.set(delegate: delegate)
+        successProgressView.set(delegate: delegate)
         goalProgressView.set(delegate: delegate)
     }
     
@@ -100,10 +100,10 @@ class ArchiveDetailHeaderCell: UICollectionReusableView {
         addSubview(stackView)
         stackView.anchor(top: top, left: left, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
 
-        addSubview(completionProgressView)
-        completionProgressView.anchor(top: stackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
+        addSubview(successProgressView)
+        successProgressView.anchor(top: stackView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
 
         addSubview(goalProgressView)
-        goalProgressView.anchor(top: completionProgressView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 30, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
+        goalProgressView.anchor(top: successProgressView.bottomAnchor, left: left, bottom: nil, right: right, paddingTop: 30, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 65)
     }
 }

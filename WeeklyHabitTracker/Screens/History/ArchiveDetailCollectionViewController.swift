@@ -188,7 +188,7 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
         self.dataSource.supplementaryViewProvider = { [weak self] (collectionView, kind, indexPath) -> UICollectionReusableView? in
             guard let self = self else { return nil }
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! ArchiveDetailHeaderCell
-            header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, completionRate: self.archive.successRate, goal: self.archive.goal)
+            header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, successRate: self.archive.successRate, goal: self.archive.goal)
             header.set(completed: self.archive.completedTotal, failed: self.archive.failedTotal, incomplete: self.archive.incompleteTotal)
             header.set(delegate: self)
             return header

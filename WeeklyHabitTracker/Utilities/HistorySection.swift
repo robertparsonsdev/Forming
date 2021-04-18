@@ -24,6 +24,7 @@ enum HistorySection: CaseIterable {
 
 struct HistoryItem: Hashable {
     private let id = UUID()
+    let archive: Archive?
     let type: HistoryItemType
     
     let title: String
