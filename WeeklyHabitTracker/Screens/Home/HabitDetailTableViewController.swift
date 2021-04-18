@@ -90,7 +90,7 @@ class HabitDetailTableViewController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
         let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
         if self.editMode {
-            let finButton = UIBarButtonItem(image: UIImage(named: "checkmark"), style: .done, target: self, action: #selector(finishButtonTapped))
+            let finButton = UIBarButtonItem(image: UIImage(systemName: "star"), style: .done, target: self, action: #selector(finishButtonTapped))
             navigationItem.rightBarButtonItems = [saveButton, finButton]
         } else {
             navigationItem.rightBarButtonItems = [saveButton]

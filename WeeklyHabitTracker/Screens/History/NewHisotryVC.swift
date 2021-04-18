@@ -65,9 +65,6 @@ class NewHisotryVC: UICollectionViewController {
     
     private func configureNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        
-        self.sortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), menu: createSortMenu())
-        navigationItem.rightBarButtonItem = self.sortButton
     }
     
     private func configureSearchController() {
@@ -113,50 +110,42 @@ class NewHisotryVC: UICollectionViewController {
     }
     
     // MARK: - Functions
-    func fetchArchives() {
+    private func fetchArchives() {
         self.archives = self.persistenceManager.fetch(Archive.self)
         self.activeArchives = self.archives.filter { $0.active }
+        self.activeArchives.sort { $0.title < $1.title }
+        
         self.finishedArchives = self.archives.filter { !$0.active }
         self.finishedArchives.sort { $0.title < $1.title }
         applyInitialSnapshot()
     }
     
-    func applyInitialSnapshot() {
+    private func applyInitialSnapshot() {
         for section in HistorySection.allCases {
             var snapshot = NSDiffableDataSourceSectionSnapshot<HistoryItem>()
+            let headerSubtitle: String, archives: [Archive], symbol: UIImage?
             
-            let subtitle = section == .activeHabits ? "\(self.activeArchives.count)" : "\(self.finishedArchives.count)"
-            let header = HistoryItem(type: .header, title: section.description, subtitle: subtitle, symbol: nil)
-            snapshot.append([header])
+            switch section {
+            case .activeHabits:
+                headerSubtitle = "\(self.activeArchives.count)"
+                archives = self.activeArchives
+                symbol = UIImage(named: "checkmark.circle")
+            case .finishedHabits:
+                headerSubtitle = "\(self.finishedArchives.count)"
+                archives = self.finishedArchives
+                symbol = UIImage(named: "star.circle")
+            }
             
-            let archives = section == .activeHabits ? self.activeArchives : self.finishedArchives
-            let symbol = section == .activeHabits ? UIImage(named: "star.circle") : UIImage(named: "checkmark.circle")
+            let header = HistoryItem(type: .header, title: section.description, subtitle: headerSubtitle, symbol: nil)
             let rows = archives.map { HistoryItem(type: .row, title: $0.title,
-                                                  subtitle: $0.goal == -1 ? "No Goal" : "\($0.completedTotal) / \($0.goal)",
+                                                  subtitle: $0.goal == -1 ? "No Goal" : String(format: "%.0f%%", $0.successRate * 100),
                                                   symbol: symbol?.withTintColor(FormingColors.getColor(fromValue: $0.color), renderingMode: .alwaysOriginal)) }
-            snapshot.append(rows, to: header)
             
+            snapshot.append([header])
+            snapshot.expand([header])
+            snapshot.append(rows, to: header)
             self.dataSource?.apply(snapshot, to: section, animatingDifferences: false, completion: nil)
         }
-    }
-    
-    func createSortMenu() -> UIMenu {
-        var children = [UIAction]()
-        HistorySort.allCases.forEach { (sort) in
-            children.append(UIAction(title: sort.rawValue, state: sort.rawValue == self.defaultSort.rawValue ? .on : .off, handler: { [weak self] (action) in
-                guard let self = self else { return }
-                self.sortActionTriggered(sort: sort)
-                self.sortButton.menu = self.createSortMenu()
-            }))
-        }
-        return UIMenu(title: "Sort active habits by:", children: children)
-    }
-    
-    private func sortActionTriggered(sort: HistorySort) {
-//        self.defaultSort = sort
-//        self.defaults.set(sort.rawValue, forKey: self.sortKey)
-//        guard !self.activeArchives.isEmpty else { return }
-//        self.updateDataSource(on: self.archives, isActiveCollapsed: self.isActiveCollapsed, isFinishedCollapsed: self.isFinishedCollapsed)
     }
 }
 
