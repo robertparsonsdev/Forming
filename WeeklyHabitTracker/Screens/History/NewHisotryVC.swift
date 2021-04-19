@@ -131,30 +131,39 @@ class NewHisotryVC: UICollectionViewController {
     }
     
     private func applySnapshot(on activeArchives: [Archive], and finishedArchives: [Archive]) {
-        for section in HistorySection.allCases {
-            var snapshot = NSDiffableDataSourceSectionSnapshot<HistoryItem>()
-            let headerSubtitle: String, archives: [Archive], symbol: UIImage?
+        if self.archives.isEmpty {
+            guard var snapshot = self.dataSource?.snapshot() else { return }
+            
+            snapshot.deleteAllItems()
+            self.dataSource?.apply(snapshot, animatingDifferences: false)
+            self.showEmptyStateView(withText: "To start recording habit history, create a new habit.")
+        } else {
+            self.removeEmptyStateView()
+            for section in HistorySection.allCases {
+                var snapshot = NSDiffableDataSourceSectionSnapshot<HistoryItem>()
+                let headerSubtitle: String, archives: [Archive], symbol: UIImage?
 
-            switch section {
-            case .activeHabits:
-                headerSubtitle = "\(activeArchives.count)"
-                archives = activeArchives
-                symbol = UIImage(named: "checkmark.circle")
-            case .finishedHabits:
-                headerSubtitle = "\(finishedArchives.count)"
-                archives = finishedArchives
-                symbol = UIImage(named: "star.circle")
+                switch section {
+                case .activeHabits:
+                    headerSubtitle = "\(activeArchives.count)"
+                    archives = activeArchives
+                    symbol = UIImage(named: "checkmark.circle")
+                case .finishedHabits:
+                    headerSubtitle = "\(finishedArchives.count)"
+                    archives = finishedArchives
+                    symbol = UIImage(named: "star.circle")
+                }
+
+                let header = HistoryItem(archive: nil, type: .header, title: section.description, subtitle: headerSubtitle, symbol: nil)
+                let rows = archives.map { HistoryItem(archive: $0, type: .row, title: $0.title,
+                                                      subtitle: self.subtitle(success: $0.successRate, completed: $0.completedTotal, goal: $0.goal),
+                                                      symbol: symbol?.withTintColor(FormingColors.getColor(fromValue: $0.color), renderingMode: .alwaysOriginal)) }
+
+                snapshot.append([header])
+                snapshot.expand([header])
+                snapshot.append(rows, to: header)
+                self.dataSource?.apply(snapshot, to: section, animatingDifferences: false, completion: nil)
             }
-
-            let header = HistoryItem(archive: nil, type: .header, title: section.description, subtitle: headerSubtitle, symbol: nil)
-            let rows = archives.map { HistoryItem(archive: $0, type: .row, title: $0.title,
-                                                  subtitle: self.subtitle(success: $0.successRate, completed: $0.completedTotal, goal: $0.goal),
-                                                  symbol: symbol?.withTintColor(FormingColors.getColor(fromValue: $0.color), renderingMode: .alwaysOriginal)) }
-
-            snapshot.append([header])
-            snapshot.expand([header])
-            snapshot.append(rows, to: header)
-            self.dataSource?.apply(snapshot, to: section, animatingDifferences: false, completion: nil)
         }
     }
     
@@ -179,15 +188,22 @@ class NewHisotryVC: UICollectionViewController {
 
 extension NewHisotryVC: ArchiveDetailDelegate {
     func delete(archive: Archive) {
-        
+        self.userNotificationCenter.deleteNotificationRequests(forDays: archive.habit.days, andUniqueID: archive.habit.uniqueID)
+        self.persistenceManager.delete(archive)
+        self.notificationCenter.reload(habits: true, history: true)
     }
     
     func reset(archive: Archive) {
-        
+        archive.reset()
+        self.persistenceManager.save()
+        self.notificationCenter.reload(habits: true, history: true, archiveDetail: true)
     }
     
     func restore(archive: Archive) {
-        
+        archive.restore()
+        self.persistenceManager.save()
+        self.userNotificationCenter.createNotificationRequest(forHabit: archive.habit)
+        self.notificationCenter.reload(habits: true, history: true)
     }
 }
 
