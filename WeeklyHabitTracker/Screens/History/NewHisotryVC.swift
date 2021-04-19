@@ -25,7 +25,6 @@ class NewHisotryVC: UICollectionViewController {
     private var sortButton: UIBarButtonItem!
     
     private let searchController = UISearchController()
-    private var filteredArchives: [Archive] = []
     
     // MARK: - Inits
     init(persistenceManager: PersistenceService, defaults: UserDefaults, notifCenter: NotificationCenter, userNotifCenter: UNUserNotificationCenter) {
@@ -52,6 +51,7 @@ class NewHisotryVC: UICollectionViewController {
         configureDataSource()
         
         fetchArchives()
+        applySnapshot(on: self.activeArchives, and: self.finishedArchives)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -128,30 +128,29 @@ class NewHisotryVC: UICollectionViewController {
         
         self.finishedArchives = self.archives.filter { !$0.active }
         self.finishedArchives.sort { $0.title < $1.title }
-        applySnapshot()
     }
     
-    private func applySnapshot() {
+    private func applySnapshot(on activeArchives: [Archive], and finishedArchives: [Archive]) {
         for section in HistorySection.allCases {
             var snapshot = NSDiffableDataSourceSectionSnapshot<HistoryItem>()
             let headerSubtitle: String, archives: [Archive], symbol: UIImage?
-            
+
             switch section {
             case .activeHabits:
-                headerSubtitle = "\(self.activeArchives.count)"
-                archives = self.activeArchives
+                headerSubtitle = "\(activeArchives.count)"
+                archives = activeArchives
                 symbol = UIImage(named: "checkmark.circle")
             case .finishedHabits:
-                headerSubtitle = "\(self.finishedArchives.count)"
-                archives = self.finishedArchives
+                headerSubtitle = "\(finishedArchives.count)"
+                archives = finishedArchives
                 symbol = UIImage(named: "star.circle")
             }
-            
+
             let header = HistoryItem(archive: nil, type: .header, title: section.description, subtitle: headerSubtitle, symbol: nil)
             let rows = archives.map { HistoryItem(archive: $0, type: .row, title: $0.title,
                                                   subtitle: self.subtitle(success: $0.successRate, completed: $0.completedTotal, goal: $0.goal),
                                                   symbol: symbol?.withTintColor(FormingColors.getColor(fromValue: $0.color), renderingMode: .alwaysOriginal)) }
-            
+
             snapshot.append([header])
             snapshot.expand([header])
             snapshot.append(rows, to: header)
@@ -173,6 +172,7 @@ class NewHisotryVC: UICollectionViewController {
     @objc func reloadArchives() {
         DispatchQueue.main.async {
             self.fetchArchives()
+            self.applySnapshot(on: self.activeArchives, and: self.finishedArchives)
         }
     }
 }
@@ -193,6 +193,16 @@ extension NewHisotryVC: ArchiveDetailDelegate {
 
 extension NewHisotryVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
+        guard let filter = searchController.searchBar.text else { return }
+        if filter.isEmpty { applySnapshot(on: self.activeArchives, and: self.finishedArchives); return }
         
+        let filteredArchives = self.archives.filter { $0.title.lowercased().contains(filter.lowercased()) }
+        let filteredActiveArchives = filteredArchives.filter { $0.active }
+        let filteredFinishedArchives = filteredArchives.filter { !$0.active }
+        applySnapshot(on: filteredActiveArchives, and: filteredFinishedArchives)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        applySnapshot(on: self.activeArchives, and: self.finishedArchives)
     }
 }
