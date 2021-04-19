@@ -31,7 +31,7 @@ class MainTabBarController: UITabBarController {
         
         let homeNavController = buildTabBarControllers(withTitle: "Habits",
                                                        andImage: UIImage(named: "checkmark", in: nil, with: boldConfig)!,
-                                                       andRootVC: HomeCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout(),
+                                                       andRootVC: HomeVC(collectionViewLayout: UICollectionViewFlowLayout(),
                                                                                                persistenceManager: self.appDelegate.getPersistenceService(),
                                                                                                defaults: self.appDelegate.getUserDefaults(),
                                                                                                userNotifCenter: self.appDelegate.getUserNotificationCenter(),
@@ -39,7 +39,7 @@ class MainTabBarController: UITabBarController {
 
         let historyNavController = buildTabBarControllers(withTitle: "History",
                                                           andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!,
-                                                          andRootVC: NewHisotryVC(/*collectionViewLayout: UICollectionViewFlowLayout(),*/
+                                                          andRootVC: HisotryVC(/*collectionViewLayout: UICollectionViewFlowLayout(),*/
                                                                                                      persistenceManager: self.appDelegate.getPersistenceService(),
                                                                                                      defaults: self.appDelegate.getUserDefaults(),
                                                                                                      notifCenter: self.appDelegate.getNotificationCenter(),
@@ -47,7 +47,7 @@ class MainTabBarController: UITabBarController {
         
         let settingsNavController = buildTabBarControllers(withTitle: "Settings",
                                                            andImage: UIImage(named: "gear", in: nil, with: boldConfig)!,
-                                                           andRootVC: SettingsTableViewController(notifCenter: self.appDelegate.getNotificationCenter(),
+                                                           andRootVC: SettingsVC(notifCenter: self.appDelegate.getNotificationCenter(),
                                                                                                      defaults: self.appDelegate.getUserDefaults(),
                                                                                                      userNotifCenter: self.appDelegate.getUserNotificationCenter()))
 

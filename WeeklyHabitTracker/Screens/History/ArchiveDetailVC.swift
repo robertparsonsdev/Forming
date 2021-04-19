@@ -11,7 +11,7 @@ import UIKit
 private let reuseIdentifier = "archivedHabitCell"
 private let headerReuseIdentifier = "archivedHabitHeader"
 
-class ArchiveDetailCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class ArchiveDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var archive: Archive!
     private var archivedHabits = [ArchivedHabit]()
     private let persistenceManager: PersistenceService
@@ -260,9 +260,9 @@ class ArchiveDetailCollectionViewController: UICollectionViewController, UIColle
 }
 
 // MARK: - Delegates
-extension ArchiveDetailCollectionViewController: HabitCellDelegate {
+extension ArchiveDetailVC: HabitCellDelegate {
     func pushViewController(archivedHabit: ArchivedHabit) {
-        let vc = ArchivedHabitDetailViewController(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
+        let vc = ArchivedHabitDetailVC(persistenceManager: self.persistenceManager, notifCenter: self.notificationCenter)
         vc.set(archivedHabit: archivedHabit)
         vc.title = "Week \(archivedHabit.weekNumber)"
         navigationController?.pushViewController(vc, animated: true)
@@ -274,7 +274,7 @@ extension ArchiveDetailCollectionViewController: HabitCellDelegate {
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
 }
 
-extension ArchiveDetailCollectionViewController: FormingProgressViewDelegate {
+extension ArchiveDetailVC: FormingProgressViewDelegate {
     func showAlert(withTitle title: String, andMessage message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .systemGreen

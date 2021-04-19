@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GoalsViewController: UIViewController {
+class GoalsVC: UIViewController {
     private var goal: Int64
     private weak var delegate: HabitDetailTableViewDelegate?
     private var row: FirstSection!
@@ -159,7 +159,7 @@ class GoalsViewController: UIViewController {
     }
 }
 
-extension GoalsViewController: UIPickerViewDataSource {
+extension GoalsVC: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -169,7 +169,7 @@ extension GoalsViewController: UIPickerViewDataSource {
     }
 }
 
-extension GoalsViewController: UIPickerViewDelegate {
+extension GoalsVC: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return "\(self.goalData[row])"
     }

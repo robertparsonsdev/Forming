@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ReminderViewController: UIViewController {
+class ReminderVC: UIViewController {
     private var reminderDate: Date?
     private weak var delegate: HabitDetailTableViewDelegate?
     private let row: SecondSection

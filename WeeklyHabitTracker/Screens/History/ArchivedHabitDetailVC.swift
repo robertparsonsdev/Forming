@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ArchivedHabitDetailViewController: UIViewController {
+class ArchivedHabitDetailVC: UIViewController {
     private var archivedHabit: ArchivedHabit!
     private let persistenceManager: PersistenceService
     private let notificationCenter: NotificationCenter
@@ -218,13 +218,13 @@ class ArchivedHabitDetailViewController: UIViewController {
 }
 
 // MARK: - Delegates
-extension ArchivedHabitDetailViewController: UITextViewDelegate {
+extension ArchivedHabitDetailVC: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         self.archivedHabit?.notes = textView.text
     }
 }
 
-extension ArchivedHabitDetailViewController: HabitCellDelegate {
+extension ArchivedHabitDetailVC: HabitCellDelegate {
     func checkboxSelectionChangedForArchivedHabit(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) {
         updateArchivedHabit(atIndex: index, fromStatus: oldStatus, toStatus: newStatus, forState: state)
         saveAndReload()
@@ -265,7 +265,7 @@ extension ArchivedHabitDetailViewController: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) { }
 }
 
-extension ArchivedHabitDetailViewController: GoalReachedDelegate {
+extension ArchivedHabitDetailVC: GoalReachedDelegate {
     func finishButtonTapped(forHabit habit: Habit) {
         let dict = [NotificationName.finishHabitFromNotes.rawValue: habit]
         self.notificationCenter.post(name: NSNotification.Name(rawValue: NotificationName.finishHabitFromNotes.rawValue), object: nil, userInfo: dict)
@@ -273,7 +273,7 @@ extension ArchivedHabitDetailViewController: GoalReachedDelegate {
     }
     
     func adjustButtonTapped(forHabit habit: Habit) {
-        let goalViewController = GoalsViewController(habit: habit, persistenceManager: self.persistenceManager)
+        let goalViewController = GoalsVC(habit: habit, persistenceManager: self.persistenceManager)
         let navController = UINavigationController(rootViewController: goalViewController)
         DispatchQueue.main.async {
             self.present(navController, animated: true)

@@ -12,7 +12,7 @@ import StoreKit
 private let cellIdentifier = "settingsCell"
 private let headerIdentifier = "settingsHeader"
 
-class SettingsTableViewController: UITableViewController {
+class SettingsVC: UITableViewController {
     private var products = [SKProduct]()
     private let paymentQueue = SKPaymentQueue.default()
     
@@ -255,7 +255,7 @@ class SettingsTableViewController: UITableViewController {
 }
 
 // MARK: - Delegates
-extension SettingsTableViewController: SettingsHeaderDelegate {
+extension SettingsVC: SettingsHeaderDelegate {
     func tipButtonTapped(product: IAPProduct) {
         switch product {
         case .smallTip: purchase(product: .smallTip)
@@ -265,7 +265,7 @@ extension SettingsTableViewController: SettingsHeaderDelegate {
     }
 }
 
-extension SettingsTableViewController: SKProductsRequestDelegate {
+extension SettingsVC: SKProductsRequestDelegate {
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         self.products = response.products
         
@@ -279,7 +279,7 @@ extension SettingsTableViewController: SKProductsRequestDelegate {
     }
 }
 
-extension SettingsTableViewController: SKPaymentTransactionObserver {
+extension SettingsVC: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
             print(transaction.transactionState.status(), transaction.payment.productIdentifier)

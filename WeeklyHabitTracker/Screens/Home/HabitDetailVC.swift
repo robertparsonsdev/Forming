@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HabitDetailTableViewController: UITableViewController {
+class HabitDetailVC: UITableViewController {
     private let headerReuseIdentifier = "habitDetailHeader"
     private let cellReuseIdentifier = "habitDetailHeaderCell"
     
@@ -243,7 +243,7 @@ class HabitDetailTableViewController: UITableViewController {
         case SectionNumber.firstSection.rawValue:
             switch indexPath.row {
             case FirstSection.goals.rawValue:
-                let goalView = GoalsViewController(goal: self.habitGoal, delegate: self, row: .goals, section: .firstSection)
+                let goalView = GoalsVC(goal: self.habitGoal, delegate: self, row: .goals, section: .firstSection)
                 self.navigationController?.pushViewController(goalView, animated: true)
             default: ()
             }
@@ -251,7 +251,7 @@ class HabitDetailTableViewController: UITableViewController {
             if indexPath.row == SecondSection.reminder.rawValue {
                 if #available(iOS 14, *) { }
                 else {
-                    let reminderView = ReminderViewController(reminder: self.habitReminder, delegate: self, row: .reminder, section: .secondSection)
+                    let reminderView = ReminderVC(reminder: self.habitReminder, delegate: self, row: .reminder, section: .secondSection)
                     self.navigationController?.pushViewController(reminderView, animated: true)
                 }
             }
@@ -488,7 +488,7 @@ class HabitDetailTableViewController: UITableViewController {
 }
 
 // MARK: - Delegates
-extension HabitDetailTableViewController: HabitDetailHeaderDelegate {
+extension HabitDetailVC: HabitDetailHeaderDelegate {
     func send(title: String?) {
         self.habitTitle = title
     }
@@ -502,7 +502,7 @@ extension HabitDetailTableViewController: HabitDetailHeaderDelegate {
     }
 }
 
-extension HabitDetailTableViewController: HabitDetailTableViewDelegate {
+extension HabitDetailVC: HabitDetailTableViewDelegate {
     func update(text: String, data: Any?, atSection section: Int, andRow row: Int) {
         tableView.cellForRow(at: IndexPath(row: row, section: section))?.detailTextLabel?.text = text
         switch section {

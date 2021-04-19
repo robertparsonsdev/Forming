@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewHisotryVC: UICollectionViewController {
+class HisotryVC: UICollectionViewController {
     // MARK: - Properties
     private var archives: [Archive] = []
     private var activeArchives: [Archive] = []
@@ -56,7 +56,7 @@ class NewHisotryVC: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = self.dataSource?.itemIdentifier(for: indexPath), let archive = item.archive else { print("selection error"); return }
-        let archiveDetailVC = ArchiveDetailCollectionViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, notifCenter: self.notificationCenter, archive: archive, delegate: self)
+        let archiveDetailVC = ArchiveDetailVC(persistenceManager: self.persistenceManager, defaults: self.defaults, notifCenter: self.notificationCenter, archive: archive, delegate: self)
         navigationController?.pushViewController(archiveDetailVC, animated: true)
     }
     
@@ -186,7 +186,7 @@ class NewHisotryVC: UICollectionViewController {
     }
 }
 
-extension NewHisotryVC: ArchiveDetailDelegate {
+extension HisotryVC: ArchiveDetailDelegate {
     func delete(archive: Archive) {
         self.userNotificationCenter.deleteNotificationRequests(forDays: archive.habit.days, andUniqueID: archive.habit.uniqueID)
         self.persistenceManager.delete(archive)
@@ -207,7 +207,7 @@ extension NewHisotryVC: ArchiveDetailDelegate {
     }
 }
 
-extension NewHisotryVC: UISearchResultsUpdating, UISearchBarDelegate {
+extension HisotryVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let filter = searchController.searchBar.text else { return }
         if filter.isEmpty { applySnapshot(on: self.activeArchives, and: self.finishedArchives); return }

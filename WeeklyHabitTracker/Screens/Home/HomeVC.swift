@@ -13,7 +13,7 @@ import UserNotifications
 private let reuseIdentifier = "homeHabitCell"
 private let headerReuseIdentifier = "homeHeaderCell"
 
-class HomeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     private var habits = [Habit]()
     private let persistenceManager: PersistenceService
     private let defaults: UserDefaults
@@ -199,7 +199,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
     
     // MARK: - Selectors
     @objc func newTapped() {
-        let newHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self)
+        let newHabitVC = HabitDetailVC(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self)
         let navController = UINavigationController(rootViewController: newHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         DispatchQueue.main.async {
@@ -235,7 +235,7 @@ class HomeCollectionViewController: UICollectionViewController, UICollectionView
 }
 
 // MARK: - Delegates
-extension HomeCollectionViewController: HabitDetailDelegate {
+extension HomeVC: HabitDetailDelegate {
     func add(habit: Habit) {
         self.userNotificationCenter.createNotificationRequest(forHabit: habit)
         self.persistenceManager.save()
@@ -277,9 +277,9 @@ extension HomeCollectionViewController: HabitDetailDelegate {
     }
 }
 
-extension HomeCollectionViewController: HabitCellDelegate {
+extension HomeVC: HabitCellDelegate {
     func presentNewHabitViewController(with habit: Habit) {
-        let editHabitVC = HabitDetailTableViewController(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self, habitToEdit: habit)
+        let editHabitVC = HabitDetailVC(persistenceManager: self.persistenceManager, defaults: self.defaults, delegate: self, habitToEdit: habit)
         let navController = UINavigationController(rootViewController: editHabitVC)
         navController.navigationBar.tintColor = .systemGreen
         DispatchQueue.main.async {
@@ -315,7 +315,7 @@ extension HomeCollectionViewController: HabitCellDelegate {
     func checkboxSelectionChangedForArchivedHabit(atIndex index: Int, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?) { }
 }
 
-extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDelegate {
+extension HomeVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let filter = searchController.searchBar.text else { return }
         if filter.isEmpty { updateDataSource(on: self.habits); return }
@@ -329,13 +329,13 @@ extension HomeCollectionViewController: UISearchResultsUpdating, UISearchBarDele
     }
 }
 
-extension HomeCollectionViewController: GoalReachedDelegate {
+extension HomeVC: GoalReachedDelegate {
     func finishButtonTapped(forHabit habit: Habit) {
         finish(habit: habit, confetti: false)
     }
     
     func adjustButtonTapped(forHabit habit: Habit) {
-        let goalViewController = GoalsViewController(habit: habit, persistenceManager: self.persistenceManager)
+        let goalViewController = GoalsVC(habit: habit, persistenceManager: self.persistenceManager)
         let navController = UINavigationController(rootViewController: goalViewController)
         DispatchQueue.main.async {
             self.present(navController, animated: true)
@@ -343,7 +343,7 @@ extension HomeCollectionViewController: GoalReachedDelegate {
     }
 }
 
-extension HomeCollectionViewController {
+extension HomeVC {
     @objc func printNofifications() {
         self.userNotificationCenter.getPendingNotificationRequests { (requests) in
             requests.forEach { (request) in
