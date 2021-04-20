@@ -20,4 +20,5 @@ enum NotificationName: String {
 enum Setting: String {
     case defaultReminder = "defaultReminderSetting"
     case badgeAppIcon = "badgeAppIconSetting"
+    case hideHabits = "hideCompletedHabits"
 }

@@ -25,6 +25,7 @@ class SettingsVC: UITableViewController {
     private let reminderSwitch = UISwitch()
     private let reminderPicker = UIDatePicker()
     private let badgeSwitch = UISwitch()
+    private let hideSwitch = UISwitch()
     private var activityViewController: ActivityViewController?
         
     // MARK: - Initializers
@@ -50,6 +51,7 @@ class SettingsVC: UITableViewController {
         
         configureReminderPicker()
         configureBadgeSwitch()
+        configureHideSwitch()
         
         fetchProducts()
     }
@@ -67,7 +69,7 @@ class SettingsVC: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -98,6 +100,11 @@ class SettingsVC: UITableViewController {
             cell.accessoryView = self.badgeSwitch
             cell.selectionStyle = .none
         case 2:
+            cell.textLabel?.text = "Hide Completed Habits"
+            cell.imageView?.image = UIImage(systemName: "eye.slash")
+            cell.accessoryView = self.hideSwitch
+            cell.selectionStyle = .none
+        case 3:
             cell.textLabel?.text = "Show Tutorial"
             cell.accessoryType = .disclosureIndicator
             cell.imageView?.image = UIImage(named: "info.circle")
@@ -122,7 +129,7 @@ class SettingsVC: UITableViewController {
                 reminderPicker.date = reminder
                 self.reminderSwitch.isOn = true
             } else {
-                reminderTextField.text = "None"
+                reminderTextField.text = "Off"
                 reminderPicker.date = CalUtility.getTimeAsDate(time: "9:00 AM")!
                 reminderPicker.isEnabled = false
                 reminderSwitch.isOn = false
@@ -167,6 +174,11 @@ class SettingsVC: UITableViewController {
         }
         
         badgeSwitch.addTarget(self, action: #selector(badgeSwitchTapped), for: .valueChanged)
+    }
+    
+    func configureHideSwitch() {
+        hideSwitch.isOn = self.defaults.bool(forKey: Setting.hideHabits.rawValue)
+        hideSwitch.addTarget(self, action: #selector(hideSwitchTapped(_:)), for: .valueChanged)
     }
     
     // MARK: - Functions
@@ -251,6 +263,11 @@ class SettingsVC: UITableViewController {
                 }
             }
         }
+    }
+    
+    @objc func hideSwitchTapped(_ sender: UISwitch) {
+        self.defaults.setValue(self.hideSwitch.isOn, forKey: Setting.hideHabits.rawValue)
+        self.notificationCenter.reload(habits: true)
     }
 }
 
