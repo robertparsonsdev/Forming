@@ -51,7 +51,7 @@ class SettingsVC: UITableViewController {
         
         configureReminderPicker()
         configureBadgeSwitch()
-        configureHideSwitch()
+//        configureHideSwitch()
         
         fetchProducts()
     }
@@ -69,7 +69,7 @@ class SettingsVC: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -99,12 +99,12 @@ class SettingsVC: UITableViewController {
             cell.imageView?.image = UIImage(named: "app.badge")
             cell.accessoryView = self.badgeSwitch
             cell.selectionStyle = .none
+//        case 2:
+//            cell.textLabel?.text = "Hide Completed Habits"
+//            cell.imageView?.image = UIImage(systemName: "eye.slash")
+//            cell.accessoryView = self.hideSwitch
+//            cell.selectionStyle = .none
         case 2:
-            cell.textLabel?.text = "Hide Completed Habits"
-            cell.imageView?.image = UIImage(systemName: "eye.slash")
-            cell.accessoryView = self.hideSwitch
-            cell.selectionStyle = .none
-        case 3:
             cell.textLabel?.text = "Show Tutorial"
             cell.accessoryType = .disclosureIndicator
             cell.imageView?.image = UIImage(named: "info.circle")

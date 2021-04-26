@@ -11,3 +11,8 @@ import Foundation
 enum CVSection {
     case main
 }
+
+enum HabitsSection: CaseIterable {
+    case active
+    case completed
+}
