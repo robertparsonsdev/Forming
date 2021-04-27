@@ -6,7 +6,6 @@
 - Background App Refresh
 - Notification Center
 - UIKit
-
 <br/>
 
 ## Features and Functions
