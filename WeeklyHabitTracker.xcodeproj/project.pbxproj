@@ -50,6 +50,7 @@
 		EECBF3DF2457CBBE0050DFB8 /* CVSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */; };
 		EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */; };
 		EEE50EFF250D7C4F00D0B77F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */; };
+		EEE555092638B130003E7B3A /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE555082638B130003E7B3A /* OnboardingVC.swift */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailVC.swift */; };
 		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
 		EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */; };
@@ -111,6 +112,7 @@
 		EECBF3DE2457CBBE0050DFB8 /* CVSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVSection.swift; sourceTree = "<group>"; };
 		EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNUserNotificationCenterExt.swift; sourceTree = "<group>"; };
 		EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		EEE555082638B130003E7B3A /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailVC.swift; sourceTree = "<group>"; };
 		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
 		EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				EEEB97CB24941EC0006DE24D /* Home */,
 				EEEB97CC24941ECE006DE24D /* History */,
 				EEEB97CD24941EE1006DE24D /* Settings */,
+				EEE555082638B130003E7B3A /* OnboardingVC.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -434,6 +437,7 @@
 				EE7F7E70252181E8009644CB /* ActivityViewController.swift in Sources */,
 				EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */,
 				EEC0FE74244646E500FC618F /* AppDelegate.swift in Sources */,
+				EEE555092638B130003E7B3A /* OnboardingVC.swift in Sources */,
 				EEEB97CF24941FAE006DE24D /* ArchiveDetailVC.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE51D1D024D4F947009079A4 /* UIViewControllerExt.swift in Sources */,

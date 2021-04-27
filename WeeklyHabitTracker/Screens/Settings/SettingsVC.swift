@@ -105,7 +105,7 @@ class SettingsVC: UITableViewController {
 //            cell.accessoryView = self.hideSwitch
 //            cell.selectionStyle = .none
         case 2:
-            cell.textLabel?.text = "Show Tutorial"
+            cell.textLabel?.text = "Show Intro Screen"
             cell.accessoryType = .disclosureIndicator
             cell.imageView?.image = UIImage(named: "info.circle")
             
@@ -116,7 +116,9 @@ class SettingsVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
-        case 0: print("reminder")
+        case 2:
+            presentOnboardingScreen()
+            tableView.deselectRow(at: indexPath, animated: false)
         default: break
         }
     }

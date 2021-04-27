@@ -72,4 +72,10 @@ extension UIViewController {
             activityVC.dismiss(animated: true, completion: nil)
         }
     }
+    
+    func presentOnboardingScreen() {
+        DispatchQueue.main.async {
+            self.navigationController?.present(OnboardingVC(), animated: true, completion: nil)
+        }
+    }
 }
