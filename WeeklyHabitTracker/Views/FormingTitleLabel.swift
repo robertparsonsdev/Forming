@@ -25,10 +25,17 @@ class FormingTitleLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         font = UIFont.boldSystemFont(ofSize: 20)
         textAlignment = .left
         textColor = .label
     }
     
+    func set(fontSize: CGFloat) {
+        font = UIFont.boldSystemFont(ofSize: fontSize)
+    }
+    
+    func set(wrapping: NSLineBreakMode) {
+        lineBreakMode = wrapping
+    }
 }

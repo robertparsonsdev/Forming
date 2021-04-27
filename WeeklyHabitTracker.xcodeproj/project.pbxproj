@@ -51,6 +51,7 @@
 		EEDE933424B50C1F00106248 /* UNUserNotificationCenterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */; };
 		EEE50EFF250D7C4F00D0B77F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */; };
 		EEE555092638B130003E7B3A /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE555082638B130003E7B3A /* OnboardingVC.swift */; };
+		EEE5550B2638B7E3003E7B3A /* FormingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE5550A2638B7E3003E7B3A /* FormingButton.swift */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailVC.swift */; };
 		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
 		EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */; };
@@ -113,6 +114,7 @@
 		EEDE933324B50C1F00106248 /* UNUserNotificationCenterExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNUserNotificationCenterExt.swift; sourceTree = "<group>"; };
 		EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EEE555082638B130003E7B3A /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
+		EEE5550A2638B7E3003E7B3A /* FormingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingButton.swift; sourceTree = "<group>"; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailVC.swift; sourceTree = "<group>"; };
 		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
 		EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				EE51D1CD24D4F76C009079A4 /* GoalReachedViewController.swift */,
 				EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */,
 				EE7F7E6F252181E8009644CB /* ActivityViewController.swift */,
+				EEE5550A2638B7E3003E7B3A /* FormingButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -441,6 +444,7 @@
 				EEEB97CF24941FAE006DE24D /* ArchiveDetailVC.swift in Sources */,
 				EEC0FE962446578600FC618F /* UIViewExt.swift in Sources */,
 				EE51D1D024D4F947009079A4 /* UIViewControllerExt.swift in Sources */,
+				EEE5550B2638B7E3003E7B3A /* FormingButton.swift in Sources */,
 				EE3A59F0249578ED009E5D25 /* ArchivedHabitDetailVC.swift in Sources */,
 				EEBBF1AA262BB0FC0084230F /* HisotryVC.swift in Sources */,
 				EE10369D2450A12B00AFFBEB /* ReminderVC.swift in Sources */,
