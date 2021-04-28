@@ -73,9 +73,9 @@ extension UIViewController {
         }
     }
     
-    func presentOnboardingScreen() {
+    func presentOnboardingScreen(with userNotifCenter: UNUserNotificationCenter) {
         DispatchQueue.main.async {
-            self.navigationController?.present(OnboardingVC(), animated: true, completion: nil)
+            self.navigationController?.present(OnboardingVC(userNotifCenter: userNotifCenter), animated: true, completion: nil)
         }
     }
 }

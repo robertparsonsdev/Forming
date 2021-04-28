@@ -17,6 +17,18 @@ enum NotificationName: String {
     case finishHabitFromNotes = "finishHabitFromNotes"
 }
 
+enum DefaultsKeys: String {
+    case firstLaunch
+    case displayOnboarding
+    
+    var key: String {
+        switch self {
+        case .firstLaunch: return "FormingFirstLaunch"
+        case .displayOnboarding: return "DisplayOnbarding"
+        }
+    }
+}
+
 enum Setting: String {
     case defaultReminder = "defaultReminderSetting"
     case badgeAppIcon = "badgeAppIconSetting"

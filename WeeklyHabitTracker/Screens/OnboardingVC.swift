@@ -9,13 +9,24 @@
 import UIKit
 
 class OnboardingVC: UIViewController {
+    private let userNotificationCenter: UNUserNotificationCenter
     private let titleLabel = FormingTitleLabel(title: "Welcome to Forming!")
     private let cardOne = OnboardingCard()
     private let cardTwo = OnboardingCard()
     private let cardThree = OnboardingCard()
     private let stackView = UIStackView()
     private let continueButton = FormingButton(backgroundColor: .systemGreen, title: "Continue")
-
+    
+    init(userNotifCenter: UNUserNotificationCenter) {
+        self.userNotificationCenter = userNotifCenter
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -75,6 +86,11 @@ class OnboardingVC: UIViewController {
     @objc private func continueButtonTapped() {
         DispatchQueue.main.async {
             self.dismiss(animated: true, completion: nil)
+            
+            self.userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                if granted { print("granted") }
+                else { print("not granted") }
+            }
         }
     }
 }

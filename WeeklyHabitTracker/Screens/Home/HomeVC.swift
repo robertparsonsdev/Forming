@@ -66,6 +66,10 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         configureDataSource()
         
         fetchHabits()
+        
+        if self.defaults.bool(forKey: DefaultsKeys.displayOnboarding.key) {
+            presentOnboardingScreen(with: self.userNotificationCenter)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

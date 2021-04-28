@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let persistenceService = PersistenceService.shared
     private let notificationCenter = NotificationCenter.default
     private let userNotificationCenter = UNUserNotificationCenter.current()
-    private let firstLaunch = "FormingFirstLaunch"
+//    private let firstLaunch = "FormingFirstLaunch"
     
     func getUserDefaults() -> UserDefaults { return self.defaults }
     func getPersistenceService() -> PersistenceService { return self.persistenceService }
@@ -27,10 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func getUserNotificationCenter() -> UNUserNotificationCenter { return self.userNotificationCenter }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        self.userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-            if granted { print("granted") }
-            else { print("not granted") }
-        }
+//        self.userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+//            if granted { print("granted") }
+//            else { print("not granted") }
+//        }
 
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.forming.refresh", using: nil) { [weak self] (task) in
             guard let self = self else { return }
@@ -58,14 +58,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
 //        persistenceService.save()
         
-        if !self.defaults.bool(forKey: self.firstLaunch) {
-            print("first launch")
-            self.defaults.set(true, forKey: self.firstLaunch)
-            configureDefaultSettings()
-        } else {
+        if self.defaults.bool(forKey: DefaultsKeys.firstLaunch.key) {
             print("not first launch")
-            // next update
-//            configureDefaultSettings()
+            self.defaults.set(false, forKey: DefaultsKeys.displayOnboarding.key)
+        } else {
+            print("first launch")
+            self.defaults.set(true, forKey: DefaultsKeys.firstLaunch.key)
+            self.defaults.set(true, forKey: DefaultsKeys.displayOnboarding.key)
+            configureDefaultSettings()
         }
         
         return true

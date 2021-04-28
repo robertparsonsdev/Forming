@@ -17,12 +17,6 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         UITabBar.appearance().tintColor = .systemGreen
         
-//        let viewController = UIViewController()
-//        viewController.view.backgroundColor = .systemBlue
-//        let navController = UINavigationController(rootViewController: viewController)
-//        navController.modalPresentationStyle = .overCurrentContext
-//        self.tabBarController?.definesPresentationContext = true
-//        self.tabBarController?.present(navController, animated: true, completion: nil)
         setUpViewControllers()
     }
 
@@ -39,11 +33,10 @@ class MainTabBarController: UITabBarController {
 
         let historyNavController = buildTabBarControllers(withTitle: "History",
                                                           andImage: UIImage(named: "arrow.counterclockwise", in: nil, with: boldConfig)!,
-                                                          andRootVC: HisotryVC(/*collectionViewLayout: UICollectionViewFlowLayout(),*/
-                                                                                                     persistenceManager: self.appDelegate.getPersistenceService(),
-                                                                                                     defaults: self.appDelegate.getUserDefaults(),
-                                                                                                     notifCenter: self.appDelegate.getNotificationCenter(),
-                                                                                                     userNotifCenter: self.appDelegate.getUserNotificationCenter()))
+                                                          andRootVC: HisotryVC(persistenceManager: self.appDelegate.getPersistenceService(),
+                                                                               defaults: self.appDelegate.getUserDefaults(),
+                                                                               notifCenter: self.appDelegate.getNotificationCenter(),
+                                                                               userNotifCenter: self.appDelegate.getUserNotificationCenter()))
         
         let settingsNavController = buildTabBarControllers(withTitle: "Settings",
                                                            andImage: UIImage(named: "gear", in: nil, with: boldConfig)!,

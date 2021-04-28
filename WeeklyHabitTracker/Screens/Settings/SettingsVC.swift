@@ -117,7 +117,7 @@ class SettingsVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 2:
-            presentOnboardingScreen()
+            presentOnboardingScreen(with: self.userNotificationCenter)
             tableView.deselectRow(at: indexPath, animated: false)
         default: break
         }
