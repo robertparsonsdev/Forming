@@ -52,6 +52,7 @@
 		EEE50EFF250D7C4F00D0B77F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */; };
 		EEE555092638B130003E7B3A /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE555082638B130003E7B3A /* OnboardingVC.swift */; };
 		EEE5550B2638B7E3003E7B3A /* FormingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE5550A2638B7E3003E7B3A /* FormingButton.swift */; };
+		EEE5550D2638D313003E7B3A /* OnboardingCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE5550C2638D313003E7B3A /* OnboardingCard.swift */; };
 		EEEB97CF24941FAE006DE24D /* ArchiveDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97CE24941FAE006DE24D /* ArchiveDetailVC.swift */; };
 		EEEB97D524942507006DE24D /* ArchiveDetailHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */; };
 		EEEB97E2249452FB006DE24D /* Archive+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */; };
@@ -115,6 +116,7 @@
 		EEE50EFE250D7C4F00D0B77F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EEE555082638B130003E7B3A /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		EEE5550A2638B7E3003E7B3A /* FormingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormingButton.swift; sourceTree = "<group>"; };
+		EEE5550C2638D313003E7B3A /* OnboardingCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCard.swift; sourceTree = "<group>"; };
 		EEEB97CE24941FAE006DE24D /* ArchiveDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailVC.swift; sourceTree = "<group>"; };
 		EEEB97D424942507006DE24D /* ArchiveDetailHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDetailHeaderCell.swift; sourceTree = "<group>"; };
 		EEEB97DC249452FB006DE24D /* Archive+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Archive+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				EEF820B5250FF05D007A0BB9 /* FormingTipButton.swift */,
 				EE7F7E6F252181E8009644CB /* ActivityViewController.swift */,
 				EEE5550A2638B7E3003E7B3A /* FormingButton.swift */,
+				EEE5550C2638D313003E7B3A /* OnboardingCard.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 				EEAD7EDC244BA3BF002225F8 /* Status.swift in Sources */,
 				EEC0FE9124464F6900FC618F /* HomeHeaderCell.swift in Sources */,
 				EE51D1CE24D4F76C009079A4 /* GoalReachedViewController.swift in Sources */,
+				EEE5550D2638D313003E7B3A /* OnboardingCard.swift in Sources */,
 				EE1B61C0250F14B300B4D2EE /* SettingsVC.swift in Sources */,
 				EE91108524623F730021190C /* UIHelper.swift in Sources */,
 				EE9A71512458AFEA0082D135 /* Sorts.swift in Sources */,
