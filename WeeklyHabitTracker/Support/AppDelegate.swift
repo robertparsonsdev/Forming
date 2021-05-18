@@ -154,7 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         queue.maxConcurrentOperationCount = 1
         queue.addOperation {
             self.didBecomeActive()
-            self.scheduleLocalNotification(withTitle: "Background Test")
+//            self.scheduleLocalNotification(withTitle: "Background Test")
         }
 
         task.expirationHandler = {

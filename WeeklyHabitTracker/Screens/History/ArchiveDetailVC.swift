@@ -284,7 +284,7 @@ extension ArchiveDetailVC: FormingProgressViewDelegate {
 }
 
 // MARK: - Protocols
-protocol ArchiveDetailDelegate: class {
+protocol ArchiveDetailDelegate: AnyObject {
     func delete(archive: Archive)
     func reset(archive: Archive)
     func restore(archive: Archive)

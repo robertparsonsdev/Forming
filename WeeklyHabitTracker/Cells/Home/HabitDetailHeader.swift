@@ -196,7 +196,7 @@ extension HabitDetailHeader: UITextFieldDelegate {
 }
 
 // MARK: Protocols
-protocol HabitDetailHeaderDelegate: class {
+protocol HabitDetailHeaderDelegate: AnyObject {
     func send(title: String?)
     func send(day: Int, andFlag flag: Bool)
     func send(color: Int64?)

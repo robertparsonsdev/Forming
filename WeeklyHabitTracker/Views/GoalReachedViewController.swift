@@ -146,7 +146,7 @@ class GoalReachedViewController: UIViewController {
 }
 
 // Protocols
-protocol GoalReachedDelegate: class {
+protocol GoalReachedDelegate: AnyObject {
     func finishButtonTapped(forHabit habit: Habit)
     func adjustButtonTapped(forHabit habit: Habit)
 }

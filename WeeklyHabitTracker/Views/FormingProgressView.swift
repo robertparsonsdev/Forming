@@ -171,6 +171,6 @@ class FormingProgressView: UIView {
     }
 }
 
-protocol FormingProgressViewDelegate: class {
+protocol FormingProgressViewDelegate: AnyObject {
     func showAlert(withTitle title: String, andMessage message: String)
 }

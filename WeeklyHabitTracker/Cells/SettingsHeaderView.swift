@@ -64,6 +64,6 @@ class SettingsHeaderView: UITableViewHeaderFooterView {
 }
 
 // MARK: - Protocols
-protocol SettingsHeaderDelegate: class {
+protocol SettingsHeaderDelegate: AnyObject {
     func tipButtonTapped(product: IAPProduct)
 }

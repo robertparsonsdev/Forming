@@ -360,7 +360,7 @@ class HabitCell: UICollectionViewCell {
 }
 
 // MARK: - Protocols
-protocol HabitCellDelegate: class {
+protocol HabitCellDelegate: AnyObject {
     func presentNewHabitViewController(with habit: Habit)
     func checkboxSelectionChanged(atIndex index: Int, forHabit habit: Habit, fromStatus oldStatus: Status, toStatus newStatus: Status, forState state: Bool?)
     func presentAlertController(with alert: UIAlertController)
