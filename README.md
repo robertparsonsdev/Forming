@@ -3,6 +3,8 @@
 
 Forming was designed, built, and tested using Swift and programatic UI in Xcode.
 
+It can be found on the Apple App Store [here](https://apps.apple.com/us/app/forming/id1511563733).
+
 ### Technologies Used
 - Core Data
 - Background App Refresh
